@@ -1,7 +1,8 @@
+export abstract class MemberInfo { }
 /**
  * 类模型
  */
-export class ClassInfo {
+export class ClassInfo extends MemberInfo {
     private _class: boolean | null = null; // 是否标记为类
     private _abstract: boolean | null = null; // 是否为抽象类
     private _isConstructor: boolean | null = null; // 是否标记为构造函数
@@ -78,7 +79,7 @@ export class ClassInfo {
 /**
  * 方法模型
  */
-export class MethodInfo {
+export class MethodInfo extends MemberInfo {
     private _method: boolean | null = null; // 是否标记为方法
     private _abstract: boolean | null = null; // 是否为抽象方法
     private _async: boolean | null = null; // 是否为异步方法
@@ -152,7 +153,7 @@ export class MethodInfo {
 /**
  * 属性模型
  */
-export class PropertyInfo {
+export class PropertyInfo extends MemberInfo {
     private _property: boolean | null = null; // 是否标记为属性
     private _static: boolean | null = null; // 是否为静态属性
     private _type: string | null = null; // 属性的类型

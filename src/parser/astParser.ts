@@ -1,8 +1,9 @@
 import { SourceFile } from "ts-morph";
+import { MemberParser } from "./memberParser";
 
-export class AstParser {
+export class AstParser extends MemberParser {
     // 获取方法,类或属性信息
-    public static async getMemberInfoByName(sourceFile: SourceFile, memberName: string, lineNumber: number) {
+    public async parseMemberInfo(sourceFile: SourceFile, memberName: string, lineNumber: number) {
         const classDetails = await Promise.all(
             sourceFile.getClasses().map(async cls => {
                 const className = cls.getName();
@@ -33,6 +34,4 @@ export class AstParser {
         );
         return classDetails
     }
-
-
 }
