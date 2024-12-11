@@ -1,6 +1,6 @@
 import { SourceFile } from "ts-morph";
 
-export class AstUtil {
+export class AstParser {
     // 获取方法,类或属性信息
     public static async getMemberInfoByName(sourceFile: SourceFile, memberName: string, lineNumber: number) {
         const classDetails = await Promise.all(

@@ -2,7 +2,7 @@ import { Project, SourceFile } from "ts-morph";
 /**
  * Ts文件解析器
  */
-export class TsFileParser {
+export class TsFileUtil {
     // 解析ts或js文件
     public paserTsFile(filePath: string): SourceFile {
         // 初始化 Project
