@@ -91,12 +91,9 @@ class BaseAnnotationBuilder<T> {
  */
 export class ClassAnnotationBuilder extends BaseAnnotationBuilder<ClassAnnotation> {
 
-    /**
-     * 构造器
-     * @param classAnnotation 类注解对象产品
-     */
-    constructor(classAnnotation: ClassAnnotation) {
-        super(classAnnotation)
+
+    constructor() {
+        super(new ClassAnnotation())
     }
 
 
@@ -164,8 +161,8 @@ export class MethodAnnotationBuilder extends BaseAnnotationBuilder<MethodAnnotat
      * 构造器
      * @param methodAnnotation 方法注解对象产品
      */
-    constructor(methodAnnotation: MethodAnnotation) {
-        super(methodAnnotation)
+    constructor() {
+        super(new MethodAnnotation())
     }
     // 是否标记为方法
     public setMethod(isMethod: boolean): this {
@@ -219,8 +216,8 @@ export class PropertyAnnotationBuilder extends BaseAnnotationBuilder<PropertyAnn
      * 构造器
      * @param propertyAnnotation 属性注解对象产品
      */
-    constructor(propertyAnnotation: PropertyAnnotation) {
-        super(propertyAnnotation)
+    constructor() {
+        super(new PropertyAnnotation())
     }
     // 是否标记为属性
     public setProperty(isProperty: boolean): this {

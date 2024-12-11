@@ -16,12 +16,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "annotation2.helloWorld",
-        "title": "Hello World"
+        "command": "addSingleAnnotation",
+        "title": "ADD SINGLE ANNOTATION"
       }
     ],
     "keybindings": {
-      "command": "annotation2.helloWorld",
+      "command": "addSingleAnnotation",
       "key": "alt+\\"
     }
   },
