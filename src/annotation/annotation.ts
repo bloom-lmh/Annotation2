@@ -2,12 +2,13 @@
  * 抽象注解类
  * @description 定义所有注解模型具有的公共标签
  */
-export abstract class CommonAnnotation {
+export abstract class BaseAnnotation {
     protected _name: string | null = null;      // 类名
+    protected _author: string | null = null;     // 作者信息
     protected _deprecated: boolean | null = null; // 是否已过时
     protected _memberof: string | null = null; // 所属的类或模块
     protected _example: string | null = null; // 示例代码
-    protected _since: string | null = null; // 引入的版本
+    protected _since: string | null = null; // 标记某个功能或方法自哪个版本开始存在
     protected _version: string | null = null; // 当前的版本
     protected _see: string | null = null; // 相关参考
     protected _description: string | null = null; // 描述或注释
@@ -15,6 +16,7 @@ export abstract class CommonAnnotation {
     protected _protected: boolean | null = null; // 是否为受保护
     protected _public: boolean | null = null; // 是否为公共
     protected _readonly: boolean | null = null; // 是否为只读
+
     // Getter 和 Setter 方法
 
     get name(): string | null {
@@ -23,7 +25,12 @@ export abstract class CommonAnnotation {
     set name(value: string) {
         this._name = value;
     }
-    // 1. _deprecated
+    get author(): string | null {
+        return this._author
+    }
+    set author(value: string) {
+        this._author = value
+    }
     get deprecated(): boolean | null {
         return this._deprecated;
     }
@@ -32,7 +39,6 @@ export abstract class CommonAnnotation {
         this._deprecated = value;
     }
 
-    // 2. _memberof
     get memberof(): string | null {
         return this._memberof;
     }
@@ -41,7 +47,6 @@ export abstract class CommonAnnotation {
         this._memberof = value;
     }
 
-    // 3. _example
     get example(): string | null {
         return this._example;
     }
@@ -50,7 +55,6 @@ export abstract class CommonAnnotation {
         this._example = value;
     }
 
-    // 4. _since
     get since(): string | null {
         return this._since;
     }
@@ -59,7 +63,6 @@ export abstract class CommonAnnotation {
         this._since = value;
     }
 
-    // 5. _version
     get version(): string | null {
         return this._version;
     }
@@ -68,7 +71,6 @@ export abstract class CommonAnnotation {
         this._version = value;
     }
 
-    // 6. _see
     get see(): string | null {
         return this._see;
     }
@@ -77,7 +79,6 @@ export abstract class CommonAnnotation {
         this._see = value;
     }
 
-    // 7. _description
     get description(): string | null {
         return this._description;
     }
@@ -86,7 +87,6 @@ export abstract class CommonAnnotation {
         this._description = value;
     }
 
-    // 8. _private
     get private(): boolean | null {
         return this._private;
     }
@@ -95,7 +95,6 @@ export abstract class CommonAnnotation {
         this._private = value;
     }
 
-    // 9. _protected
     get protected(): boolean | null {
         return this._protected;
     }
@@ -104,7 +103,6 @@ export abstract class CommonAnnotation {
         this._protected = value;
     }
 
-    // 10. _public
     get public(): boolean | null {
         return this._public;
     }
@@ -113,7 +111,6 @@ export abstract class CommonAnnotation {
         this._public = value;
     }
 
-    // 11. _readonly
     get readonly(): boolean | null {
         return this._readonly;
     }
@@ -127,7 +124,7 @@ export abstract class CommonAnnotation {
  * 抽象类注解类
  * @description 定义类注解模型具有的基本标签
  */
-export class ClassAnnotation extends CommonAnnotation {
+export class ClassAnnotation extends BaseAnnotation {
     protected _class: boolean | null = null; // 是否标记为类
     protected _abstract: boolean | null = null; // 是否为抽象类
     protected _isConstructor: boolean | null = null; // 是否标记为构造函数
@@ -225,7 +222,7 @@ export class ClassAnnotation extends CommonAnnotation {
  * 抽象方法注解类
  * @description 定义方法注解模型具有的基本标签
  */
-export class MethodAnnotation extends CommonAnnotation {
+export class MethodAnnotation extends BaseAnnotation {
     protected _method: boolean | null = null; // 是否标记为方法
     protected _abstract: boolean | null = null; // 是否为抽象方法
     protected _async: boolean | null = null; // 是否为异步方法
@@ -303,7 +300,7 @@ export class MethodAnnotation extends CommonAnnotation {
  * 抽象属性注解类
  * @description 定义属性注解模型具有的基本标签
  */
-export class PropertyAnnotation extends CommonAnnotation {
+export class PropertyAnnotation extends BaseAnnotation {
     protected _property: boolean | null = null; // 是否标记为属性
     protected _static: boolean | null = null; // 是否为静态属性
     protected _type: string | null = null; // 属性的类型

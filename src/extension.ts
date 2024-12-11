@@ -5,7 +5,7 @@ import { ClassAnnotation } from './annotation/annotation';
 
 // 插件激活
 export function activate(context: ExtensionContext) {
-    let defaultClassAnnotation: ClassAnnotation = ClassAnnotationDirector.buildDefaultClassAnnotation(new ClassAnnotationBuilder(new ClassAnnotation()))
+    let defaultClassAnnotation: ClassAnnotation = ClassAnnotationDirector.constructDefaultClassAnnotation(new ClassAnnotationBuilder(new ClassAnnotation()))
     console.log(defaultClassAnnotation);
 
 
