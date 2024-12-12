@@ -2,6 +2,8 @@
  * 抽象注解类
  * @description 定义所有注解模型具有的公共标签
  */
+
+
 export abstract class BaseAnnotation {
     protected _name: string | null = null;      // 类名
     protected _author: string | null = null;     // 作者信息

@@ -1,9 +1,10 @@
-import { ClassAnnotation, MethodAnnotation, PropertyAnnotation } from "./annotation";
+import { BaseAnnotation, ClassAnnotation, MethodAnnotation, PropertyAnnotation } from "./annotation";
 
 /**
  * 通用注解建造者
  */
-class BaseAnnotationBuilder<T> {
+
+export abstract class BaseAnnotationBuilder<T extends BaseAnnotation> {
     protected annotation: T;
 
     constructor(annotation: T) {
@@ -12,70 +13,70 @@ class BaseAnnotationBuilder<T> {
 
     public setName(name: string): this {
         // 假设所有注解对象都有 name 属性
-        (this.annotation as any).name = name;
+        this.annotation.name = name;
         return this;
     }
 
     public setDeprecated(isDeprecated: boolean): this {
         // 假设所有注解对象都有 deprecated 属性
-        (this.annotation as any).deprecated = isDeprecated;
+        this.annotation.deprecated = isDeprecated;
         return this;
     }
 
     public setMemberof(memberof: string): this {
         // 假设所有注解对象都有 memberof 属性
-        (this.annotation as any).memberof = memberof;
+        this.annotation.memberof = memberof;
         return this;
     }
 
     public setExample(example: string): this {
         // 假设所有注解对象都有 example 属性
-        (this.annotation as any).example = example;
+        this.annotation.example = example;
         return this;
     }
 
     public setSince(since: string): this {
         // 假设所有注解对象都有 since 属性
-        (this.annotation as any).since = since;
+        this.annotation.since = since;
         return this;
     }
 
     public setVersion(version: string): this {
         // 假设所有注解对象都有 version 属性
-        (this.annotation as any).version = version;
+        this.annotation.version = version;
         return this;
     }
 
     public setSee(see: string): this {
         // 假设所有注解对象都有 see 属性
-        (this.annotation as any).see = see;
+        this.annotation.see = see;
         return this;
     }
 
     public setDescription(description: string): this {
         // 假设所有注解对象都有 description 属性
-        (this.annotation as any).description = description;
+        this.annotation.description = description;
         return this;
     }
 
     // 其他共同的 set 方法（如私有、公共、只读等）
     public setPrivate(isPrivate: boolean): this {
-        (this.annotation as any).private = isPrivate;
+        this.annotation.private = isPrivate;
         return this;
     }
 
     public setProtected(isProtected: boolean): this {
-        (this.annotation as any).protected = isProtected;
+        this.annotation.protected = isProtected;
         return this;
     }
 
     public setPublic(isPublic: boolean): this {
-        (this.annotation as any).public = isPublic;
+        this.annotation.public = isPublic;
         return this;
     }
 
     public setReadonly(isReadonly: boolean): this {
-        (this.annotation as any).readonly = isReadonly;
+        this.annotation.readonly = isReadonly;
         return this;
     }
 
@@ -90,12 +91,13 @@ class BaseAnnotationBuilder<T> {
  * @see 如果系统只需要一个建造者的话可以省略掉抽象的建造者
  */
 export class ClassAnnotationBuilder extends BaseAnnotationBuilder<ClassAnnotation> {
-
-
-    constructor() {
-        super(new ClassAnnotation())
+    /**
+     * 构造器
+     * @param classAnnotation 类注解对象产品
+     */
+    constructor(classAnnotation: ClassAnnotation) {
+        super(classAnnotation)
     }
-
 
     // 是否标记为类
     public setClass(isClass: boolean): this {
@@ -161,8 +163,8 @@ export class MethodAnnotationBuilder extends BaseAnnotationBuilder<MethodAnnotat
      * 构造器
      * @param methodAnnotation 方法注解对象产品
      */
-    constructor() {
-        super(new MethodAnnotation())
+    constructor(methodAnnotation: MethodAnnotation) {
+        super(methodAnnotation)
     }
     // 是否标记为方法
     public setMethod(isMethod: boolean): this {
@@ -216,8 +218,8 @@ export class PropertyAnnotationBuilder extends BaseAnnotationBuilder<PropertyAnn
      * 构造器
      * @param propertyAnnotation 属性注解对象产品
      */
-    constructor() {
-        super(new PropertyAnnotation())
+    constructor(propertyAnnotation: PropertyAnnotation) {
+        super(propertyAnnotation)
     }
     // 是否标记为属性
     public setProperty(isProperty: boolean): this {

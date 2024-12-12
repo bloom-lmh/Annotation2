@@ -1,4 +1,4 @@
-class Person {
+/* class Person {
     private name: string | null = 'aa'
 }
 export class BaseAnnotation extends Person {
@@ -32,3 +32,29 @@ let baseAnnotation = new BaseAnnotation()
 console.log(baseAnnotation['name']);
 baseAnnotation['name'] = '22'
 console.log(baseAnnotation['name']);
+ */
+function MakeReadOnly(target: any, propertyKey: string | symbol) {
+    let value = target[propertyKey];
+    const getter = function () {
+        return value;
+    };
+    const setter = function () {
+        throw new Error(`Attempted to update read-only property '}'`);
+    };
+
+    Object.defineProperty(target, propertyKey, {
+        get: getter,
+        set: setter,
+        enumerable: true,
+        configurable: true
+    });
+}
+
+class MyClass {
+    @MakeReadOnly
+    myProperty = "Hello, World!";
+}
+
+const obj = new MyClass();
+console.log(obj.myProperty); // 输出: Hello, World!
+obj.myProperty = "New Value"; // 抛出错误

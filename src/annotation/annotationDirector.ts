@@ -1,10 +1,15 @@
-import { ClassAnnotation, MethodAnnotation, PropertyAnnotation } from "./annotation";
-import { ClassAnnotationBuilder, MethodAnnotationBuilder, PropertyAnnotationBuilder } from "./annotationBuilder";
+import { BaseAnnotation, ClassAnnotation, MethodAnnotation, PropertyAnnotation } from "./annotation";
+import { BaseAnnotationBuilder, ClassAnnotationBuilder, MethodAnnotationBuilder, PropertyAnnotationBuilder } from "./annotationBuilder";
 
+abstract class AnnotationDirector {
+    public static constructDefaultAnnotation<T extends BaseAnnotation>(builder: BaseAnnotationBuilder<T>): T {
+        throw new Error("Method must be implemented.");
+    }
+}
 /**
  * 类注解指挥者
  */
-export class ClassAnnotationDirector {
+export class ClassAnnotationDirector extends AnnotationDirector {
 
     /**
      * 创建默认类注解
@@ -22,7 +27,7 @@ export class ClassAnnotationDirector {
 /**
  * 方法注解指挥者
  */
-export class MethodAnnotationDirector {
+export class MethodAnnotationDirector extends AnnotationDirector {
     /**
      * 创建默认方法注解
      */
@@ -40,7 +45,7 @@ export class MethodAnnotationDirector {
 /**
  * 属性注解指挥者
  */
-export class PropertyAnnotationDirector {
+export class PropertyAnnotationDirector extends AnnotationDirector {
     /**
      * 创建默认属性注解
      */
