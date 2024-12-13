@@ -3,14 +3,23 @@ export abstract class MemberInfo { }
  * 类模型
  */
 export class ClassInfo extends MemberInfo {
+    private _name: string | null = null   // 类名
     private _class: boolean | null = null; // 是否标记为类
     private _abstract: boolean | null = null; // 是否为抽象类
     private _isConstructor: boolean | null = null; // 是否标记为构造函数
     private _interface: boolean | null = null; // 是否为接口
-    private _extends: string | null = null; // 继承的父类
-    private _implements: string | null = ''; // 实现的接口
+    private _extends: string | undefined = undefined; // 继承的父类
+    private _implements: Array<string> = []; // 实现的接口
     private _params: Array<[string, string]> | Map<string, string> | null = null; // 构造函数参数
     private _returns: string | null = null; // 返回值类型
+
+    get name(): string | null {
+        return this._name;
+    }
+    // setter 方法
+    set name(value: string | null) {
+        this._name = value;
+    }
 
     get class(): boolean | null {
         return this._class;
@@ -44,19 +53,19 @@ export class ClassInfo extends MemberInfo {
         this._interface = value;
     }
 
-    get extends(): string | null {
+    get extends(): string | undefined {
         return this._extends;
     }
 
-    set extends(value: string) {
+    set extends(value: string | undefined) {
         this._extends = value;
     }
 
-    get implements(): string | null {
+    get implements(): Array<string> {
         return this._implements;
     }
 
-    set implements(value: string) {
+    set implements(value: Array<string>) {
         this._implements = value;
     }
 

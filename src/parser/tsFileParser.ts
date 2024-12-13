@@ -2,9 +2,9 @@ import { Project, SourceFile } from "ts-morph";
 /**
  * Ts文件解析器
  */
-export class TsFileUtil {
+export class TsFileParser {
     // 解析ts或js文件
-    public paserTsFile(filePath: string): SourceFile {
+    public parseTsFile(filePath: string): SourceFile {
         // 初始化 Project
         const project = new Project();
         // 加载文件
