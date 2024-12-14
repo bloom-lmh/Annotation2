@@ -10,6 +10,7 @@ export class ConfigLoader {
      * @returns 
      */
     public static loadConfig(projectPath: string): Config {
+        // 读取配置文件
         return new Config()
     }
 }

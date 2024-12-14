@@ -6,21 +6,13 @@ import { TsFileParser } from './parser/tsFileParser';
 import chokidar from 'chokidar';
 import path from 'path';
 import { ConfigManager } from './config/configManager';
+import { FileWatcher } from './file/fileWatcher';
+import { Config } from './config/config';
+import { AnnotationFactory } from './annotation/annotationFactory';
+import { JsDocGenerator } from './generator/jsDocGenerator';
 // 插件激活
 export function activate(context: ExtensionContext) {
-    /* let projectPaths: Array<string> = []
-    const workspaceFolder = vscode.workspace.workspaceFolders;
-    if (workspaceFolder && workspaceFolder.length > 0) {
-        // 返回工作区根目录路径
-        projectPaths = workspaceFolder.map(folder =>
-            path.join(folder.uri.fsPath, 'annotation.config.json')
-        );
-    }
 
-    const watcher = chokidar.watch(projectPaths)
-    watcher.on('add', (path) => {
-        console.log(path);
-    }) */
 
     // 配置管理器打开文件监听
     ConfigManager.startConfigWatch()
@@ -45,18 +37,25 @@ export function activate(context: ExtensionContext) {
             // 获取类、方法或者成员信息
             let memberDeclaration = new AstUtil().getMemberInfo(sourceFile, wordText, lineNumber)
             // 加载用户配置
-            // 1.1获取当前工作区路径
+            let config: Config = ConfigManager.get(filePath)
+            // 调用注解工厂创建注解
+            let annotation = AnnotationFactory.getAnnotation(memberDeclaration, config)
+            if (!annotation) {
+                vscode.window.showInformationMessage("获取注解对象失败！")
+                return
+            }
+            // 调用jsdoc生成器创建jsdoc注释
+            let jsdoc = new JsDocGenerator(annotation).generateJsDoc()
+            // 调用注入器注入注解
 
+            const selection = editor.selection;
+            const startLine = selection.start.line;
+            const position = new vscode.Position(startLine, 0); // 在当前行的开始插入
 
-
-            /*  const selection = editor.selection;
-             const startLine = selection.start.line;
-             const position = new vscode.Position(startLine, 0); // 在当前行的开始插入
- 
-             // 执行编辑
-             await editor.edit(editBuilder => {
-                 editBuilder.insert(position, `11\n`);
-             }); */
+            // 执行编辑
+            await editor.edit(editBuilder => {
+                editBuilder.insert(position, `${jsdoc}\n`);
+            });
 
 
             let et = new Date()

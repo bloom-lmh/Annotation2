@@ -11,8 +11,8 @@ export abstract class JsDocGenerateStrategy {
  * 字符串拼接策略
  */
 export class StringStrategy<T extends BaseAnnotation> extends JsDocGenerateStrategy {
-    public generateJsDoc(annotation: T): string | JSDocStructure {
-        throw new Error("Method not implemented.");
+    public generateJsDoc(annotation: T): string {
+        return "字符串假注解"
     }
 }
 /**
@@ -20,6 +20,6 @@ export class StringStrategy<T extends BaseAnnotation> extends JsDocGenerateStrat
  */
 export class JsDocStructureStrategy<T extends BaseAnnotation> extends JsDocGenerateStrategy {
     public generateJsDoc(annotation: BaseAnnotation): string | JSDocStructure {
-        throw new Error("Method not implemented.");
+        return "对象假注解"
     }
 }

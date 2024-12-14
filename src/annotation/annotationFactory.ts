@@ -17,8 +17,9 @@ export class AnnotationFactory {
             const classAnnotationBuilder = new ClassAnnotationBuilder(new ClassAnnotation())
             // 闯将指挥者
             const classAnnotationDirector = new ClassAnnotationDirector()
-            // 建造注解并返回
+            // 建造注解并返回,若注解建造失败使用默认注解
             return classAnnotationDirector.constructAnnotationByContext(classAnnotationBuilder, memberDeclaration, config)
+
         }
         // 若是方法，创建方法注释对象
         if (memberDeclaration instanceof MethodDeclaration || memberDeclaration instanceof FunctionDeclaration) {
