@@ -1,39 +1,47 @@
-import { basename } from "path";
+import { basename, dirname } from "path";
 import { FileWatcher } from "../file/fileWatcher";
 import { WorkspaceUtil } from "../utils/workspaceUtil";
 import { Config } from "./config";
 import { ConfigLoader } from "./configLoader";
+import { ClassAnnotation } from "../annotation/annotation";
+import { ConfigBuilder } from "./configBuilder";
 
 /**
  * 配置管理器
  */
 export class ConfigManager {
+    // 默认配置
+    private static defaultConfig: Config
     // 配置文件缓存
     private static configMaps: Map<string, Config> = new Map()
 
     // 缓存配置文件
-    public static add(projectPath: string, config?: Config) {
+    public static addConfig(configFilePath: string, config?: Config) {
         // 没传配置则加载
         if (!config) {
             // 加载配置文件
-            config = ConfigLoader.loadConfig(projectPath)
+            config = ConfigLoader.loadConfig(configFilePath)
         }
         if (config) {
-            this.configMaps.set(projectPath, config)
+            this.configMaps.set(configFilePath, config)
         }
-        //this.visitAll()
+        this.visitAll()
     }
     // 获取配置
-    public static get(projectPath: string): Config {
-        // 获取缓存的用户配置,若用户没有进行配置则使用默认配置
-        let config: Config = this.configMaps.get(projectPath) || new Config()
+    public static getConfig(configFilePath: string): Config {
+        // 获取缓存的用户配置
+        let projectConfig: Config = this.configMaps.get(configFilePath) || {}
+        // 获取默认配置
+        let defaultConfig: Config = this.getDefaultConfig()
+        // 与默认配置合并返回
+        let config: Config = Object.assign({}, defaultConfig, projectConfig)
         // 返回配置
         return config
     }
     // 删除配置文件
-    public static remove(projectPath: string) {
-        this.configMaps.delete(projectPath)
-        // this.visitAll()
+    public static removeConfig(configFilePath: string) {
+        this.configMaps.delete(configFilePath)
+        this.visitAll()
     }
     // 遍历map调试的时候使用
     public static visitAll() {
@@ -55,19 +63,19 @@ export class ConfigManager {
             add: (path) => {
                 if (basename(path) === 'annotation.config.json') {
                     //console.log("add:" + path);
-                    this.add(path)
+                    this.addConfig(path)
                 }
             },
             unlink: (path) => {
                 if (basename(path) === 'annotation.config.json') {
                     //console.log("remove:" + path);
-                    this.remove(path)
+                    this.removeConfig(path)
                 }
             },
             change: (path) => {
                 if (basename(path) === 'annotation.config.json') {
                     //console.log("change:" + path);
-                    this.add(path)
+                    this.addConfig(path)
                 }
             },
         }, {
@@ -75,5 +83,14 @@ export class ConfigManager {
             persistent: true,
             depth: 0
         })
+    }
+    /**
+     * 获取默认配置 单例模式
+     */
+    private static getDefaultConfig() {
+        if (!this.defaultConfig) {
+            this.defaultConfig = new Config()
+        }
+        return this.defaultConfig
     }
 }

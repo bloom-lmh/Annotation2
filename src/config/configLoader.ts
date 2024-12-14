@@ -1,4 +1,6 @@
+import { existsSync, readFileSync } from "fs";
 import { Config } from "./config";
+import path from "path";
 
 /**
  * 配置加载器
@@ -6,11 +8,17 @@ import { Config } from "./config";
 export class ConfigLoader {
     /**
      * 
-     * @param projectPath 项目路径
+     * @param configFilePath 配置文件路径
      * @returns 
      */
-    public static loadConfig(projectPath: string): Config {
+    public static loadConfig(configFilePath: string): Config {
+        let config: Config = {}
+        let configPath = path.join(configFilePath)
         // 读取配置文件
-        return new Config()
+        if (existsSync(configFilePath)) {
+            let jsonConfig = readFileSync(configPath, { encoding: 'utf-8' }).toString()
+            config = JSON.parse(jsonConfig)
+        }
+        return config
     }
 }

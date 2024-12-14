@@ -26,18 +26,22 @@ export function activate(context: ExtensionContext) {
                 vscode.window.showInformationMessage("编辑器获取失败")
                 return
             }
-            // 创建拾取器对象
-            const contextPicker = new ContextPicker(editor)
-            // 拾取上下文信息
-            let { lineNumber, wordText, fileName: filePath } = contextPicker.pick()
-            // 创建ts文件解析工具
-            const tsFileParser = new TsFileParser()
-            // 解析ts文件
-            let sourceFile = tsFileParser.parseTsFile(filePath)
+            // 创建拾取器对象拾取上下文信息
+            let { lineNumber, wordText, fileName: filePath } = new ContextPicker(editor).pick()
+            // 创建ts文件解析工具解析ts文件
+            let sourceFile = new TsFileParser().parseTsFile(filePath)
             // 获取类、方法或者成员信息
             let memberDeclaration = new AstUtil().getMemberInfo(sourceFile, wordText, lineNumber)
+            // 获取文件所属项目路径
+            const projectPath = vscode.workspace.getWorkspaceFolder(editor.document.uri)?.uri.fsPath
+            if (!projectPath) {
+                vscode.window.showInformationMessage("获取项目路径失败")
+                return
+            }
             // 加载用户配置
-            let config: Config = ConfigManager.get(filePath)
+            let config: Config = ConfigManager.getConfig(path.join(projectPath, 'annotation.config.json'))
+            console.log(config);
+
             // 调用注解工厂创建注解
             let annotation = AnnotationFactory.getAnnotation(memberDeclaration, config)
             if (!annotation) {
@@ -48,14 +52,14 @@ export function activate(context: ExtensionContext) {
             let jsdoc = new JsDocGenerator(annotation).generateJsDoc()
             // 调用注入器注入注解
 
-            const selection = editor.selection;
-            const startLine = selection.start.line;
-            const position = new vscode.Position(startLine, 0); // 在当前行的开始插入
-
-            // 执行编辑
-            await editor.edit(editBuilder => {
-                editBuilder.insert(position, `${jsdoc}\n`);
-            });
+            /*  const selection = editor.selection;
+             const startLine = selection.start.line;
+             const position = new vscode.Position(startLine, 0); // 在当前行的开始插入
+ 
+             // 执行编辑
+             await editor.edit(editBuilder => {
+                 editBuilder.insert(position, `${jsdoc}\n`);
+             }); */
 
 
             let et = new Date()
