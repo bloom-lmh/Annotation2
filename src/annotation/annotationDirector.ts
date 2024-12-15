@@ -1,17 +1,17 @@
-import { Config } from "../config/config";
+import { ClassAnnotationConfig, Config, MethodAnnotationConfig, PropertyAnnotationConfig } from "../config/config";
 import { MemberDeclaration } from "../utils/astUtil";
 import { BaseAnnotation, ClassAnnotation, MethodAnnotation, PropertyAnnotation } from "./annotation";
 import { BaseAnnotationBuilder, ClassAnnotationBuilder, MethodAnnotationBuilder, PropertyAnnotationBuilder } from "./annotationBuilder";
 
-abstract class AnnotationDirector<T extends BaseAnnotation> {
+abstract class AnnotationDirector<T extends BaseAnnotation, E> {
     public abstract constructDefaultAnnotation(builder: BaseAnnotationBuilder<T>): T;
-    public abstract constructAnnotationByContext(builder: BaseAnnotationBuilder<T>, memberDeclaration: MemberDeclaration, config: Config): T
+    public abstract constructAnnotationByContext(builder: BaseAnnotationBuilder<T>, memberDeclaration: MemberDeclaration, config: E): T
 }
 
 /**
  * 类注解指挥者
  */
-export class ClassAnnotationDirector extends AnnotationDirector<ClassAnnotation> {
+export class ClassAnnotationDirector extends AnnotationDirector<ClassAnnotation, ClassAnnotationConfig> {
 
 
     /**
@@ -30,7 +30,7 @@ export class ClassAnnotationDirector extends AnnotationDirector<ClassAnnotation>
      * @param memberDeclaration 成员信息
      * @param config  配置信息
      */
-    public constructAnnotationByContext(builder: ClassAnnotationBuilder, memberDeclaration: MemberDeclaration, config: Config): ClassAnnotation {
+    public constructAnnotationByContext(builder: ClassAnnotationBuilder, memberDeclaration: MemberDeclaration, config: ClassAnnotationConfig): ClassAnnotation {
         return builder
             .setDescription("描述该类的一些信息")
             .setClass(true)
@@ -43,7 +43,7 @@ export class ClassAnnotationDirector extends AnnotationDirector<ClassAnnotation>
 /**
  * 方法注解指挥者
  */
-export class MethodAnnotationDirector extends AnnotationDirector<MethodAnnotation> {
+export class MethodAnnotationDirector extends AnnotationDirector<MethodAnnotation, MethodAnnotationConfig> {
 
     /**
      * 创建默认方法注解
@@ -61,7 +61,7 @@ export class MethodAnnotationDirector extends AnnotationDirector<MethodAnnotatio
      * @param memberDeclaration 成员信息
      * @param config  配置信息
      */
-    public constructAnnotationByContext(builder: MethodAnnotationBuilder, memberDeclaration: MemberDeclaration, config: Config): MethodAnnotation {
+    public constructAnnotationByContext(builder: MethodAnnotationBuilder, memberDeclaration: MemberDeclaration, config: MethodAnnotationConfig): MethodAnnotation {
         return builder
             .setDescription("描述该类的一些信息")
             .setMethod(true)
@@ -75,7 +75,7 @@ export class MethodAnnotationDirector extends AnnotationDirector<MethodAnnotatio
 /**
  * 属性注解指挥者
  */
-export class PropertyAnnotationDirector extends AnnotationDirector<PropertyAnnotation> {
+export class PropertyAnnotationDirector extends AnnotationDirector<PropertyAnnotation, PropertyAnnotationConfig> {
 
 
     /**
@@ -94,7 +94,7 @@ export class PropertyAnnotationDirector extends AnnotationDirector<PropertyAnnot
      * @param memberDeclaration 成员信息
      * @param config  配置信息
      */
-    public constructAnnotationByContext(builder: PropertyAnnotationBuilder, memberDeclaration: MemberDeclaration, config: Config): PropertyAnnotation {
+    public constructAnnotationByContext(builder: PropertyAnnotationBuilder, memberDeclaration: MemberDeclaration, config: PropertyAnnotationConfig): PropertyAnnotation {
         return builder
             .setDescription("描述该类的一些信息")
             .setType("属性类型")

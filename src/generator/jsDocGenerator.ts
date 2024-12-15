@@ -15,7 +15,7 @@ export class JsDocGenerator<T extends BaseAnnotation> {
      */
     private annotation: T
 
-    constructor(annotation: T, jsDocGenerateStrategy: JsDocGenerateStrategy = new StringStrategy()) {
+    constructor(annotation: T, jsDocGenerateStrategy: JsDocGenerateStrategy = new StringStrategy<T>()) {
         this.jsDocGenerateStrategy = jsDocGenerateStrategy
         this.annotation = annotation
     }

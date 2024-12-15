@@ -1,5 +1,5 @@
 import { JSDocStructure } from "ts-morph";
-import { BaseAnnotation } from "../annotation/annotation";
+import { BaseAnnotation, ClassAnnotation } from "../annotation/annotation";
 
 /**
  * jsdoc生成策略
@@ -12,7 +12,18 @@ export abstract class JsDocGenerateStrategy {
  */
 export class StringStrategy<T extends BaseAnnotation> extends JsDocGenerateStrategy {
     public generateJsDoc(annotation: T): string {
-        return "字符串假注解"
+        console.log(annotation);
+
+        /* if (annotation instanceof ClassAnnotation) {
+
+        } */
+        // 解构注解
+        return `
+/**
+ * @params {number} data
+ * @params {number} name
+ * @return {number} name
+ */`
     }
 }
 /**

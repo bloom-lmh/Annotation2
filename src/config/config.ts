@@ -2,11 +2,10 @@
  * 翻译配置
  */
 export class TranslateConfig {
-    open: boolean;
-    api: Array<string> | string;
-    wordMap: { [key: string]: string };
-    memory: boolean;
-    // Partial是一个泛型工具类将所有属性变为可选，这样传入时就可以保证灵活性
+    public open: boolean;
+    public api: Array<string> | string;
+    public wordMap: { [key: string]: string };
+    public memory: boolean;
     constructor(config: Partial<TranslateConfig> = {}) {
         this.open = config.open ?? false;
         this.api = config.api ?? "";
@@ -138,11 +137,11 @@ export class PropertyAnnotationConfig extends BaseAnnotationConfig {
  * 主配置类
  */
 export class Config {
-    private classAnnotationConfig?: ClassAnnotationConfig;
-    private methodAnnotationConfig?: MethodAnnotationConfig;
-    private propertyAnnotationConfig?: PropertyAnnotationConfig;
-    private globalAnnotationConfig?: GlobalAnnotationConfig;
-    private translateConfig?: TranslateConfig;
+    classAnnotationConfig?: ClassAnnotationConfig;
+    methodAnnotationConfig?: MethodAnnotationConfig;
+    propertyAnnotationConfig?: PropertyAnnotationConfig;
+    globalAnnotationConfig?: GlobalAnnotationConfig;
+    translateConfig?: TranslateConfig;
 
     constructor(config: {
         classAnnotationConfig?: Partial<ClassAnnotationConfig>;

@@ -1,10 +1,9 @@
-import { basename, dirname } from "path";
+import path, { basename, dirname } from "path";
 import { FileWatcher } from "../file/fileWatcher";
 import { WorkspaceUtil } from "../utils/workspaceUtil";
 import { Config } from "./config";
 import { ConfigLoader } from "./configLoader";
 import { ClassAnnotation } from "../annotation/annotation";
-import { ConfigBuilder } from "./configBuilder";
 
 /**
  * 配置管理器
@@ -29,12 +28,8 @@ export class ConfigManager {
     }
     // 获取配置
     public static getConfig(configFilePath: string): Config {
-        // 获取缓存的用户配置
-        let projectConfig: Config = this.configMaps.get(configFilePath) || {}
-        // 获取默认配置
-        let defaultConfig: Config = this.getDefaultConfig()
-        // 与默认配置合并返回
-        let config: Config = Object.assign({}, defaultConfig, projectConfig)
+        // 尝试获取缓存的用户配置
+        let config: Config = this.configMaps.get(configFilePath) || new Config()
         // 返回配置
         return config
     }
