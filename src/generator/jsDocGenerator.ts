@@ -1,5 +1,5 @@
 import { JSDocStructure } from "ts-morph";
-import { BaseAnnotation } from "../annotation/annotation";
+import { BaseAnnotation } from "../annotation/baseAnnotation";
 import { JsDocGenerateStrategy, StringStrategy } from "./jsDocGenerateStrategy";
 
 /**

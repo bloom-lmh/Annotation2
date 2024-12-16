@@ -1,9 +1,6 @@
-import { ClassDeclaration, FunctionDeclaration, MethodDeclaration, PropertyDeclaration } from "ts-morph";
+import { ClassDeclaration, FunctionDeclaration, InterfaceDeclaration, MethodDeclaration, PropertyDeclaration } from "ts-morph";
 import { ClassAnnotationConfig, Config, MethodAnnotationConfig, PropertyAnnotationConfig } from "../config/config";
 import { MemberDeclaration } from "../utils/astUtil";
-import { BaseAnnotation, ClassAnnotation, MethodAnnotation, PropertyAnnotation } from "./annotation";
-import { ClassAnnotationDirector, MethodAnnotationDirector, PropertyAnnotationDirector } from "./annotationDirector";
-import { ClassAnnotationBuilder, MethodAnnotationBuilder, PropertyAnnotationBuilder } from "./annotationBuilder";
 
 /**
  * 注解工厂
@@ -13,21 +10,29 @@ export class AnnotationFactory {
     public static getAnnotation(memberDeclaration: MemberDeclaration, config: Config) {
         // 解析配置
         let { classAnnotationConfig, methodAnnotationConfig, propertyAnnotationConfig, globalAnnotationConfig, translateConfig } = config
+        // 获取成员名
+        const memberName = memberDeclaration?.getName()
+        console.log(memberName);
+
         // 若是类，创建类注释对象
         if (memberDeclaration instanceof ClassDeclaration) {
             // 处理配置
             if (!classAnnotationConfig) {
                 classAnnotationConfig = Object.assign({}, globalAnnotationConfig, classAnnotationConfig) || new ClassAnnotationConfig()
             }
+            // 解构配置
+            const { abstractTag, extendsTag } = classAnnotationConfig
+            // 抽象类标志
+            const isAbstract = !!memberDeclaration.getAbstractKeyword()?.getText() && abstractTag;
+            // 继承的父类
+            const extendInfo = extendsTag ? memberDeclaration.getExtends()?.getText() : ''
+            // 获取泛型
 
-
-            // 创建类注解建造者
-            const classAnnotationBuilder = new ClassAnnotationBuilder(new ClassAnnotation())
-            // 闯将指挥者
-            const classAnnotationDirector = new ClassAnnotationDirector()
-            // 建造注解并返回,若注解建造失败使用默认注解
-            return classAnnotationDirector.constructAnnotationByContext(classAnnotationBuilder, memberDeclaration, classAnnotationConfig)
-
+            // 获取构造器参数
+            // 获取实现的接口
+            // 获取
+            // 是否构造函数
+            console.log(isAbstract, extendInfo);
         }
         // 若是方法，创建方法注释对象
         if (memberDeclaration instanceof MethodDeclaration || memberDeclaration instanceof FunctionDeclaration) {
@@ -35,12 +40,7 @@ export class AnnotationFactory {
             if (!methodAnnotationConfig) {
                 methodAnnotationConfig = Object.assign({}, globalAnnotationConfig, methodAnnotationConfig) || new MethodAnnotationConfig()
             }
-            // 创建类注解建造者
-            const methodAnnotationBuilder = new MethodAnnotationBuilder(new MethodAnnotation())
-            // 闯将指挥者
-            const methodAnnotationDirector = new MethodAnnotationDirector()
-            // 建造注解并返回
-            return methodAnnotationDirector.constructAnnotationByContext(methodAnnotationBuilder, memberDeclaration, methodAnnotationConfig)
+
         }
         // 若是属性，创建属性注释对象
         if (memberDeclaration instanceof PropertyDeclaration) {
@@ -48,12 +48,7 @@ export class AnnotationFactory {
             if (!propertyAnnotationConfig) {
                 propertyAnnotationConfig = Object.assign({}, globalAnnotationConfig, propertyAnnotationConfig) || new PropertyAnnotationConfig()
             }
-            // 创建类注解建造者
-            const propertyAnnotationBuilder = new PropertyAnnotationBuilder(new PropertyAnnotation())
-            // 闯将指挥者
-            const propertyAnnotationDirector = new PropertyAnnotationDirector()
-            // 建造注解并返回
-            return propertyAnnotationDirector.constructAnnotationByContext(propertyAnnotationBuilder, memberDeclaration, propertyAnnotationConfig)
+
         }
     }
 }

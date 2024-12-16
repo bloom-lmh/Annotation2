@@ -44,10 +44,10 @@ export function activate(context: ExtensionContext) {
 
             // 调用注解工厂创建注解
             let annotation = AnnotationFactory.getAnnotation(memberDeclaration, config)
-            if (!annotation) {
-                vscode.window.showInformationMessage("获取注解对象失败！")
-                return
-            }
+            /*   if (!annotation) {
+                  vscode.window.showInformationMessage("获取注解对象失败！")
+                  return
+              } */
             /* memberDeclaration?.addJsDoc({
                 description: "\naaa",
                 kind: 24,
@@ -57,17 +57,17 @@ export function activate(context: ExtensionContext) {
                 ]
             }) */
             // 调用jsdoc生成器创建jsdoc注释
-            let jsdoc = new JsDocGenerator<typeof annotation>(annotation).generateJsDoc()
-            // 调用注入器注入注解
-
-            const selection = editor.selection;
-            const startLine = selection.start.line;
-            const position = new vscode.Position(startLine, 0); // 在当前行的开始插入
-
-            // 执行编辑
-            await editor.edit(editBuilder => {
-                editBuilder.insert(position, `${jsdoc}\n`);
-            });
+            /*   let jsdoc = new JsDocGenerator<typeof annotation>(annotation).generateJsDoc()
+              // 调用注入器注入注解
+  
+              const selection = editor.selection;
+              const startLine = selection.start.line;
+              const position = new vscode.Position(startLine, 0); // 在当前行的开始插入
+  
+              // 执行编辑
+              await editor.edit(editBuilder => {
+                  editBuilder.insert(position, `${jsdoc}\n`);
+              }); */
 
 
             let et = new Date()

@@ -67,27 +67,25 @@ export class BaseAnnotationConfig {
  * 类注解配置
  */
 export class ClassAnnotationConfig extends BaseAnnotationConfig {
-    class: boolean;
-    abstract: boolean;
-    isConstructor: boolean;
-    interface: boolean;
-    extends: boolean;
-    implements: boolean;
-    params: boolean;
-    implement: boolean;
-    returns: boolean;
+    classTag: boolean;
+    abstractTag: boolean;
+    constructorTag: boolean;
+    extendsTag: boolean;
+    implementsTag: boolean;
+    paramsTag: boolean;
+    implementTag: boolean;
+    returnsTag: boolean;
 
     constructor(config: Partial<ClassAnnotationConfig> = {}) {
         super(config);  // 继承父类的构造函数
-        this.class = config.class ?? true;
-        this.abstract = config.abstract ?? true;
-        this.isConstructor = config.isConstructor ?? true;
-        this.interface = config.interface ?? true;
-        this.extends = config.extends ?? true;
-        this.implements = config.implements ?? true;
-        this.params = config.params ?? true;
-        this.implement = config.implement ?? true;
-        this.returns = config.returns ?? true;
+        this.classTag = config.classTag ?? true;
+        this.abstractTag = config.abstractTag ?? true;
+        this.constructorTag = config.constructorTag ?? true;
+        this.extendsTag = config.extendsTag ?? true;
+        this.implementsTag = config.implementsTag ?? true;
+        this.paramsTag = config.paramsTag ?? true;
+        this.implementTag = config.implementTag ?? true;
+        this.returnsTag = config.returnsTag ?? true;
     }
 }
 

@@ -3,7 +3,6 @@ import { FileWatcher } from "../file/fileWatcher";
 import { WorkspaceUtil } from "../utils/workspaceUtil";
 import { Config } from "./config";
 import { ConfigLoader } from "./configLoader";
-import { ClassAnnotation } from "../annotation/annotation";
 
 /**
  * 配置管理器

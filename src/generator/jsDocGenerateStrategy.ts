@@ -1,5 +1,5 @@
 import { JSDocStructure } from "ts-morph";
-import { BaseAnnotation, ClassAnnotation } from "../annotation/annotation";
+import { BaseAnnotation } from "../annotation/baseAnnotation";
 
 /**
  * jsdoc生成策略
