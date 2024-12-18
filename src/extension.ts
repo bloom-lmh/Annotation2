@@ -3,18 +3,15 @@ import * as vscode from 'vscode';
 import { ContextPicker } from './picker/contextPicker';
 import { AstUtil } from './utils/astUtil';
 import { TsFileParser } from './parser/tsFileParser';
-import chokidar from 'chokidar';
 import path from 'path';
-import { ConfigManager } from './config/configManager';
-import { FileWatcher } from './file/fileWatcher';
 import { Config } from './config/config';
 import { AnnotationFactory } from './annotation/annotationFactory';
-import { JsDocGenerator } from './generator/jsDocGenerator';
 import { ConfigLoader } from './config/configLoader';
+import { readFileSync } from 'fs';
 // 插件激活
 export function activate(context: ExtensionContext) {
-
-
+    const htmlPath = path.join(context.extensionPath, 'src', 'index.html');
+    const data = readFileSync(htmlPath).toString()
     // 配置管理器打开文件监听
     //ConfigManager.startConfigWatch()
     // 生成单行注释
@@ -44,6 +41,26 @@ export function activate(context: ExtensionContext) {
 
             // 调用注解工厂创建注解
             let annotation = AnnotationFactory.getAnnotation(memberDeclaration, config)
+
+            const panel = vscode.window.createWebviewPanel(
+                'customWebview', // Webview ID
+                '自定义弹窗', // 标题
+                vscode.ViewColumn.One, // 在左侧显示
+                {
+                    enableScripts: true // 启用 JavaScript
+                }
+            );
+
+            // 设置 WebView 内容
+            panel.webview.html = data;
+
+            // 监听 WebView 消息
+            panel.webview.onDidReceiveMessage((message) => {
+                if (message.command === 'buttonClicked') {
+                    vscode.window.showInformationMessage('按钮被点击了');
+                }
+            });
+
             /*   if (!annotation) {
                   vscode.window.showInformationMessage("获取注解对象失败！")
                   return
@@ -68,8 +85,6 @@ export function activate(context: ExtensionContext) {
               await editor.edit(editBuilder => {
                   editBuilder.insert(position, `${jsdoc}\n`);
               }); */
-
-
             let et = new Date()
             console.log(et.getTime() - st.getTime() + 'ms');
         } catch (error: any) {

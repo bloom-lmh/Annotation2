@@ -1,4 +1,4 @@
-import { ClassDeclaration, FunctionDeclaration, InterfaceDeclaration, MethodDeclaration, PropertyDeclaration } from "ts-morph";
+import { ClassDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, MethodDeclaration, PropertyDeclaration, TypeAliasDeclaration } from "ts-morph";
 import { ClassAnnotationConfig, Config, MethodAnnotationConfig, PropertyAnnotationConfig } from "../config/config";
 import { MemberDeclaration } from "../utils/astUtil";
 
@@ -10,45 +10,35 @@ export class AnnotationFactory {
     public static getAnnotation(memberDeclaration: MemberDeclaration, config: Config) {
         // 解析配置
         let { classAnnotationConfig, methodAnnotationConfig, propertyAnnotationConfig, globalAnnotationConfig, translateConfig } = config
-        // 获取成员名
-        const memberName = memberDeclaration?.getName()
-        console.log(memberName);
-
-        // 若是类，创建类注释对象
-        if (memberDeclaration instanceof ClassDeclaration) {
-            // 处理配置
-            if (!classAnnotationConfig) {
-                classAnnotationConfig = Object.assign({}, globalAnnotationConfig, classAnnotationConfig) || new ClassAnnotationConfig()
-            }
-            // 解构配置
-            const { abstractTag, extendsTag } = classAnnotationConfig
-            // 抽象类标志
-            const isAbstract = !!memberDeclaration.getAbstractKeyword()?.getText() && abstractTag;
-            // 继承的父类
-            const extendInfo = extendsTag ? memberDeclaration.getExtends()?.getText() : ''
-            // 获取泛型
-
-            // 获取构造器参数
-            // 获取实现的接口
-            // 获取
-            // 是否构造函数
-            console.log(isAbstract, extendInfo);
-        }
         // 若是方法，创建方法注释对象
         if (memberDeclaration instanceof MethodDeclaration || memberDeclaration instanceof FunctionDeclaration) {
-            // 处理配置
-            if (!methodAnnotationConfig) {
-                methodAnnotationConfig = Object.assign({}, globalAnnotationConfig, methodAnnotationConfig) || new MethodAnnotationConfig()
-            }
+            console.log("e");
 
         }
         // 若是属性，创建属性注释对象
         if (memberDeclaration instanceof PropertyDeclaration) {
-            // 处理配置
-            if (!propertyAnnotationConfig) {
-                propertyAnnotationConfig = Object.assign({}, globalAnnotationConfig, propertyAnnotationConfig) || new PropertyAnnotationConfig()
-            }
+            console.log("f");
 
+        }
+        // 若是类，创建类注释对象
+        if (memberDeclaration instanceof ClassDeclaration) {
+            console.log("d");
+
+        }
+        // 若是枚举，创建枚举注释对象
+        if (memberDeclaration instanceof EnumDeclaration) {
+            console.log("a");
+
+        }
+        // 若是接口，创建接口注释对象
+        if (memberDeclaration instanceof InterfaceDeclaration) {
+            console.log("b");
+
+        }
+
+        // 若是自定义类型，创建自定义类型注释对象
+        if (memberDeclaration instanceof TypeAliasDeclaration) {
+            console.log("c");
         }
     }
 }

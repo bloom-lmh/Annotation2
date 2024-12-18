@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>配置台</title>
+    <style>
+      /* 页面基础样式 */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f7fc;
+        color: #333;
+        display: flex;
+        min-height: 100vh;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      h1 {
+        margin-bottom: 40px;
+        font-size: 2.5rem;
+        color: #4caf50;
+      }
+
+      /* 配置台容器 */
+      .dashboard {
+        width: 90%;
+        max-width: 1200px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+
+      /* 卡片样式 */
+      .card {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-header {
+        font-size: 1.5rem;
+        color: #555;
+        margin-bottom: 20px;
+        font-weight: bold;
+      }
+
+      .card-body {
+        font-size: 1rem;
+        color: #777;
+      }
+
+      .card-footer {
+        margin-top: 20px;
+        text-align: right;
+      }
+
+      .btn {
+        background-color: #4caf50;
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .btn:hover {
+        background-color: #45a049;
+      }
+
+      /* 表单样式 */
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        font-size: 1rem;
+        margin-bottom: 8px;
+        color: #555;
+      }
+
+      input[type='text'],
+      input[type='password'],
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+      }
+
+      input[type='text']:focus,
+      input[type='password']:focus,
+      select:focus {
+        border-color: #4caf50;
+        outline: none;
+      }
+
+      .form-group button {
+        margin-top: 20px;
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      /* 响应式设计 */
+      @media screen and (max-width: 900px) {
+        .dashboard {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media screen and (max-width: 600px) {
+        .dashboard {
+          grid-template-columns: 1fr;
+          padding: 20px;
+        }
+
+        .card {
+          padding: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>配置控制台</h1>
+
+    <div class="dashboard">
+      <!-- 方法注解配置 -->
+      <div class="card">
+        <div class="card-header">方法注解配置</div>
+        <div class="card-body">
+          <p>调整您的基本配置项，包括语言、主题等设置。</p>
+        </div>
+      </div>
+
+      <!-- 类注解配置 -->
+      <div class="card">
+        <div class="card-header">类注解配置</div>
+        <div class="card-body">
+          <p>管理您的账户信息，如密码、邮箱等。</p>
+        </div>
+      </div>
+
+      <!-- 属性注解配置 -->
+      <div class="card">
+        <div class="card-header">属性注解配置</div>
+        <div class="card-body">
+          <p>选择您希望接收的通知类型。</p>
+        </div>
+      </div>
+
+      <!-- 枚举注解配置 -->
+      <div class="card">
+        <div class="card-header">接口注解配置</div>
+        <div class="card-body">
+          <p>选择您希望接收的通知类型。</p>
+        </div>
+      </div>
+
+      <!-- 自定义类型注解配置 -->
+      <div class="card">
+        <div class="card-header">自定义注解配置</div>
+        <div class="card-body">
+          <p>选择您希望接收的通知类型。</p>
+        </div>
+      </div>
+
+      <!-- 文件配置 -->
+      <div class="card">
+        <div class="card-header">文件注解配置</div>
+        <div class="card-body">
+          <p>选择您希望接收的通知类型。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 表单示例 -->
+    <div class="form-group">
+      <button class="btn">提交</button>
+    </div>
+  </body>
+</html>

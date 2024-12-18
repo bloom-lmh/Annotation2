@@ -40,26 +40,25 @@ export class GlobalAnnotationConfig {
  * 基础注解配置
  */
 export class BaseAnnotationConfig {
-    name: boolean;
-    author: string;
-    memberof: boolean;
-    example: boolean;
-    since: boolean;
-    version: boolean;
-    see: boolean;
-    description: boolean;
-    modifier: boolean;
+    authorTag: boolean
+    accessTag: boolean
+    aliasTag: boolean
+    versionTag: boolean
+    nameTag: boolean
+    descriptionTag: boolean
+    licenseTag: boolean
+    copyrightTag: boolean
+    tutorialTag: boolean
+    seeTag: boolean
+    summaryTag: boolean
+    exampleTag: boolean
+    requiresTag: boolean
+    privateTag: boolean
+    protectedTag: boolean
+    publicTag: boolean
 
     constructor(config: Partial<BaseAnnotationConfig> = {}) {
-        this.name = config.name ?? true;
-        this.author = config.author ?? '';
-        this.memberof = config.memberof ?? true;
-        this.example = config.example ?? false;
-        this.since = config.since ?? false;
-        this.version = config.version ?? true;
-        this.see = config.see ?? false;
-        this.description = config.description ?? true;
-        this.modifier = config.modifier ?? true;
+
     }
 }
 
@@ -67,25 +66,13 @@ export class BaseAnnotationConfig {
  * 类注解配置
  */
 export class ClassAnnotationConfig extends BaseAnnotationConfig {
-    classTag: boolean;
-    abstractTag: boolean;
-    constructorTag: boolean;
-    extendsTag: boolean;
-    implementsTag: boolean;
-    paramsTag: boolean;
-    implementTag: boolean;
-    returnsTag: boolean;
+    classTag: boolean
+    abstract: boolean
+    extendsTag: boolean
+    implementsTag: boolean
 
     constructor(config: Partial<ClassAnnotationConfig> = {}) {
-        super(config);  // 继承父类的构造函数
-        this.classTag = config.classTag ?? true;
-        this.abstractTag = config.abstractTag ?? true;
-        this.constructorTag = config.constructorTag ?? true;
-        this.extendsTag = config.extendsTag ?? true;
-        this.implementsTag = config.implementsTag ?? true;
-        this.paramsTag = config.paramsTag ?? true;
-        this.implementTag = config.implementTag ?? true;
-        this.returnsTag = config.returnsTag ?? true;
+
     }
 }
 
@@ -93,23 +80,15 @@ export class ClassAnnotationConfig extends BaseAnnotationConfig {
  * 方法注解配置
  */
 export class MethodAnnotationConfig extends BaseAnnotationConfig {
-    method: boolean;
-    abstract: boolean;
-    async: boolean;
-    params: boolean;
-    returns: boolean;
-    throws: boolean;
-    override: boolean;
+    asyncTag: boolean
+    functionTag: boolean
+    throwsTag: boolean
+    paramsTag: boolean
+    returnsTag: boolean
+    staticTag: boolean
 
     constructor(config: Partial<MethodAnnotationConfig> = {}) {
-        super(config);
-        this.method = config.method ?? true;
-        this.abstract = config.abstract ?? true;
-        this.async = config.async ?? true;
-        this.params = config.params ?? true;
-        this.returns = config.returns ?? true;
-        this.throws = config.throws ?? true;
-        this.override = config.override ?? true;
+
     }
 }
 
@@ -120,14 +99,10 @@ export class PropertyAnnotationConfig extends BaseAnnotationConfig {
     property: boolean;
     static: boolean;
     type: boolean;
-    defaultValue: boolean;
+    default: boolean;
 
     constructor(config: Partial<PropertyAnnotationConfig> = {}) {
-        super(config);
-        this.property = config.property ?? true;
-        this.static = config.static ?? true;
-        this.type = config.type ?? true;
-        this.defaultValue = config.defaultValue ?? true;
+
     }
 }
 
@@ -155,3 +130,4 @@ export class Config {
         this.translateConfig = new TranslateConfig(config.translateConfig);
     }
 }
+
