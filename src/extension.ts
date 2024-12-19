@@ -36,55 +36,23 @@ export function activate(context: ExtensionContext) {
                 return
             }
             // 加载用户配置
-            //let config: Config = ConfigManager.getConfig(projectPath)
             let config: Config = ConfigLoader.loadConfig(path.join(projectPath, "annotation.config.json"))
 
             // 调用注解工厂创建注解
             let annotation = AnnotationFactory.getAnnotation(memberDeclaration, config)
 
-            const panel = vscode.window.createWebviewPanel(
-                'customWebview', // Webview ID
-                '自定义弹窗', // 标题
-                vscode.ViewColumn.One, // 在左侧显示
-                {
-                    enableScripts: true // 启用 JavaScript
-                }
-            );
+            // 构建jsdoc
+            let jsdoc = annotation?.buildJSDoc() || ''
 
-            // 设置 WebView 内容
-            panel.webview.html = data;
-
-            // 监听 WebView 消息
-            panel.webview.onDidReceiveMessage((message) => {
-                if (message.command === 'buttonClicked') {
-                    vscode.window.showInformationMessage('按钮被点击了');
-                }
+            // 调用注入器注入注解
+            /*  const selection = editor.selection;
+             const startLine = selection.start.line; */
+            const position = new vscode.Position(lineNumber - 1, 0); // 在当前行的开始插入
+            // 执行编辑
+            await editor.edit(editBuilder => {
+                editBuilder.insert(position, `${jsdoc}\n`);
             });
 
-            /*   if (!annotation) {
-                  vscode.window.showInformationMessage("获取注解对象失败！")
-                  return
-              } */
-            /* memberDeclaration?.addJsDoc({
-                description: "\naaa",
-                kind: 24,
-                tags: [
-                    { kind: 25, tagName: 'param', text: '{string} name' },
-                    { kind: 25, tagName: 'param', text: '{number} age' }
-                ]
-            }) */
-            // 调用jsdoc生成器创建jsdoc注释
-            /*   let jsdoc = new JsDocGenerator<typeof annotation>(annotation).generateJsDoc()
-              // 调用注入器注入注解
-  
-              const selection = editor.selection;
-              const startLine = selection.start.line;
-              const position = new vscode.Position(startLine, 0); // 在当前行的开始插入
-  
-              // 执行编辑
-              await editor.edit(editBuilder => {
-                  editBuilder.insert(position, `${jsdoc}\n`);
-              }); */
             let et = new Date()
             console.log(et.getTime() - st.getTime() + 'ms');
         } catch (error: any) {

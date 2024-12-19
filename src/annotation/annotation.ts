@@ -81,6 +81,64 @@ export class BaseAnnotation {
         this._requiresTag = tags;
         return this;
     }
+
+    public get authorTag(): string {
+        return this._authorTag;
+    }
+
+    public get accessTag(): string {
+        return this._accessTag;
+    }
+
+    public get aliasTag(): string {
+        return this._aliasTag;
+    }
+
+    public get versionTag(): string {
+        return this._versionTag;
+    }
+
+    public get nameTag(): string {
+        return this._nameTag;
+    }
+
+    public get descriptionTag(): string {
+        return this._descriptionTag;
+    }
+
+    public get licenseTag(): string {
+        return this._licenseTag;
+    }
+
+    public get copyrightTag(): string {
+        return this._copyrightTag;
+    }
+
+    public get tutorialTag(): string {
+        return this._tutorialTag;
+    }
+
+    public get seeTag(): string {
+        return this._seeTag;
+    }
+
+    public get summaryTag(): string {
+        return this._summaryTag;
+    }
+
+    public get exampleTag(): string {
+        return this._exampleTag;
+    }
+
+    public get requiresTag(): Array<string> {
+        return this._requiresTag;
+    }
+
+    public buildJSDoc(): string {
+        let jsdoc = ""
+        this._accessTag && (jsdoc += `@access ${this.accessTag}`)
+        return jsdoc
+    }
 }
 
 /**
@@ -92,6 +150,17 @@ export class InterfaceAnnotation extends BaseAnnotation {
     setInterfaceTag(value: boolean): this {
         this._interfaceTag = value;
         return this;
+    }
+    public get interfaceTag(): boolean {
+        return this._interfaceTag;
+    }
+
+    public buildJSDoc(): string {
+        let jsdoc = "/**"
+        this._nameTag && (jsdoc += `\n * @name ${this._nameTag}`)
+        this._interfaceTag && (jsdoc += `\n * @interface`)
+        jsdoc += '\n */'
+        return jsdoc
     }
 }
 
@@ -111,6 +180,14 @@ export class FileAnnotation extends BaseAnnotation {
         this._moduleTag = value;
         return this;
     }
+    // 简单的 get 访问器
+    public get fileTag(): boolean {
+        return this._fileTag;
+    }
+
+    public get moduleTag(): boolean {
+        return this._moduleTag;
+    }
 }
 
 /**
@@ -123,6 +200,14 @@ export class EnumAnnotation extends BaseAnnotation {
         this._enumTag = value;
         return this;
     }
+
+    public buildJSDoc(): string {
+        let jsdoc = "/**"
+        this._nameTag && (jsdoc += `\n * @name ${this._nameTag}`)
+        this._enumTag && (jsdoc += `\n * @enum`)
+        jsdoc += '\n */'
+        return jsdoc
+    }
 }
 
 /**
@@ -130,10 +215,31 @@ export class EnumAnnotation extends BaseAnnotation {
  */
 export class TypedefAnnotation extends BaseAnnotation {
     private _typedefTag: boolean = true;
+    private _typeTag: string = ""
 
     setTypedefTag(value: boolean): this {
         this._typedefTag = value;
         return this;
+    }
+
+    setTypeTag(value: string): this {
+        this._typeTag = value;
+        return this;
+    }
+    public get typedefTag(): boolean {
+        return this._typedefTag;
+    }
+
+    public get typeTag(): string {
+        return this._typeTag;
+    }
+
+    public buildJSDoc(): string {
+        let jsdoc = "/**"
+        this._nameTag && (jsdoc += `\n * @name ${this._nameTag}`)
+        this._typedefTag && (jsdoc += `\n * @typedef {${this._typeTag}} ${this.nameTag}`)
+        jsdoc += '\n */'
+        return jsdoc
     }
 }
 
@@ -165,6 +271,38 @@ export class ClassAnnotation extends BaseAnnotation {
         this._implementsTag = value;
         return this;
     }
+
+    // 简单的 get 访问器
+    public get classTag(): boolean {
+        return this._classTag;
+    }
+
+    public get abstract(): boolean {
+        return this._abstract;
+    }
+
+    public get extendsTag(): string {
+        return this._extendsTag;
+    }
+
+    public get implementsTag(): Array<string> {
+        return this._implementsTag;
+    }
+
+    public buildJSDoc(): string {
+        let jsdoc = "/**"
+        this._nameTag && (jsdoc += `\n * @name ${this._nameTag}`)
+        this._classTag && (jsdoc += `\n * @class`)
+        this._abstract && (jsdoc += `\n * @abstract`)
+        this._extendsTag && (jsdoc += `\n * @extends ${this._extendsTag}`)
+        if (this._implementsTag && this._implementsTag.length > 0) {
+            this.implementsTag.forEach(implement => {
+                jsdoc += `\n* @implements {${implement}}`
+            })
+        }
+        jsdoc += '\n */'
+        return jsdoc
+    }
 }
 
 /**
@@ -173,8 +311,8 @@ export class ClassAnnotation extends BaseAnnotation {
 export class MethodAnnotation extends BaseAnnotation {
     private _asyncTag: boolean = false;
     private _functionTag: boolean = true;
-    private _throwsTag: Array<string> = [];
-    private _paramsTag: Array<string> = [];
+    private _throwsTag: Set<string> = new Set<string>;
+    private _paramsTag: string[][] = [[]];
     private _returnsTag: string = "";
     private _staticTag: boolean = true;
 
@@ -188,12 +326,12 @@ export class MethodAnnotation extends BaseAnnotation {
         return this;
     }
 
-    setThrowsTag(value: Array<string>): this {
+    setThrowsTag(value: Set<string>): this {
         this._throwsTag = value;
         return this;
     }
 
-    setParamsTag(value: Array<string>): this {
+    setParamsTag(value: string[][]): this {
         this._paramsTag = value;
         return this;
     }
@@ -207,6 +345,51 @@ export class MethodAnnotation extends BaseAnnotation {
         this._staticTag = value;
         return this;
     }
+    // 简单的 get 访问器
+    public get asyncTag(): boolean {
+        return this._asyncTag;
+    }
+
+    public get functionTag(): boolean {
+        return this._functionTag;
+    }
+
+    public get throwsTag(): Set<string> {
+        return this._throwsTag;
+    }
+
+    public get paramsTag(): string[][] {
+        return this._paramsTag;
+    }
+
+    public get returnsTag(): string {
+        return this._returnsTag;
+    }
+
+    public get staticTag(): boolean {
+        return this._staticTag;
+    }
+
+    public buildJSDoc(): string {
+        let jsdoc = "/**"
+        this._nameTag && (jsdoc += `\n * @name ${this._nameTag}`)
+        this._functionTag && (jsdoc += `\n * @function`)
+        this._accessTag && (jsdoc += `\n * @access ${this._accessTag}`)
+        this._staticTag && (jsdoc += `\n * @static`)
+        if (this._paramsTag && this._paramsTag.length > 0) {
+            this._paramsTag.forEach(item => {
+                jsdoc += `\n * @param {${item[1]}} ${item[0]}`
+            })
+        }
+        if (this._throwsTag && this._throwsTag.size > 0) {
+            this._throwsTag.forEach(item => {
+                jsdoc += `\n * @throws {${item}}`
+            })
+        }
+        this._returnsTag && (jsdoc += `\n * @returns {${this._returnsTag}}`)
+        jsdoc += '\n */'
+        return jsdoc
+    }
 }
 
 /**
@@ -214,7 +397,7 @@ export class MethodAnnotation extends BaseAnnotation {
  */
 export class PropertyAnnotation extends BaseAnnotation {
     private _propertyTag: boolean = true;
-    private _typeTag: boolean = true;
+    private _typeTag: string = "";
     private _staticTag: boolean = false;
     private _defaultTag: string = "";
 
@@ -222,7 +405,7 @@ export class PropertyAnnotation extends BaseAnnotation {
         this._propertyTag = value;
         return this;
     }
-    setTypeTag(value: boolean): this {
+    setTypeTag(value: string): this {
         this._typeTag = value;
         return this;
     }
@@ -235,5 +418,31 @@ export class PropertyAnnotation extends BaseAnnotation {
     setDefaultTag(value: string): this {
         this._defaultTag = value
         return this
+    }
+
+    public get propertyTag(): boolean {
+        return this._propertyTag;
+    }
+
+    public get typeTag(): string {
+        return this._typeTag;
+    }
+
+    public get staticTag(): boolean {
+        return this._staticTag;
+    }
+
+    public get defaultTag(): string {
+        return this._defaultTag;
+    }
+    public buildJSDoc(): string {
+        let jsdoc = "/**"
+        this._nameTag && (jsdoc += `\n * @name ${this._nameTag}`)
+        this._typeTag && (jsdoc += `\n * @type {${this._typeTag}}`)
+        this._accessTag && (jsdoc += `\n * @access ${this._accessTag}`)
+        this._staticTag && (jsdoc += `\n * @static`)
+        this._defaultTag && (jsdoc += `\n * @default ${this._defaultTag}`)
+        jsdoc += '\n */'
+        return jsdoc
     }
 }

@@ -1,4 +1,4 @@
-import { ClassDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, MethodDeclaration, MethodSignature, PropertyDeclaration, PropertySignature, SourceFile, TypeAliasDeclaration } from "ts-morph";
+import { ClassDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, MethodDeclaration, MethodSignature, PropertyDeclaration, PropertySignature, SourceFile, ts, TypeAliasDeclaration } from "ts-morph";
 export type MemberDeclaration =
     | ClassDeclaration
     | FunctionDeclaration
@@ -13,6 +13,7 @@ export type MemberDeclaration =
 
 export class AstUtil {
 
+
     // 获取方法、类或属性信息
     public getMemberInfo(sourceFile: SourceFile, memberName: string, lineNumber: number): MemberDeclaration {
         // 获取接口信息
@@ -23,16 +24,20 @@ export class AstUtil {
         const types = sourceFile.getTypeAliases()
         // 获取枚举信息
         const enums = sourceFile.getEnums()
-        // 遍历接口和类
-        const interfaceMember = this.memberVisit(interfaces, memberName, lineNumber);
-        const classMember = this.memberVisit(classes, memberName, lineNumber);
-        const typeMember = this.enumOrTypeMemberVisit(types, memberName, lineNumber)
-        const enumMember = this.enumOrTypeMemberVisit(types, memberName, lineNumber)
+        // 获取方法信息
+        const functions = sourceFile.getFunctions()
+
+        // 获取具体成员信息
+        const interfaceMember = this.unionMemberVisit(interfaces, memberName, lineNumber);
+        const classMember = this.unionMemberVisit(classes, memberName, lineNumber);
+        const typeMember = this.singleMemberVisit(types, memberName, lineNumber)
+        const enumMember = this.singleMemberVisit(enums, memberName, lineNumber)
+        const functionMember = this.singleMemberVisit(functions, memberName, lineNumber)
         // 返回成员信息
-        return classMember || interfaceMember || typeMember || enumMember;
+        return classMember || interfaceMember || typeMember || enumMember || functionMember;
     }
 
-    private memberVisit(arr: Array<ClassDeclaration | InterfaceDeclaration>, memberName: string, lineNumber: number): MemberDeclaration {
+    private unionMemberVisit(arr: Array<ClassDeclaration | InterfaceDeclaration>, memberName: string, lineNumber: number): MemberDeclaration {
         // 遍历每个类或接口
         for (const member of arr) {
             // 检查是否是类名或接口名本身
@@ -48,6 +53,7 @@ export class AstUtil {
 
             // 查找属性
             const propertyDeclaration = member.getProperties().find(property => property.getName() === memberName);
+
             if (propertyDeclaration) {
                 return propertyDeclaration; // 返回找到的第一个匹配属性
             }
@@ -56,7 +62,7 @@ export class AstUtil {
         return null; // 如果没有找到成员，返回 null
     }
 
-    private enumOrTypeMemberVisit(arr: Array<TypeAliasDeclaration | EnumDeclaration>, memberName: string, lineNumber: number): MemberDeclaration {
+    private singleMemberVisit(arr: Array<TypeAliasDeclaration | EnumDeclaration | FunctionDeclaration>, memberName: string, lineNumber: number): MemberDeclaration {
         // 遍历每个类或接口
         for (const member of arr) {
             // 检查是否是类名或接口名本身
@@ -65,5 +71,22 @@ export class AstUtil {
             }
         }
         return null; // 如果没有找到成员，返回 null
+    }
+
+    public static getMethodThrows(methodDeclaration: MethodDeclaration | FunctionDeclaration): Set<string> {
+        let throwRegExp = /\bthrow\s+new\s+(?<errorType>\w+)\s*\(\s*.*?\s*\)\s*;?/
+        const throws: Set<string> = new Set()
+        // 方法声明
+        const methodBody = methodDeclaration.getBody();
+        if (methodBody) {
+            const throwStatements = methodBody.getDescendantsOfKind(ts.SyntaxKind.ThrowStatement);
+            throwStatements.forEach(statement => {
+                let res = statement.getText().match(throwRegExp)
+                if (res) {
+                    throws.add(res[1])
+                }
+            })
+        }
+        return throws
     }
 }

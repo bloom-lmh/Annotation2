@@ -14,12 +14,7 @@ export class TranslateConfig {
     }
 }
 
-/**
- * 模式配置
- */
-export class ModeConfig {
-    // 这里可以添加更多配置
-}
+
 
 /**
  * 全局描述信息配置
@@ -36,29 +31,41 @@ export class GlobalAnnotationConfig {
     }
 }
 
-/**
- * 基础注解配置
- */
 export class BaseAnnotationConfig {
-    authorTag: boolean
-    accessTag: boolean
-    aliasTag: boolean
-    versionTag: boolean
-    nameTag: boolean
-    descriptionTag: boolean
-    licenseTag: boolean
-    copyrightTag: boolean
-    tutorialTag: boolean
-    seeTag: boolean
-    summaryTag: boolean
-    exampleTag: boolean
-    requiresTag: boolean
-    privateTag: boolean
-    protectedTag: boolean
-    publicTag: boolean
+    authorTag: boolean;
+    accessTag: boolean;
+    aliasTag: boolean;
+    versionTag: boolean;
+    nameTag: boolean;
+    descriptionTag: boolean;
+    licenseTag: boolean;
+    copyrightTag: boolean;
+    tutorialTag: boolean;
+    seeTag: boolean;
+    summaryTag: boolean;
+    exampleTag: boolean;
+    requiresTag: boolean;
+    privateTag: boolean;
+    protectedTag: boolean;
+    publicTag: boolean;
 
     constructor(config: Partial<BaseAnnotationConfig> = {}) {
-
+        this.authorTag = config.authorTag ?? false;
+        this.accessTag = config.accessTag ?? false;
+        this.aliasTag = config.aliasTag ?? false;
+        this.versionTag = config.versionTag ?? false;
+        this.nameTag = config.nameTag ?? false;
+        this.descriptionTag = config.descriptionTag ?? false;
+        this.licenseTag = config.licenseTag ?? false;
+        this.copyrightTag = config.copyrightTag ?? false;
+        this.tutorialTag = config.tutorialTag ?? false;
+        this.seeTag = config.seeTag ?? false;
+        this.summaryTag = config.summaryTag ?? false;
+        this.exampleTag = config.exampleTag ?? false;
+        this.requiresTag = config.requiresTag ?? false;
+        this.privateTag = config.privateTag ?? false;
+        this.protectedTag = config.protectedTag ?? false;
+        this.publicTag = config.publicTag ?? false;
     }
 }
 
@@ -66,13 +73,17 @@ export class BaseAnnotationConfig {
  * 类注解配置
  */
 export class ClassAnnotationConfig extends BaseAnnotationConfig {
-    classTag: boolean
-    abstract: boolean
-    extendsTag: boolean
-    implementsTag: boolean
+    classTag: boolean;
+    abstract: boolean;
+    extendsTag: boolean;
+    implementsTag: boolean;
 
     constructor(config: Partial<ClassAnnotationConfig> = {}) {
-
+        super(config);  // Initialize properties from BaseAnnotationConfig
+        this.classTag = config.classTag ?? false;
+        this.abstract = config.abstract ?? false;
+        this.extendsTag = config.extendsTag ?? false;
+        this.implementsTag = config.implementsTag ?? false;
     }
 }
 
@@ -80,15 +91,21 @@ export class ClassAnnotationConfig extends BaseAnnotationConfig {
  * 方法注解配置
  */
 export class MethodAnnotationConfig extends BaseAnnotationConfig {
-    asyncTag: boolean
-    functionTag: boolean
-    throwsTag: boolean
-    paramsTag: boolean
-    returnsTag: boolean
-    staticTag: boolean
+    asyncTag: boolean;
+    functionTag: boolean;
+    throwsTag: boolean;
+    paramsTag: boolean;
+    returnsTag: boolean;
+    staticTag: boolean;
 
     constructor(config: Partial<MethodAnnotationConfig> = {}) {
-
+        super(config);  // Initialize properties from BaseAnnotationConfig
+        this.asyncTag = config.asyncTag ?? false;
+        this.functionTag = config.functionTag ?? false;
+        this.throwsTag = config.throwsTag ?? false;
+        this.paramsTag = config.paramsTag ?? false;
+        this.returnsTag = config.returnsTag ?? false;
+        this.staticTag = config.staticTag ?? false;
     }
 }
 
@@ -102,9 +119,14 @@ export class PropertyAnnotationConfig extends BaseAnnotationConfig {
     default: boolean;
 
     constructor(config: Partial<PropertyAnnotationConfig> = {}) {
-
+        super(config);  // Initialize properties from BaseAnnotationConfig
+        this.property = config.property ?? false;
+        this.static = config.static ?? false;
+        this.type = config.type ?? false;
+        this.default = config.default ?? false;
     }
 }
+
 
 /**
  * 主配置类

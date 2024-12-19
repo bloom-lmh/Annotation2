@@ -6,7 +6,9 @@ export class TsFileParser {
     // 解析ts或js文件
     public parseTsFile(filePath: string): SourceFile {
         // 初始化 Project
-        const project = new Project();
+        const project = new Project({
+            compilerOptions: { skipLibCheck: true } // 跳过库文件检查，加速处理
+        });
         // 加载文件
         const sourceFile = project.addSourceFileAtPath(filePath);
         // 返回加载的文件
