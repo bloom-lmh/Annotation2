@@ -7,15 +7,15 @@ import path from 'path';
 import { Config } from './config/config';
 import { AnnotationFactory } from './annotation/annotationFactory';
 import { ConfigLoader } from './config/configLoader';
-import { readFileSync } from 'fs';
 // 插件激活
 export function activate(context: ExtensionContext) {
-    const htmlPath = path.join(context.extensionPath, 'src', 'index.html');
-    const data = readFileSync(htmlPath).toString()
-    // 配置管理器打开文件监听
-    //ConfigManager.startConfigWatch()
+    // 打开配置面板
+    const disposable1 = vscode.commands.registerCommand('openConfigConsole', async () => {
+        console.log("a");
+
+    })
     // 生成单行注释
-    const disposable = vscode.commands.registerCommand('addSingleAnnotation', async () => {
+    const disposable2 = vscode.commands.registerCommand('addSingleAnnotation', async () => {
         try {
             let st = new Date()
             const editor = vscode.window.activeTextEditor;
@@ -61,7 +61,8 @@ export function activate(context: ExtensionContext) {
         }
     });
 
-    context.subscriptions.push(disposable);
+    context.subscriptions.push(disposable1);
+    context.subscriptions.push(disposable2);
 
 }
 

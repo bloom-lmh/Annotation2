@@ -1,3 +1,5 @@
+import { JSDocGenerator } from "../generator/jsDocGenerator"
+
 /**
  * 全体注解公共标签
  */
@@ -10,11 +12,9 @@ export class BaseAnnotation {
     protected _descriptionTag: string = ""
     protected _licenseTag: string = ""
     protected _copyrightTag: string = ""
-    protected _tutorialTag: string = ""
     protected _seeTag: string = ""
     protected _summaryTag: string = ""
     protected _exampleTag: string = ""
-    protected _requiresTag: Array<string> = []
 
 
     setAuthorTag(tag: string): this {
@@ -57,11 +57,6 @@ export class BaseAnnotation {
         return this;
     }
 
-    setTutorialTag(tag: string): this {
-        this._tutorialTag = tag;
-        return this;
-    }
-
     setSeeTag(tag: string): this {
         this._seeTag = tag;
         return this;
@@ -77,66 +72,20 @@ export class BaseAnnotation {
         return this;
     }
 
-    setRequiresTag(tags: Array<string>): this {
-        this._requiresTag = tags;
-        return this;
-    }
-
-    public get authorTag(): string {
-        return this._authorTag;
-    }
-
-    public get accessTag(): string {
-        return this._accessTag;
-    }
-
-    public get aliasTag(): string {
-        return this._aliasTag;
-    }
-
-    public get versionTag(): string {
-        return this._versionTag;
-    }
-
-    public get nameTag(): string {
-        return this._nameTag;
-    }
-
-    public get descriptionTag(): string {
-        return this._descriptionTag;
-    }
-
-    public get licenseTag(): string {
-        return this._licenseTag;
-    }
-
-    public get copyrightTag(): string {
-        return this._copyrightTag;
-    }
-
-    public get tutorialTag(): string {
-        return this._tutorialTag;
-    }
-
-    public get seeTag(): string {
-        return this._seeTag;
-    }
-
-    public get summaryTag(): string {
-        return this._summaryTag;
-    }
-
-    public get exampleTag(): string {
-        return this._exampleTag;
-    }
-
-    public get requiresTag(): Array<string> {
-        return this._requiresTag;
-    }
-
     public buildJSDoc(): string {
-        let jsdoc = ""
-        this._accessTag && (jsdoc += `@access ${this.accessTag}`)
+        let jsdoc = new JSDocGenerator()
+            .setAuthorTag(this._authorTag)
+            .setAccessTag(this._accessTag)
+            .setAliasTag(this._aliasTag)
+            .setVersionTag(this._versionTag)
+            .setNameTag(this._nameTag)
+            .setDescriptionTag(this._descriptionTag)
+            .setLicenseTag(this._licenseTag)
+            .setCopyrightTag(this._copyrightTag)
+            .setSeeTag(this._seeTag)
+            .setSummaryTag(this._summaryTag)
+            .setExampleTag(this._exampleTag)
+            .build()
         return jsdoc
     }
 }
@@ -156,10 +105,11 @@ export class InterfaceAnnotation extends BaseAnnotation {
     }
 
     public buildJSDoc(): string {
-        let jsdoc = "/**"
-        this._nameTag && (jsdoc += `\n * @name ${this._nameTag}`)
-        this._interfaceTag && (jsdoc += `\n * @interface`)
-        jsdoc += '\n */'
+        let other = super.buildJSDoc()
+        let jsdoc = new JSDocGenerator()
+            .setInterfaceTag(this._interfaceTag)
+            .union(other)
+            .build()
         return jsdoc
     }
 }
@@ -226,19 +176,13 @@ export class TypedefAnnotation extends BaseAnnotation {
         this._typeTag = value;
         return this;
     }
-    public get typedefTag(): boolean {
-        return this._typedefTag;
-    }
-
-    public get typeTag(): string {
-        return this._typeTag;
-    }
 
     public buildJSDoc(): string {
-        let jsdoc = "/**"
-        this._nameTag && (jsdoc += `\n * @name ${this._nameTag}`)
-        this._typedefTag && (jsdoc += `\n * @typedef {${this._typeTag}} ${this.nameTag}`)
-        jsdoc += '\n */'
+        let other = super.buildJSDoc()
+        let jsdoc = new JSDocGenerator()
+            .setTypedefTag(this._typeTag, this._nameTag)
+            .union(other)
+            .build()
         return jsdoc
     }
 }
@@ -272,35 +216,16 @@ export class ClassAnnotation extends BaseAnnotation {
         return this;
     }
 
-    // 简单的 get 访问器
-    public get classTag(): boolean {
-        return this._classTag;
-    }
-
-    public get abstract(): boolean {
-        return this._abstract;
-    }
-
-    public get extendsTag(): string {
-        return this._extendsTag;
-    }
-
-    public get implementsTag(): Array<string> {
-        return this._implementsTag;
-    }
 
     public buildJSDoc(): string {
-        let jsdoc = "/**"
-        this._nameTag && (jsdoc += `\n * @name ${this._nameTag}`)
-        this._classTag && (jsdoc += `\n * @class`)
-        this._abstract && (jsdoc += `\n * @abstract`)
-        this._extendsTag && (jsdoc += `\n * @extends ${this._extendsTag}`)
-        if (this._implementsTag && this._implementsTag.length > 0) {
-            this.implementsTag.forEach(implement => {
-                jsdoc += `\n* @implements {${implement}}`
-            })
-        }
-        jsdoc += '\n */'
+        let other = super.buildJSDoc()
+        let jsdoc = new JSDocGenerator()
+            .setClassTag(this._classTag)
+            .setAbstract(this._abstract)
+            .setExtendsTag(this._extendsTag)
+            .setImplementsTag(this._implementsTag)
+            .union(other)
+            .build()
         return jsdoc
     }
 }
@@ -345,49 +270,18 @@ export class MethodAnnotation extends BaseAnnotation {
         this._staticTag = value;
         return this;
     }
-    // 简单的 get 访问器
-    public get asyncTag(): boolean {
-        return this._asyncTag;
-    }
-
-    public get functionTag(): boolean {
-        return this._functionTag;
-    }
-
-    public get throwsTag(): Set<string> {
-        return this._throwsTag;
-    }
-
-    public get paramsTag(): string[][] {
-        return this._paramsTag;
-    }
-
-    public get returnsTag(): string {
-        return this._returnsTag;
-    }
-
-    public get staticTag(): boolean {
-        return this._staticTag;
-    }
 
     public buildJSDoc(): string {
-        let jsdoc = "/**"
-        this._nameTag && (jsdoc += `\n * @name ${this._nameTag}`)
-        this._functionTag && (jsdoc += `\n * @function`)
-        this._accessTag && (jsdoc += `\n * @access ${this._accessTag}`)
-        this._staticTag && (jsdoc += `\n * @static`)
-        if (this._paramsTag && this._paramsTag.length > 0) {
-            this._paramsTag.forEach(item => {
-                jsdoc += `\n * @param {${item[1]}} ${item[0]}`
-            })
-        }
-        if (this._throwsTag && this._throwsTag.size > 0) {
-            this._throwsTag.forEach(item => {
-                jsdoc += `\n * @throws {${item}}`
-            })
-        }
-        this._returnsTag && (jsdoc += `\n * @returns {${this._returnsTag}}`)
-        jsdoc += '\n */'
+        let other = super.buildJSDoc()
+        let jsdoc = new JSDocGenerator()
+            .setFunctionTag(this._functionTag)
+            .setAsyncTag(this._asyncTag)
+            .setStaticTag(this._staticTag)
+            .setParamsTag(this._paramsTag)
+            .setThrowsTag(this._throwsTag)
+            .setReturnsTag(this._returnsTag)
+            .union(other)
+            .build()
         return jsdoc
     }
 }
@@ -436,13 +330,13 @@ export class PropertyAnnotation extends BaseAnnotation {
         return this._defaultTag;
     }
     public buildJSDoc(): string {
-        let jsdoc = "/**"
-        this._nameTag && (jsdoc += `\n * @name ${this._nameTag}`)
-        this._typeTag && (jsdoc += `\n * @type {${this._typeTag}}`)
-        this._accessTag && (jsdoc += `\n * @access ${this._accessTag}`)
-        this._staticTag && (jsdoc += `\n * @static`)
-        this._defaultTag && (jsdoc += `\n * @default ${this._defaultTag}`)
-        jsdoc += '\n */'
+        let other = super.buildJSDoc()
+        let jsdoc = new JSDocGenerator()
+            .setTypeTag(this._typeTag)
+            .setStaticTag(this.staticTag)
+            .setDefaultTag(this.defaultTag)
+            .union(other)
+            .build()
         return jsdoc
     }
 }

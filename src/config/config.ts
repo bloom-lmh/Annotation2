@@ -14,8 +14,6 @@ export class TranslateConfig {
     }
 }
 
-
-
 /**
  * 全局描述信息配置
  */
@@ -30,7 +28,9 @@ export class GlobalAnnotationConfig {
         this.description = config.description ?? '';
     }
 }
-
+/**
+ * 基础注解配置
+ */
 export class BaseAnnotationConfig {
     authorTag: boolean;
     accessTag: boolean;
@@ -45,9 +45,6 @@ export class BaseAnnotationConfig {
     summaryTag: boolean;
     exampleTag: boolean;
     requiresTag: boolean;
-    privateTag: boolean;
-    protectedTag: boolean;
-    publicTag: boolean;
 
     constructor(config: Partial<BaseAnnotationConfig> = {}) {
         this.authorTag = config.authorTag ?? false;
@@ -63,12 +60,40 @@ export class BaseAnnotationConfig {
         this.summaryTag = config.summaryTag ?? false;
         this.exampleTag = config.exampleTag ?? false;
         this.requiresTag = config.requiresTag ?? false;
-        this.privateTag = config.privateTag ?? false;
-        this.protectedTag = config.protectedTag ?? false;
-        this.publicTag = config.publicTag ?? false;
     }
 }
-
+/**
+ * 接口类型配置
+ */
+export class InterfaceConfig extends BaseAnnotationConfig {
+    interfaceTag: boolean;
+    constructor(config: Partial<InterfaceConfig> = {}) {
+        super(config);
+        this.interfaceTag = config.interfaceTag ?? false;
+    }
+}
+/**
+ * 自定义类型配置
+ */
+export class TypedefConfig extends BaseAnnotationConfig {
+    typedefTag: boolean;
+    typeTag: boolean;
+    constructor(config: Partial<TypedefConfig> = {}) {
+        super(config);
+        this.typedefTag = config.typedefTag ?? false;
+        this.typeTag = config.typeTag ?? false;
+    }
+}
+/**
+ * 枚举类型配置
+ */
+export class EnumConfig extends BaseAnnotationConfig {
+    enumTag: boolean;
+    constructor(config: Partial<EnumConfig> = {}) {
+        super(config);  // Initialize properties from BaseAnnotationConfig
+        this.enumTag = config.enumTag ?? false;
+    }
+}
 /**
  * 类注解配置
  */
@@ -132,19 +157,29 @@ export class PropertyAnnotationConfig extends BaseAnnotationConfig {
  * 主配置类
  */
 export class Config {
+    interfaceConfig?: InterfaceConfig
+    typedefConfig?: TypedefConfig
+    enumConfig?: EnumConfig
     classAnnotationConfig?: ClassAnnotationConfig;
     methodAnnotationConfig?: MethodAnnotationConfig;
     propertyAnnotationConfig?: PropertyAnnotationConfig;
     globalAnnotationConfig?: GlobalAnnotationConfig;
+
     translateConfig?: TranslateConfig;
 
     constructor(config: {
+        interfaceConfig?: Partial<InterfaceConfig>
+        typedefConfig?: Partial<TypedefConfig>
+        enumConfig?: Partial<EnumConfig>
         classAnnotationConfig?: Partial<ClassAnnotationConfig>;
         methodAnnotationConfig?: Partial<MethodAnnotationConfig>;
         propertyAnnotationConfig?: Partial<PropertyAnnotationConfig>;
         globalAnnotationConfig?: Partial<GlobalAnnotationConfig>;
         translateConfig?: Partial<TranslateConfig>;
     } = {}) {
+        this.interfaceConfig = new InterfaceConfig(config.interfaceConfig)
+        this.typedefConfig = new TypedefConfig(config.typedefConfig)
+        this.enumConfig = new EnumConfig(config.enumConfig)
         this.classAnnotationConfig = new ClassAnnotationConfig(config.classAnnotationConfig);
         this.methodAnnotationConfig = new MethodAnnotationConfig(config.methodAnnotationConfig);
         this.propertyAnnotationConfig = new PropertyAnnotationConfig(config.propertyAnnotationConfig);

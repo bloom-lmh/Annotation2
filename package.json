@@ -18,12 +18,22 @@
       {
         "command": "addSingleAnnotation",
         "title": "ADD SINGLE ANNOTATION"
+      },
+      {
+        "command": "openConfigConsole",
+        "title": "OPEN CONFIG CONSOLE"
       }
     ],
-    "keybindings": {
-      "command": "addSingleAnnotation",
-      "key": "alt+\\"
-    }
+    "keybindings": [
+      {
+        "command": "addSingleAnnotation",
+        "key": "alt+\\"
+      },
+      {
+        "command": "openConfigConsole",
+        "key": "alt+shift+\\"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

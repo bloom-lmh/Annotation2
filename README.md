@@ -1,4 +1,5 @@
 # annotation2 README
+# 12月8日-12月12日
 ## 尝试使用语言服务器
 语言服务器[语言服务器](https://code.visualstudio.com/docs/extensions/overview#_language-servers)插件模式中使用C/S结构的的服务器端，用于高消耗的特殊插件场景，如语言解析、智能提示等。与之相对，客户端则是普通的插件，两者通过VSCode的API进行通信。是一种可以提升语言编辑体验的特殊VS Code插件。有了语言服务器[语言服务器](https://code.visualstudio.com/docs/extensions/overview#_language-servers)插件模式中使用C/S结构的的服务器端，用于高消耗的特殊插件场景，如语言解析、智能提示等。与之相对，客户端则是普通的插件，两者通过VSCode的API进行通信。，你可以实现如**自动补全、错误检查（诊断）、转跳**到定义等等其他VS Code[语言特性](https://liiked.github.io/VS-Code-Extension-Doc-ZH/#/language-extensions/programmatic-language-features)。
 
@@ -168,5 +169,87 @@ export class PropertyAnnotation extends BaseAnnotation {
 ## 节能模式
 即便做了以上的优化，但性能提升还是不够明显。我们在享受AST带来的强大功能的同时确实无法避免的要为性能做出牺牲。
 但是我不会让用户强制接受这种牺牲，因为AST语法树的功能面向的是生成JSDOC接口文档的，大部分用户仅仅需要一些相对简单的注解功能。
-所以我想到了一种新的策略，我叫它节能模式。就是用户可以不选择采用抽象语法树解析策略而是采用正则解析策略，这个灵感来自于我的滑板车，我要感谢它，因为它提供了节能模式和性能模式。
+所以我想到了一种新的策略，我叫它节能模式。
 
+
+# 12月14日-12月19日
+## 新的文件监控器
+这次我使用了chokidar来对配置文件变化进行监控对比老版本代码简化了很多
+```javascript
+public static watchFiles(files: Array<string>, handler: FileWatchHandler, config?: ChokidarOptions) {
+    // 设置默认值
+    config = config || {
+        // 持续监听
+        persistent: true,
+        depth: 0
+    }
+    // 创建监听器
+    const watcher = chokidar.watch(files, config);
+    // 对文件进行监听
+    for (const key in handler) {
+        if (handler.hasOwnProperty(key)) { // 过滤掉继承的属性
+            // 类型断言，告诉 TypeScript key 必须是 'add' | 'change' | 'unlink' 之一
+            const eventHandler = handler[key as 'add' | 'change' | 'unlink'];
+            // 确保 handler[key] 是一个函数
+            if (typeof eventHandler === 'function') {
+                watcher.on(key, eventHandler);
+            }
+        }
+    }
+```
+
+```javascript
+public static startConfigWatch() {
+    // 获取工作区配置文件
+    const projectConfigFiles = WorkspaceUtil.getProjectPaths()
+    /* 'annotation.config.json' */
+    // 调用文件监听器监听文件
+    FileWatcher.watchFiles(projectConfigFiles, {
+        add: (path) => {
+            if (basename(path) === 'annotation.config.json') {
+                //console.log("add:" + path);
+                this.addConfig(path)
+            }
+        },
+        unlink: (path) => {
+            if (basename(path) === 'annotation.config.json') {
+                //console.log("remove:" + path);
+                this.removeConfig(path)
+            }
+        },
+        change: (path) => {
+            if (basename(path) === 'annotation.config.json') {
+                //console.log("change:" + path);
+                this.addConfig(path)
+            }
+        },
+    }, {
+        // 持续监听
+        persistent: true,
+        depth: 0
+    })
+}
+```
+
+## 添加新的注解模型
+### 枚举注解模型
+```javascript
+export class EnumAnnotation extends BaseAnnotation {
+    private _enumTag: boolean = true;
+```
+### 接口注解模型
+```javascript
+export class InterfaceAnnotation extends BaseAnnotation {
+    private _interfaceTag: boolean = true;
+}
+```
+
+### 自定义类型注解模型
+```javascript
+export class TypedefAnnotation extends BaseAnnotation {
+    private _typedefTag: boolean = true;
+    private _typeTag: string = ""
+}
+```
+
+## 演示默认注解生成
