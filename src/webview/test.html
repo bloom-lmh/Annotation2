@@ -24,6 +24,8 @@
             :items="projectPaths"
             variant="outlined"
             class="px-4 pt-4"
+            v-model="selectedProject"
+            @update:model-value="onSelectedProject"
           ></v-combobox>
           <v-card-item>
             <div class="d-flex flex-row">
@@ -33,7 +35,7 @@
                   :key="key"
                   :value="key"
                   :prepend-icon=""
-                  :text="configItem.title"
+                  :text="key"
                 ></v-tab>
               </v-tabs>
 
@@ -41,17 +43,11 @@
                 <v-tabs-window-item v-for="(configItem, key) in configs" :key="key" :value="key">
                   <v-container>
                     <v-row>
-                      <v-col
-                        v-for="(tag, tagKey) in configItem.configItem"
-                        :key="tagKey"
-                        cols="12"
-                        md="3"
-                        sm="3"
-                      >
+                      <v-col v-for="(tagValue, tagKey) in configItem" :key="tagKey" cols="12" md="3" sm="3">
                         <v-switch
-                          v-model="configItem.configItem[tagKey]"
+                          v-model="configItem[tagKey]"
                           color="indigo"
-                          :label="`@${tagKey}${configItem.configItem[tagKey] ? '开启' : '关闭'}`"
+                          :label="`@${tagKey}${tagValue ? '开启' : '关闭'}`"
                           hide-details
                         ></v-switch>
                       </v-col>
@@ -86,13 +82,10 @@
           // 项目路径计算属性
           const projectPaths = computed(() => Object.keys(projectConfigs));
           // 项目配置
-          const configs = computed(() => {
-            return Object.entries(projectConfigs).map(([key, value]) => ({
-              title: key,
-              configItem: value
-            }));
-          });
+          let configs = reactive({});
 
+          // 当前选中的项目
+          let selectedProject = ref('');
           // 接收来自插件的数据
           window.addEventListener('message', (event) => {
             const { command, data } = event.data; // 获取消息
@@ -107,7 +100,6 @@
             if (command === 'initProjectConfig') {
               // 初始化项目配置
               Object.assign(projectConfigs, data); // 使用 Object.assign 来更新响应式对象
-              console.log(projectConfigs);
             }
           });
 
@@ -119,14 +111,19 @@
               message: JSON.stringify(config)
             });
           };
-
+          // 选中项目
+          const onSelectedProject = (value) => {
+            Object.assign(configs, projectConfigs[value]);
+          };
           // 返回值会暴露给模板
           return {
             tab,
             model,
             projectPaths,
             configs,
-            submitConfig
+            submitConfig,
+            selectedProject,
+            onSelectedProject
           };
         }
       });
