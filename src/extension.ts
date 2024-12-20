@@ -7,12 +7,39 @@ import path from 'path';
 import { Config } from './config/config';
 import { AnnotationFactory } from './annotation/annotationFactory';
 import { ConfigLoader } from './config/configLoader';
+import { readFileSync } from 'fs';
 // 插件激活
 export function activate(context: ExtensionContext) {
     // 打开配置面板
     const disposable1 = vscode.commands.registerCommand('openConfigConsole', async () => {
-        console.log("a");
-
+        // 创建 WebView 面板
+        const panel = vscode.window.createWebviewPanel(
+            'customHtmlPanel',  // Webview 类型
+            'My Custom HTML Template',  // 面板标题
+            vscode.ViewColumn.One,  // 显示在第一个列
+            {
+                enableScripts: true, // 允许脚本执行
+                localResourceRoots: [
+                    vscode.Uri.file(path.join(context.extensionPath, 'src', 'webview')) // 设置本地资源路径
+                ],
+            }
+        );
+        // 获取插件根路径
+        const extensionPath = context.extensionPath;
+        // 模板路径
+        const templatePath = path.join(extensionPath, "src", "/webview/test.html")
+        // 获取 HTML 文件路径并转化为 WebView 可用的 URI
+        const content = readFileSync(templatePath).toString()
+        // 设置 WebView 的 HTML 内容
+        panel.webview.html = content;
+        // 监听 WebView 发来的消息
+        panel.webview.onDidReceiveMessage(message => {
+            switch (message.command) {
+                case 'buttonClicked':
+                    vscode.window.showInformationMessage(message.message);  // 显示点击消息
+                    return;
+            }
+        }, undefined, context.subscriptions);
     })
     // 生成单行注释
     const disposable2 = vscode.commands.registerCommand('addSingleAnnotation', async () => {

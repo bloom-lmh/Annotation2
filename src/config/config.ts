@@ -2,10 +2,10 @@
  * 翻译配置
  */
 export class TranslateConfig {
-    public open: boolean;
-    public api: Array<string> | string;
-    public wordMap: { [key: string]: string };
-    public memory: boolean;
+    open: boolean;
+    api: Array<string> | string;
+    wordMap: { [key: string]: string };
+    memory: boolean;
     constructor(config: Partial<TranslateConfig> = {}) {
         this.open = config.open ?? false;
         this.api = config.api ?? "";
@@ -152,7 +152,27 @@ export class PropertyAnnotationConfig extends BaseAnnotationConfig {
     }
 }
 
+/**
+ * 系统配置
+ */
+export class SystemConfig {
+    constructor(config: Partial<SystemConfig> = {}) {
 
+    }
+}
+/**
+ * 文件注释类
+ */
+export class FileAnnotationConfig extends BaseAnnotationConfig {
+    fileTag: boolean;
+    moduleTag: boolean;
+
+    constructor(config: Partial<FileAnnotationConfig> = {}) {
+        super(config);  // Initialize properties from BaseAnnotationConfig
+        this.fileTag = config.fileTag ?? false;
+        this.moduleTag = config.moduleTag ?? false;
+    }
+}
 /**
  * 主配置类
  */
@@ -164,8 +184,9 @@ export class Config {
     methodAnnotationConfig?: MethodAnnotationConfig;
     propertyAnnotationConfig?: PropertyAnnotationConfig;
     globalAnnotationConfig?: GlobalAnnotationConfig;
-
+    fileAnnotationConfig?: FileAnnotationConfig
     translateConfig?: TranslateConfig;
+    systemConfig?: SystemConfig
 
     constructor(config: {
         interfaceConfig?: Partial<InterfaceConfig>
@@ -176,6 +197,8 @@ export class Config {
         propertyAnnotationConfig?: Partial<PropertyAnnotationConfig>;
         globalAnnotationConfig?: Partial<GlobalAnnotationConfig>;
         translateConfig?: Partial<TranslateConfig>;
+        fileAnnotationConfig?: Partial<FileAnnotationConfig>
+        systemConfig?: Partial<SystemConfig>
     } = {}) {
         this.interfaceConfig = new InterfaceConfig(config.interfaceConfig)
         this.typedefConfig = new TypedefConfig(config.typedefConfig)
@@ -185,6 +208,8 @@ export class Config {
         this.propertyAnnotationConfig = new PropertyAnnotationConfig(config.propertyAnnotationConfig);
         this.globalAnnotationConfig = new GlobalAnnotationConfig(config.globalAnnotationConfig);
         this.translateConfig = new TranslateConfig(config.translateConfig);
+        this.fileAnnotationConfig = new FileAnnotationConfig(config.fileAnnotationConfig)
+        this.systemConfig = new SystemConfig(config.systemConfig)
     }
 }
 

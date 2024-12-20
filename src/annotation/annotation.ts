@@ -130,13 +130,14 @@ export class FileAnnotation extends BaseAnnotation {
         this._moduleTag = value;
         return this;
     }
-    // 简单的 get 访问器
-    public get fileTag(): boolean {
-        return this._fileTag;
-    }
-
-    public get moduleTag(): boolean {
-        return this._moduleTag;
+    public buildJSDoc(): string {
+        let other = super.buildJSDoc()
+        let jsdoc = new JSDocGenerator()
+            .setFileTag(this._fileTag)
+            .setModuleTag(this._moduleTag)
+            .union(other)
+            .build()
+        return jsdoc
     }
 }
 

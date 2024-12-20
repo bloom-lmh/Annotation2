@@ -13,59 +13,76 @@
       }
 
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f7fc;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(45deg, #1d2b64, #f8a1d1); /* 渐变背景 */
         color: #333;
         display: flex;
         min-height: 100vh;
         justify-content: center;
         align-items: center;
         flex-direction: column;
+        padding: 0 20px;
+        overflow-x: hidden;
       }
 
       h1 {
         margin-bottom: 40px;
-        font-size: 2.5rem;
-        color: #4caf50;
+        font-size: 3rem;
+        color: #fff;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        animation: fadeIn 2s ease-out;
       }
 
       /* 配置台容器 */
       .dashboard {
-        width: 90%;
+        width: 100%;
         max-width: 1200px;
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         padding: 40px;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 20px;
+        transition: all 0.5s ease;
+      }
+
+      .dashboard:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
       }
 
       /* 卡片样式 */
       .card {
         background-color: #f9f9f9;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
       }
 
       .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        transform: translateY(-10px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       }
 
       .card-header {
-        font-size: 1.5rem;
-        color: #555;
+        font-size: 1.8rem;
+        color: #4caf50;
         margin-bottom: 20px;
         font-weight: bold;
+        text-transform: capitalize;
+        letter-spacing: 1px;
+        position: relative;
+        z-index: 1;
       }
 
       .card-body {
         font-size: 1rem;
         color: #777;
+        line-height: 1.6;
       }
 
       .card-footer {
@@ -76,44 +93,24 @@
       .btn {
         background-color: #4caf50;
         color: #fff;
-        padding: 10px 20px;
-        font-size: 1rem;
+        padding: 12px 25px;
+        font-size: 1.2rem;
         border: none;
         border-radius: 5px;
         cursor: pointer;
-        transition: background-color 0.3s ease;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       }
 
       .btn:hover {
         background-color: #45a049;
+        transform: scale(1.05);
       }
 
       /* 表单样式 */
       .form-group {
-        margin-bottom: 20px;
-      }
-
-      label {
-        font-size: 1rem;
-        margin-bottom: 8px;
-        color: #555;
-      }
-
-      input[type='text'],
-      input[type='password'],
-      select {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 1rem;
-      }
-
-      input[type='text']:focus,
-      input[type='password']:focus,
-      select:focus {
-        border-color: #4caf50;
-        outline: none;
+        margin-top: 30px;
+        text-align: center;
       }
 
       .form-group button {
@@ -121,9 +118,17 @@
         background-color: #4caf50;
         color: #fff;
         border: none;
-        padding: 12px 20px;
-        border-radius: 5px;
+        padding: 15px 30px;
+        font-size: 1.5rem;
+        border-radius: 8px;
         cursor: pointer;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, background-color 0.3s ease;
+      }
+
+      .form-group button:hover {
+        background-color: #45a049;
+        transform: translateY(-5px);
       }
 
       /* 响应式设计 */
@@ -140,7 +145,19 @@
         }
 
         .card {
-          padding: 15px;
+          padding: 25px;
+        }
+      }
+
+      /* 动画效果 */
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
         }
       }
     </style>
@@ -200,7 +217,19 @@
 
     <!-- 表单示例 -->
     <div class="form-group">
-      <button class="btn">提交</button>
+      <button id="sendMessageButton">Send Message</button>
     </div>
+
+    <script>
+      const vscode = acquireVsCodeApi(); // 获取 VS Code API 对象
+
+      document.getElementById('sendMessageButton').addEventListener('click', () => {
+        // 通过 `postMessage` 发送消息到 VS Code 插件
+        vscode.postMessage({
+          command: 'buttonClicked',
+          message: 'Button was clicked!'
+        });
+      });
+    </script>
   </body>
 </html>
