@@ -2,39 +2,38 @@ import path, { basename, dirname } from "path";
 import { FileWatcher } from "../file/fileWatcher";
 import { WorkspaceUtil } from "../utils/workspaceUtil";
 import { Config } from "./config";
-import { ConfigLoader } from "./configLoader";
 
 /**
  * 配置管理器
  */
 export class ConfigManager {
     // 默认配置
-    private static defaultConfig: Config
+    private static defaultConfig: Config = new Config()
     // 配置文件缓存
     private static configMaps: Map<string, Config> = new Map()
 
     // 缓存配置文件
-    public static addConfig(configFilePath: string, config?: Config) {
-        // 没传配置则加载
+    public static addConfig(projectPath: string, config?: Config) {
+        // 没传配置则使用默认配置
         if (!config) {
             // 加载配置文件
-            config = ConfigLoader.loadConfig(configFilePath)
+            config = new Config()
         }
         if (config) {
-            this.configMaps.set(configFilePath, config)
+            this.configMaps.set(projectPath, config)
         }
         this.visitAll()
     }
     // 获取配置
-    public static getConfig(configFilePath: string): Config {
+    public static getConfig(projectPath: string) {
         // 尝试获取缓存的用户配置
-        let config: Config = this.configMaps.get(configFilePath) || new Config()
+        let config = this.configMaps.get(projectPath)
         // 返回配置
         return config
     }
     // 删除配置文件
-    public static removeConfig(configFilePath: string) {
-        this.configMaps.delete(configFilePath)
+    public static removeConfig(projectPath: string) {
+        this.configMaps.delete(projectPath)
         this.visitAll()
     }
     // 遍历map调试的时候使用

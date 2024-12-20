@@ -65,9 +65,9 @@ export class BaseAnnotationConfig {
 /**
  * 接口类型配置
  */
-export class InterfaceConfig extends BaseAnnotationConfig {
+export class InterfaceAnnotationConfig extends BaseAnnotationConfig {
     interfaceTag: boolean;
-    constructor(config: Partial<InterfaceConfig> = {}) {
+    constructor(config: Partial<InterfaceAnnotationConfig> = {}) {
         super(config);
         this.interfaceTag = config.interfaceTag ?? false;
     }
@@ -75,10 +75,10 @@ export class InterfaceConfig extends BaseAnnotationConfig {
 /**
  * 自定义类型配置
  */
-export class TypedefConfig extends BaseAnnotationConfig {
+export class TypedefAnnotationConfig extends BaseAnnotationConfig {
     typedefTag: boolean;
     typeTag: boolean;
-    constructor(config: Partial<TypedefConfig> = {}) {
+    constructor(config: Partial<TypedefAnnotationConfig> = {}) {
         super(config);
         this.typedefTag = config.typedefTag ?? false;
         this.typeTag = config.typeTag ?? false;
@@ -87,9 +87,9 @@ export class TypedefConfig extends BaseAnnotationConfig {
 /**
  * 枚举类型配置
  */
-export class EnumConfig extends BaseAnnotationConfig {
+export class EnumAnnotationConfig extends BaseAnnotationConfig {
     enumTag: boolean;
-    constructor(config: Partial<EnumConfig> = {}) {
+    constructor(config: Partial<EnumAnnotationConfig> = {}) {
         super(config);  // Initialize properties from BaseAnnotationConfig
         this.enumTag = config.enumTag ?? false;
     }
@@ -177,9 +177,9 @@ export class FileAnnotationConfig extends BaseAnnotationConfig {
  * 主配置类
  */
 export class Config {
-    interfaceConfig?: InterfaceConfig
-    typedefConfig?: TypedefConfig
-    enumConfig?: EnumConfig
+    interfaceAnnotationConfig?: InterfaceAnnotationConfig
+    typedefAnnotationConfig?: TypedefAnnotationConfig
+    enumAnnotationConfig?: EnumAnnotationConfig
     classAnnotationConfig?: ClassAnnotationConfig;
     methodAnnotationConfig?: MethodAnnotationConfig;
     propertyAnnotationConfig?: PropertyAnnotationConfig;
@@ -189,9 +189,9 @@ export class Config {
     systemConfig?: SystemConfig
 
     constructor(config: {
-        interfaceConfig?: Partial<InterfaceConfig>
-        typedefConfig?: Partial<TypedefConfig>
-        enumConfig?: Partial<EnumConfig>
+        interfaceAnnotationConfig?: Partial<InterfaceAnnotationConfig>
+        typedefAnnotationConfig?: Partial<TypedefAnnotationConfig>
+        enumAnnotationConfig?: Partial<EnumAnnotationConfig>
         classAnnotationConfig?: Partial<ClassAnnotationConfig>;
         methodAnnotationConfig?: Partial<MethodAnnotationConfig>;
         propertyAnnotationConfig?: Partial<PropertyAnnotationConfig>;
@@ -200,9 +200,9 @@ export class Config {
         fileAnnotationConfig?: Partial<FileAnnotationConfig>
         systemConfig?: Partial<SystemConfig>
     } = {}) {
-        this.interfaceConfig = new InterfaceConfig(config.interfaceConfig)
-        this.typedefConfig = new TypedefConfig(config.typedefConfig)
-        this.enumConfig = new EnumConfig(config.enumConfig)
+        this.interfaceAnnotationConfig = new InterfaceAnnotationConfig(config.interfaceAnnotationConfig)
+        this.typedefAnnotationConfig = new TypedefAnnotationConfig(config.typedefAnnotationConfig)
+        this.enumAnnotationConfig = new EnumAnnotationConfig(config.enumAnnotationConfig)
         this.classAnnotationConfig = new ClassAnnotationConfig(config.classAnnotationConfig);
         this.methodAnnotationConfig = new MethodAnnotationConfig(config.methodAnnotationConfig);
         this.propertyAnnotationConfig = new PropertyAnnotationConfig(config.propertyAnnotationConfig);

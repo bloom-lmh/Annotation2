@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>配置控制台</title>
+    <!-- 引入 Vuetify CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@3.7.6/dist/vuetify.min.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="app">
+      <v-container>
+        <v-card>
+          <v-toolbar color="primary" title="配置控制台">
+            <v-btn @click="submitConfig" prepend-icon="$vuetify" variant="tonal" class="mr-4">
+              提交配置
+            </v-btn>
+          </v-toolbar>
+          <v-combobox
+            clearable
+            chips
+            label="项目文件"
+            :items="projectPaths"
+            :select="selectProjects"
+            variant="outlined"
+            class="px-4 pt-4"
+          ></v-combobox>
+          <v-card-item>
+            <div class="d-flex flex-row">
+              <v-tabs v-model="tab" color="primary" direction="vertical">
+                <v-tab
+                  v-for="(item, key) in allConfig"
+                  :key="key"
+                  :value="key"
+                  :prepend-icon="item.icon"
+                  :text="item.title"
+                ></v-tab>
+              </v-tabs>
+
+              <v-tabs-window class="flex-fill" v-model="tab">
+                <v-tabs-window-item v-for="(item, key) in allConfig" :key="key" :value="key">
+                  <v-container>
+                    <v-row>
+                      <v-col
+                        v-for="(configItemValue, configItemKey) in item.configItem"
+                        :key="key"
+                        cols="12"
+                        md="3"
+                        sm="3"
+                      >
+                        <v-switch
+                          v-model="configItemValue.value"
+                          color="indigo"
+                          :label="`@${configItemKey}${configItemValue.value ? '开启' : '关闭'}`"
+                          hide-details
+                        ></v-switch>
+                      </v-col>
+                    </v-row>
+                    <v-row> </v-row>
+                  </v-container>
+                </v-tabs-window-item>
+              </v-tabs-window>
+            </div>
+          </v-card-item>
+        </v-card>
+      </v-container>
+    </div>
+
+    <!-- 引入 Vue 3 和 Vuetify 的 JavaScript -->
+    <script src="https://unpkg.com/vue@3.2.0/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.7.6/dist/vuetify.min.js"></script>
+
+    <script>
+      const { createApp, ref, reactive, computed } = Vue;
+      const { createVuetify } = Vuetify;
+      // 获取 vscode API
+      const vscode = acquireVsCodeApi();
+      // 创建 Vuetify 实例
+      const vuetify = createVuetify();
+
+      const app = createApp({
+        setup() {
+          const selectProjects = reactive([]);
+          const projectPaths = reactive([]);
+          // 使用 Composition API 来定义数据和方法
+          const tab = ref('option-1');
+          const baseConfig = {
+            author: { title: '作者标签', value: '', example: '表示该方法的作者' },
+            static: { title: '静态标签', value: false, example: '表示该方法是静态的' },
+            access: { title: '访问控制', value: false, example: '表示访问控制的权限' },
+            alias: { title: '别名', value: false, example: '表示该方法的别名' },
+            version: { title: '版本', value: false, example: '表示该方法的版本' },
+            name: { title: '名称', value: false, example: '表示方法的名称' },
+            description: { title: '描述', value: false, example: '表示该方法的描述' },
+            license: { title: '许可证', value: false, example: '表示该方法的许可证信息' },
+            copyright: { title: '版权', value: false, example: '表示版权信息' },
+            tutorial: { title: '教程', value: false, example: '表示该方法的教程链接' },
+            see: { title: '查看', value: false, example: '表示查看更多信息的链接' },
+            summary: { title: '总结', value: false, example: '表示该方法的总结' },
+            example: { title: '示例', value: false, example: '表示示例代码' },
+            requires: { title: '要求', value: false, example: '表示该方法的依赖要求' }
+          };
+          const methodConfig = reactive({
+            ...JSON.parse(JSON.stringify(baseConfig)),
+            async: { title: '异步标签', value: false, example: '表示该方法是异步的' },
+            function: { title: '函数标签', value: false, example: '表示该方法是函数' },
+            throws: { title: '抛出标签', value: false, example: '表示该方法会抛出异常' },
+            params: { title: '参数标签', value: false, example: '表示该方法的参数' },
+            returns: { title: '返回标签', value: false, example: '表示该方法的返回值' }
+          });
+          const classConfig = reactive({
+            ...JSON.parse(JSON.stringify(baseConfig)),
+            class: { title: '类', value: false, example: '表示一个类' },
+            abstract: { title: '抽象类', value: false, example: '表示一个抽象类' },
+            extends: { title: '继承', value: false, example: '表示该类继承自另一个类' },
+            implements: { title: '实现', value: false, example: '表示该类实现了某个接口' }
+          });
+          const propertyConfig = reactive({
+            ...JSON.parse(JSON.stringify(baseConfig)),
+            property: { title: '属性', value: false, example: '表示类的属性' },
+            static: { title: '静态', value: false, example: '表示该成员是静态的' },
+            type: { title: '类型', value: false, example: '表示该成员的类型' },
+            default: { title: '默认值', value: false, example: '表示该成员的默认值' }
+          });
+          const interfaceConfig = reactive({
+            ...JSON.parse(JSON.stringify(baseConfig)),
+            interface: { title: '接口', value: false, example: '表示接口类型' }
+          });
+          const enumConfig = reactive({
+            ...JSON.parse(JSON.stringify(baseConfig)),
+            enum: false
+          });
+          const typedefConfig = reactive({
+            ...JSON.parse(JSON.stringify(baseConfig)),
+            typedef: { title: '类型定义', value: false, example: '表示类型定义' },
+            type: { title: '类型', value: false, example: '表示数据的类型' }
+          });
+          const translateConfig = reactive({
+            open: { title: '开启', value: false, example: '表示该功能是否开启' },
+            api: { title: 'API', value: [], example: '表示相关的 API 列表' },
+            wordMap: { title: '词汇映射', value: {}, example: '表示词汇的映射关系' },
+            memory: { title: '内存', value: false, example: '表示是否启用内存' }
+          });
+          const fileConfig = reactive({});
+          const globalConfig = reactive({
+            author: { title: '作者信息', value: false, example: '表示类型定义' },
+            version: { title: '版本号', value: false, example: '表示类型定义' },
+            description: { title: '描述信息', value: false, example: '表示类型定义' }
+          });
+          const systemConfig = reactive({});
+          // 总体配置
+          const allConfig = {
+            methodAnnotationConfig: {
+              title: '方法注释配置',
+              icon: 'mdi-lock',
+              configItem: methodConfig
+            },
+            classAnnotationConfig: {
+              title: '类注释配置',
+              icon: 'mdi-lock',
+              configItem: classConfig
+            },
+            propertyAnnotationConfig: {
+              title: '属性注释配置',
+              icon: 'mdi-lock',
+              configItem: propertyConfig
+            },
+            interfaceAnnotationConfig: {
+              title: '接口注释配置',
+              icon: 'mdi-lock',
+              configItem: interfaceConfig
+            },
+            enumAnnotationConfig: {
+              title: '枚举注释配置',
+              icon: 'mdi-lock',
+              configItem: enumConfig
+            },
+            typedefAnnotationConfig: {
+              title: '自定义类型配置',
+              icon: 'mdi-lock',
+              configItem: typedefConfig
+            },
+            fileAnnotationConfig: {
+              title: '文件注释配置',
+              icon: 'mdi-lock',
+              configItem: fileConfig
+            },
+            globalAnnotationConfig: {
+              title: '全局注释配置',
+              icon: 'mdi-lock',
+              configItem: globalConfig
+            },
+            translateConfig: {
+              title: '翻译配置',
+              icon: 'mdi-lock',
+              configItem: translateConfig
+            },
+            systemConfig: {
+              title: '系统配置',
+              icon: 'mdi-lock',
+              configItem: systemConfig
+            }
+          };
+          const model = ref(true);
+          // 提交配置
+          const submitConfig = () => {
+            let config = transformConfig(allConfig);
+            vscode.postMessage({
+              command: 'submitConfig',
+              message: JSON.stringify(config)
+            });
+          };
+
+          // 接收来自插件的数据
+          window.addEventListener('message', (event) => {
+            const { command, data } = event.data; // 获取消息
+            if (command === 'pushProjectPathData') {
+              console.log(projectPaths);
+              data.forEach((element) => {
+                projectPaths.push(element);
+              });
+              console.log(projectPaths);
+            }
+          });
+          // 返回值会暴露给模板
+          return {
+            tab,
+            model,
+            selectProjects,
+            projectPaths,
+            allConfig,
+            submitConfig
+          };
+        }
+      });
+
+      // 使用 Vuetify 插件
+      app.use(vuetify);
+
+      // 挂载 Vue 应用
+      app.mount('#app');
+      function transformConfig(allConfig) {
+        const result = {};
+
+        // 遍历 allConfig 中每个配置项
+        for (const [key, config] of Object.entries(allConfig)) {
+          // 获取 configItem 对应的字段对象
+          const configItem = config.configItem;
+
+          // 遍历 configItem 中的字段，生成新的对象
+          const transformedConfig = {};
+          for (const field in configItem) {
+            if (configItem.hasOwnProperty(field)) {
+              // 每个字段只保留键并将其值设为 false
+              transformedConfig[field] = configItem[field].value;
+            }
+          }
+          // 将转换后的配置项添加到结果对象中
+          result[key] = transformedConfig;
+        }
+
+        return result;
+      }
+    </script>
+  </body>
+</html>
