@@ -6,15 +6,15 @@ import { JSDocGenerator } from "../generator/jsDocGenerator"
 export class BaseAnnotation {
     protected _authorTag: string = ""
     protected _accessTag: string = ""
-    protected _aliasTag: string = ""
+    protected _aliasTag: boolean = false
     protected _versionTag: string = ""
     protected _nameTag: string = ""
-    protected _descriptionTag: string = ""
+    protected _descriptionTag: boolean = false
     protected _licenseTag: string = ""
     protected _copyrightTag: string = ""
-    protected _seeTag: string = ""
-    protected _summaryTag: string = ""
-    protected _exampleTag: string = ""
+    protected _seeTag: boolean = false
+    protected _summaryTag: boolean = false
+    protected _exampleTag: boolean = false
 
 
     setAuthorTag(tag: string): this {
@@ -27,7 +27,7 @@ export class BaseAnnotation {
         return this;
     }
 
-    setAliasTag(tag: string): this {
+    setAliasTag(tag: boolean): this {
         this._aliasTag = tag;
         return this;
     }
@@ -42,7 +42,7 @@ export class BaseAnnotation {
         return this;
     }
 
-    setDescriptionTag(tag: string): this {
+    setDescriptionTag(tag: boolean): this {
         this._descriptionTag = tag;
         return this;
     }
@@ -57,17 +57,17 @@ export class BaseAnnotation {
         return this;
     }
 
-    setSeeTag(tag: string): this {
+    setSeeTag(tag: boolean): this {
         this._seeTag = tag;
         return this;
     }
 
-    setSummaryTag(tag: string): this {
+    setSummaryTag(tag: boolean): this {
         this._summaryTag = tag;
         return this;
     }
 
-    setExampleTag(tag: string): this {
+    setExampleTag(tag: boolean): this {
         this._exampleTag = tag;
         return this;
     }

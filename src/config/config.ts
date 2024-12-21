@@ -21,94 +21,96 @@ export class GlobalAnnotationConfig {
     author: string;
     version: string;
     description: string;
+    license: string;
+    copyright: string;
 
     constructor(config: Partial<GlobalAnnotationConfig> = {}) {
         this.author = config.author ?? '';
         this.version = config.version ?? '';
         this.description = config.description ?? '';
+        this.license = config.license ?? '';
+        this.copyright = config.copyright ?? '';
     }
 }
 /**
  * 基础注解配置
  */
 export class BaseAnnotationConfig {
-    authorTag: boolean;
-    accessTag: boolean;
-    aliasTag: boolean;
-    versionTag: boolean;
-    nameTag: boolean;
-    descriptionTag: boolean;
-    licenseTag: boolean;
-    copyrightTag: boolean;
-    tutorialTag: boolean;
-    seeTag: boolean;
-    summaryTag: boolean;
-    exampleTag: boolean;
-    requiresTag: boolean;
+    author: boolean;
+    access: boolean;
+    alias: boolean;
+    version: boolean;
+    name: boolean;
+    description: boolean;
+    license: boolean;
+    copyright: boolean;
+    tutorial: boolean;
+    see: boolean;
+    summary: boolean;
+    example: boolean;
 
     constructor(config: Partial<BaseAnnotationConfig> = {}) {
-        this.authorTag = config.authorTag ?? false;
-        this.accessTag = config.accessTag ?? false;
-        this.aliasTag = config.aliasTag ?? false;
-        this.versionTag = config.versionTag ?? false;
-        this.nameTag = config.nameTag ?? false;
-        this.descriptionTag = config.descriptionTag ?? false;
-        this.licenseTag = config.licenseTag ?? false;
-        this.copyrightTag = config.copyrightTag ?? false;
-        this.tutorialTag = config.tutorialTag ?? false;
-        this.seeTag = config.seeTag ?? false;
-        this.summaryTag = config.summaryTag ?? false;
-        this.exampleTag = config.exampleTag ?? false;
-        this.requiresTag = config.requiresTag ?? false;
+        this.author = config.author ?? false;
+        this.access = config.access ?? false;
+        this.alias = config.alias ?? false;
+        this.version = config.version ?? false;
+        this.name = config.name ?? false;
+        this.description = config.description ?? false;
+        this.license = config.license ?? false;
+        this.copyright = config.copyright ?? false;
+        this.tutorial = config.tutorial ?? false;
+        this.see = config.see ?? false;
+        this.summary = config.summary ?? false;
+        this.example = config.example ?? false;
     }
 }
 /**
  * 接口类型配置
  */
 export class InterfaceAnnotationConfig extends BaseAnnotationConfig {
-    interfaceTag: boolean;
+    interface: boolean;
     constructor(config: Partial<InterfaceAnnotationConfig> = {}) {
         super(config);
-        this.interfaceTag = config.interfaceTag ?? false;
+        this.interface = config.interface ?? false;
     }
 }
 /**
  * 自定义类型配置
  */
 export class TypedefAnnotationConfig extends BaseAnnotationConfig {
-    typedefTag: boolean;
-    typeTag: boolean;
+    typedef: boolean;
+    type: boolean;
     constructor(config: Partial<TypedefAnnotationConfig> = {}) {
         super(config);
-        this.typedefTag = config.typedefTag ?? false;
-        this.typeTag = config.typeTag ?? false;
+        this.typedef = config.typedef ?? false;
+        this.type = config.type ?? false;
     }
 }
 /**
  * 枚举类型配置
  */
 export class EnumAnnotationConfig extends BaseAnnotationConfig {
-    enumTag: boolean;
+    enum: boolean;
     constructor(config: Partial<EnumAnnotationConfig> = {}) {
         super(config);  // Initialize properties from BaseAnnotationConfig
-        this.enumTag = config.enumTag ?? false;
+        this.enum = config.enum ?? false;
     }
 }
 /**
  * 类注解配置
  */
 export class ClassAnnotationConfig extends BaseAnnotationConfig {
-    classTag: boolean;
+    class: boolean;
     abstract: boolean;
-    extendsTag: boolean;
-    implementsTag: boolean;
+    extends: boolean;
+    implements: boolean;
 
     constructor(config: Partial<ClassAnnotationConfig> = {}) {
         super(config);  // Initialize properties from BaseAnnotationConfig
-        this.classTag = config.classTag ?? false;
+        this.class = config.class ?? false;
         this.abstract = config.abstract ?? false;
-        this.extendsTag = config.extendsTag ?? false;
-        this.implementsTag = config.implementsTag ?? false;
+        this.extends = config.extends ?? false;
+        this.implements = config.implements ?? false;
     }
 }
 
@@ -116,21 +118,21 @@ export class ClassAnnotationConfig extends BaseAnnotationConfig {
  * 方法注解配置
  */
 export class MethodAnnotationConfig extends BaseAnnotationConfig {
-    asyncTag: boolean;
-    functionTag: boolean;
-    throwsTag: boolean;
-    paramsTag: boolean;
-    returnsTag: boolean;
-    staticTag: boolean;
+    async: boolean;
+    function: boolean;
+    throws: boolean;
+    params: boolean;
+    returns: boolean;
+    static: boolean;
 
     constructor(config: Partial<MethodAnnotationConfig> = {}) {
         super(config);  // Initialize properties from BaseAnnotationConfig
-        this.asyncTag = config.asyncTag ?? false;
-        this.functionTag = config.functionTag ?? false;
-        this.throwsTag = config.throwsTag ?? false;
-        this.paramsTag = config.paramsTag ?? false;
-        this.returnsTag = config.returnsTag ?? false;
-        this.staticTag = config.staticTag ?? false;
+        this.async = config.async ?? false;
+        this.function = config.function ?? false;
+        this.throws = config.throws ?? false;
+        this.params = config.params ?? false;
+        this.returns = config.returns ?? false;
+        this.static = config.static ?? false;
     }
 }
 
@@ -164,13 +166,13 @@ export class SystemConfig {
  * 文件注释类
  */
 export class FileAnnotationConfig extends BaseAnnotationConfig {
-    fileTag: boolean;
-    moduleTag: boolean;
+    file: boolean;
+    module: boolean;
 
     constructor(config: Partial<FileAnnotationConfig> = {}) {
         super(config);  // Initialize properties from BaseAnnotationConfig
-        this.fileTag = config.fileTag ?? false;
-        this.moduleTag = config.moduleTag ?? false;
+        this.file = config.file ?? false;
+        this.module = config.module ?? false;
     }
 }
 /**

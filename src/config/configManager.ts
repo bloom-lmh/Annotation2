@@ -22,19 +22,18 @@ export class ConfigManager {
         if (config) {
             this.configMaps.set(projectPath, config)
         }
-        this.visitAll()
+
     }
     // 获取配置
-    public static getConfig(projectPath: string) {
+    public static getConfig(projectPath: string): Config {
         // 尝试获取缓存的用户配置
-        let config = this.configMaps.get(projectPath)
+        let config = this.configMaps.get(projectPath) || new Config()
         // 返回配置
         return config
     }
     // 删除配置文件
     public static removeConfig(projectPath: string) {
         this.configMaps.delete(projectPath)
-        this.visitAll()
     }
     // 遍历map调试的时候使用
     public static visitAll() {

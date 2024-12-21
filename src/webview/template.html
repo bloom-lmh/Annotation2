@@ -3,245 +3,173 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vue 3 Webview</title>
-    <!-- 引入 Vue 3 CDN -->
-    <script src="https://unpkg.com/vue@3.2.0/dist/vue.global.js"></script>
-    <link rel="stylesheet" href="./style.css" />
-    <style>
-      /* 页面基础样式 */
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(45deg, #1d2b64, #f8a1d1); /* 渐变背景 */
-        color: #333;
-        display: flex;
-        min-height: 100vh;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        padding: 0 20px;
-        overflow-x: hidden;
-      }
-
-      h1 {
-        margin-bottom: 40px;
-        font-size: 3rem;
-        color: #fff;
-        text-align: center;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        animation: fadeIn 2s ease-out;
-      }
-
-      /* 配置台容器 */
-      .dashboard {
-        width: 100%;
-        max-width: 1200px;
-        background-color: #ffffff;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        padding: 40px;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-        transition: all 0.5s ease;
-      }
-
-      .dashboard:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-      }
-
-      /* 卡片样式 */
-      .card {
-        background-color: #f9f9f9;
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-      }
-
-      .card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      }
-
-      .card-header {
-        font-size: 1.8rem;
-        color: #4caf50;
-        margin-bottom: 20px;
-        font-weight: bold;
-        text-transform: capitalize;
-        letter-spacing: 1px;
-        position: relative;
-        z-index: 1;
-      }
-
-      .card-body {
-        font-size: 1rem;
-        color: #777;
-        line-height: 1.6;
-      }
-
-      .card-footer {
-        margin-top: 20px;
-        text-align: right;
-      }
-
-      .btn {
-        background-color: #4caf50;
-        color: #fff;
-        padding: 12px 25px;
-        font-size: 1.2rem;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.3s ease;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      }
-
-      .btn:hover {
-        background-color: #45a049;
-        transform: scale(1.05);
-      }
-
-      /* 表单样式 */
-      .form-group {
-        margin-top: 30px;
-        text-align: center;
-      }
-
-      .form-group button {
-        margin-top: 20px;
-        background-color: #4caf50;
-        color: #fff;
-        border: none;
-        padding: 15px 30px;
-        font-size: 1.5rem;
-        border-radius: 8px;
-        cursor: pointer;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, background-color 0.3s ease;
-      }
-
-      .form-group button:hover {
-        background-color: #45a049;
-        transform: translateY(-5px);
-      }
-
-      /* 响应式设计 */
-      @media screen and (max-width: 900px) {
-        .dashboard {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
-      @media screen and (max-width: 600px) {
-        .dashboard {
-          grid-template-columns: 1fr;
-          padding: 20px;
-        }
-
-        .card {
-          padding: 25px;
-        }
-      }
-
-      /* 动画效果 */
-      @keyframes fadeIn {
-        0% {
-          opacity: 0;
-          transform: translateY(50px);
-        }
-        100% {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-    </style>
+    <title>配置控制台</title>
+    <!-- 引入 Vuetify CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@3.7.6/dist/vuetify.min.css" rel="stylesheet" />
   </head>
   <body>
     <div id="app">
-      <h1>配置控制台</h1>
+      <v-container>
+        <v-card>
+          <v-toolbar color="primary" title="配置控制台">
+            <v-btn @click="submitConfig" prepend-icon="$vuetify" variant="tonal" class="mr-4">
+              提交配置
+            </v-btn>
+          </v-toolbar>
+          <v-combobox
+            clearable
+            chips
+            label="项目文件"
+            :items="projectPaths"
+            variant="outlined"
+            class="px-4 pt-4"
+            v-model="selectedProject"
+            @update:model-value="onSelectedProject"
+            @update:focused=""
+          >
+          </v-combobox>
+          <v-card-item>
+            <div class="d-flex flex-row">
+              <v-tabs v-model="tab" color="primary" direction="vertical">
+                <v-tab
+                  v-for="(configItem, key,index) in configs"
+                  :key="key"
+                  :value="key"
+                  :prepend-icon="configIcons[index]"
+                  :text="configNames[index]"
+                ></v-tab>
+              </v-tabs>
 
-      <div class="dashboard">
-        <!-- 方法注解配置 -->
-        <div class="card">
-          <div class="card-header">方法注解配置</div>
-          <div class="card-body">
-            <p>调整您的基本配置项，包括语言、主题等设置。</p>
-          </div>
-        </div>
-
-        <!-- 类注解配置 -->
-        <div class="card">
-          <div class="card-header">类注解配置</div>
-          <div class="card-body">
-            <p>管理您的账户信息，如密码、邮箱等。</p>
-          </div>
-        </div>
-
-        <!-- 属性注解配置 -->
-        <div class="card">
-          <div class="card-header">属性注解配置</div>
-          <div class="card-body">
-            <p>选择您希望接收的通知类型。</p>
-          </div>
-        </div>
-
-        <!-- 枚举注解配置 -->
-        <div class="card">
-          <div class="card-header">接口注解配置</div>
-          <div class="card-body">
-            <p>选择您希望接收的通知类型。</p>
-          </div>
-        </div>
-
-        <!-- 自定义类型注解配置 -->
-        <div class="card">
-          <div class="card-header">自定义注解配置</div>
-          <div class="card-body">
-            <p>选择您希望接收的通知类型。</p>
-          </div>
-        </div>
-
-        <!-- 文件配置 -->
-        <div class="card">
-          <div class="card-header">文件注解配置</div>
-          <div class="card-body">
-            <p>选择您希望接收的通知类型。</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- 表单示例 -->
-      <div class="form-group">
-        <button @click="sendMessage">{{message}}</button>
-      </div>
+              <v-tabs-window class="flex-fill" v-model="tab">
+                <v-tabs-window-item v-for="(configItem, key) in configs" :key="key" :value="key">
+                  <v-container>
+                    <v-row>
+                      <v-col v-for="(tagValue, tagKey) in configItem" :key="tagKey" cols="12" md="4" sm="4">
+                        <v-text-field
+                          v-if="typeof tagValue === 'string'"
+                          variant="underlined"
+                          :label="`@${tagKey}`"
+                        ></v-text-field>
+                        <v-switch
+                          v-else
+                          v-model="configItem[tagKey]"
+                          color="indigo"
+                          :label="`@${tagKey}${tagValue ? '开启' : '关闭'}`"
+                          hide-details
+                        ></v-switch>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-tabs-window-item>
+              </v-tabs-window>
+            </div>
+          </v-card-item>
+        </v-card>
+      </v-container>
     </div>
 
+    <!-- 引入 Vue 3 和 Vuetify 的 JavaScript -->
+    <script src="https://unpkg.com/vue@3.2.0/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.7.6/dist/vuetify.min.js"></script>
+
     <script>
-      const { createApp, ref } = Vue;
+      const { createApp, ref, reactive, computed } = Vue;
+      const { createVuetify } = Vuetify;
       // 获取 vscode API
       const vscode = acquireVsCodeApi();
-      // 创建 Vue 应用
+      // 创建 Vuetify 实例
+      const vuetify = createVuetify();
+
       const app = createApp({
         setup() {
-          const message = ref('Hello, Vue 3 in VS Code Webview!');
-          const sendMessage = () => {
+          let tab = ref('');
+          // 项目配置
+          let projectConfigs = reactive({});
+          // 项目路径计算属性
+          let projectPaths = computed(() => Object.keys(projectConfigs));
+          // 项目配置
+          let configs = reactive({});
+          // 项目配置名
+          let configNames = [
+            '接口注释配置',
+            '自定义注释配置',
+            '枚举注释配置',
+            '类注释配置',
+            '方法注释配置',
+            '属性注释配置',
+            '全局注释配置',
+            '文件注释配置',
+            '翻译配置',
+            '系统配置'
+          ];
+          // 配置项图标
+          let configIcons = [
+            'mdi-memory',
+            'mdi-meteor',
+            'mdi-cup',
+            'mdi-glasses',
+            'mdi-chili-hot',
+            'mdi-earth',
+            'mdi-file',
+            'mdi-airplane-takeoff',
+            'mdi-translate',
+            'mdi-cog-outline'
+          ];
+          // 当前选中的项目
+          let selectedProject = ref('');
+          // 接收来自插件的数据
+          window.addEventListener('message', (event) => {
+            const { command, data } = event.data;
+            // 添加项目
+            if (command === 'addProjectConfig') {
+              data.forEach(({ projectPath, projectConfig }) => {
+                projectConfigs[item.projectPath] = item.projectConfig;
+              });
+            }
+            // 移除项目
+            if (command === 'removeProjectConfig') {
+              data.forEach((projectPath) => {
+                if (projectPath in projectConfigs) {
+                  delete projectConfigs[projectPath];
+                }
+              });
+              /*    selectedProject.value = ''; */
+            }
+            if (command === 'initProjectConfig') {
+              // 初始化项目配置
+              Object.assign(projectConfigs, data); // 使用 Object.assign 来更新响应式对象
+            }
+          });
+
+          // 提交配置
+          const submitConfig = () => {
             vscode.postMessage({
-              command: 'buttonClicked',
-              message: 'Button was clicked in Vue Webview!'
+              command: 'submitConfig',
+              message: JSON.stringify(projectConfigs)
             });
           };
-          return { message, sendMessage };
+          // 选中项目
+          const onSelectedProject = (value) => {
+            Object.assign(configs, projectConfigs[value]);
+          };
+
+          // 返回值会暴露给模板
+          return {
+            tab,
+            projectPaths,
+            configs,
+            submitConfig,
+            selectedProject,
+            onSelectedProject,
+            configNames,
+            configIcons
+          };
         }
       });
+
+      // 使用 Vuetify 插件
+      app.use(vuetify);
 
       // 挂载 Vue 应用
       app.mount('#app');

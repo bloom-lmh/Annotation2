@@ -16,8 +16,8 @@ export class JSDocGenerator {
         value && (this.jsdoc += `\n * @access ${value}`)
         return this
     }
-    setAliasTag(value: string): this {
-        value && (this.jsdoc += `\n * @alias ${value}`)
+    setAliasTag(value: boolean): this {
+        value && (this.jsdoc += `\n * @alias`)
         return this
     }
     setVersionTag(value: string): this {
@@ -28,8 +28,8 @@ export class JSDocGenerator {
         value && (this.jsdoc += `\n * @name ${value}`)
         return this
     }
-    setDescriptionTag(value: string): this {
-        value && (this.jsdoc += `\n * @description ${value}`)
+    setDescriptionTag(value: boolean): this {
+        value && (this.jsdoc += `\n * @description`)
         return this
     }
     setLicenseTag(value: string): this {
@@ -40,16 +40,16 @@ export class JSDocGenerator {
         value && (this.jsdoc += `\n * @copyright ${value}`)
         return this
     }
-    setSeeTag(value: string): this {
-        value && (this.jsdoc += `\n * @see ${value}`)
+    setSeeTag(value: boolean): this {
+        value && (this.jsdoc += `\n * @see`)
         return this
     }
-    setSummaryTag(value: string): this {
-        value && (this.jsdoc += `\n * @summary ${value}`)
+    setSummaryTag(value: boolean): this {
+        value && (this.jsdoc += `\n * @summary`)
         return this
     }
-    setExampleTag(value: string): this {
-        value && (this.jsdoc += `\n * @example ${value}`)
+    setExampleTag(value: boolean): this {
+        value && (this.jsdoc += `\n * @example`)
         return this
     }
     setInterfaceTag(value: boolean): this {

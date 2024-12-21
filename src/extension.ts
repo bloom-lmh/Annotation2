@@ -7,7 +7,6 @@ import path from 'path';
 import { Config } from './config/config';
 import { AnnotationFactory } from './annotation/annotationFactory';
 import { ConfigLoader } from './config/configLoader';
-import { readFileSync } from 'fs';
 import { WorkspaceUtil } from './utils/workspaceUtil';
 import { PanelFactory } from './panel/panelFactory';
 import { ConfigManager } from './config/configManager';
@@ -19,41 +18,54 @@ export function activate(context: ExtensionContext) {
     projectPaths.forEach(projectPath => {
         ConfigManager.addConfig(projectPath)
     })
+    /*  ConfigManager.visitAll() */
     // 模板路径
-    const templatePath = path.join(context.extensionPath, 'src/webview', "test.html")
+    const templatePath = path.join(context.extensionPath, 'src/webview', "template.html")
     // 创建面板
-    let panel: vscode.WebviewPanel | null = null
+    let panel: vscode.WebviewPanel | null
     // 监听项目变化,动态注入配置
     const workspaceFolderDisposable = vscode.workspace.onDidChangeWorkspaceFolders((event) => {
+        let addProjectConfigs: { projectPath: string; projectConfig: Config | undefined; }[] = []
+        let removeProjectPaths: string[] = []
         // 存入项目配置
         event.added.forEach(folder => {
             let projectPath = folder.uri.fsPath
             ConfigManager.addConfig(projectPath)
             // 获取项目配置
             let projectConfig = ConfigManager.getConfig(projectPath)
-            // 通知添加项目配置
-            if (panel) {
-                panel.webview.postMessage({ command: 'addProjectConfig', data: { projectPath, projectConfig } });
-            }
+            addProjectConfigs.push({ projectPath, projectConfig })
         });
         // 移除项目配置
         event.removed.forEach((folder) => {
             let projectPath = folder.uri.fsPath
             ConfigManager.removeConfig(projectPath)
             // 通知移除项目配置
-            if (panel) {
-                panel.webview.postMessage({ command: 'removeProjectConfig', data: projectPath });
-            }
+            removeProjectPaths.push(projectPath)
         });
+
+        console.log(addProjectConfigs.length, removeProjectPaths.length);
+        if (panel) {
+            if (addProjectConfigs && addProjectConfigs.length > 0) {
+                console.log("A");
+                panel.webview.postMessage({ command: 'addProjectConfig', data: addProjectConfigs });
+            }
+            if (removeProjectPaths && removeProjectPaths.length > 0) {
+                console.log("B");
+                panel.webview.postMessage({ command: 'removeProjectConfig', data: removeProjectPaths });
+            }
+        }
+
+
     });
 
 
     // 打开配置面板
     const disposable1 = vscode.commands.registerCommand('openConfigConsole', async () => {
-        // 创建面板
-        panel = PanelFactory.getConfigPanel(templatePath)
         // 获取项目路径
         const projectPaths = WorkspaceUtil.getProjectPaths()
+
+        panel = PanelFactory.getConfigPanel(templatePath)
+
         let projectConfigs: { [key: string]: Config } = {}
         // 循环获取配置
         projectPaths.forEach(projectPath => {
@@ -87,7 +99,9 @@ export function activate(context: ExtensionContext) {
                 return
             }
             // 加载用户配置
-            let config: Config = ConfigLoader.loadConfig(path.join(projectPath, "annotation.config.json"))
+            // let config: Config = ConfigLoader.loadConfig(path.join(projectPath, "annotation.config.json"))
+            let config: Config = ConfigManager.getConfig(projectPath)
+            console.log(config);
 
             // 调用注解工厂创建注解
             let annotation = AnnotationFactory.getAnnotation(memberDeclaration, config)

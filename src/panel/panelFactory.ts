@@ -1,6 +1,8 @@
 import { readFileSync } from 'fs';
 import * as vscode from 'vscode';
 import { WorkspaceUtil } from '../utils/workspaceUtil';
+import { ConfigManager } from '../config/configManager';
+import { Config } from '../config/config';
 /**
  * 面板工厂
  */
@@ -16,7 +18,7 @@ export class PanelFactory {
             this.panel = vscode.window.createWebviewPanel(
                 'customHtmlPanel',  // Webview 类型
                 '配置面板',  // 面板标题
-                vscode.ViewColumn.One,  // 显示在第一个列
+                vscode.ViewColumn.Active,  // 显示在第一个列
                 {
                     enableScripts: true, // 允许脚本执行
                     retainContextWhenHidden: true // 保持上下文，即使面板不可见
@@ -30,12 +32,18 @@ export class PanelFactory {
             this.panel.webview.onDidReceiveMessage(message => {
                 switch (message.command) {
                     case 'submitConfig':
-                        console.log(message.message);
-                        vscode.window.showInformationMessage(message.message);  // 显示点击消息
+                        let projectConfigs: { [key: string]: Config } = JSON.parse(message.message)
+                        // 将配置存入管理机
+                        for (const [projectPath, projectConfig] of Object.entries(projectConfigs)) {
+                            ConfigManager.addConfig(projectPath, projectConfig)
+                        }
                         return;
                 }
             });
         }
+        this.panel.webview.onDidReceiveMessage((message) => {
+            console.log(message); // 监听 Webview 中的消息
+        });
         // 监听销毁事件
         this.panel.onDidDispose(() => {
             console.log('Webview 面板已销毁');
