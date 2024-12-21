@@ -1,22 +1,52 @@
+import { ClassDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, MethodDeclaration, PropertyDeclaration, TypeAliasDeclaration } from "ts-morph"
+import { BaseAnnotationConfig, ClassAnnotationConfig, EnumAnnotationConfig, FileAnnotationConfig, GlobalAnnotationConfig, InterfaceAnnotationConfig, MethodAnnotationConfig, PropertyAnnotationConfig, TypedefAnnotationConfig } from "../config/config"
 import { JSDocGenerator } from "../generator/jsDocGenerator"
+import { AstUtil, MemberDeclaration } from "../utils/astUtil"
 
 /**
  * 全体注解公共标签
  */
-export class BaseAnnotation {
+export class BaseAnnotation<T extends BaseAnnotationConfig> {
+
     protected _authorTag: string = ""
     protected _accessTag: string = ""
     protected _aliasTag: boolean = false
     protected _versionTag: string = ""
     protected _nameTag: string = ""
-    protected _descriptionTag: boolean = false
+    protected _descriptionTag: string = ""
     protected _licenseTag: string = ""
     protected _copyrightTag: string = ""
     protected _seeTag: boolean = false
     protected _summaryTag: boolean = false
     protected _exampleTag: boolean = false
 
+    constructor(globalAnnotationConfig: GlobalAnnotationConfig, concreteAnnotationConfig: T, memberDeclaration: MemberDeclaration) {
+        // 解构全局配置
+        const { author: authorValue, version: versionValue, description: descriptionValue, license: licenseValue, copyright: copyrightValue } = globalAnnotationConfig
+        // 获取方法配置
+        const { author, alias, version, name, description, license, copyright, see, summary, example } = concreteAnnotationConfig
+        // 成员名
+        this._nameTag = name ? memberDeclaration?.getName() || "" : ""
+        // 作者标签
+        this._authorTag = author ? authorValue : ""
+        // 版本标签
+        this._versionTag = version ? versionValue : ""
+        // 执照标签
+        this._licenseTag = license ? licenseValue : ""
+        // 版权标签
+        this._copyrightTag = copyright ? copyrightValue : ""
+        // 描述信息标签
+        this._descriptionTag = description ? descriptionValue : ""
+        // 别名标签
+        this._aliasTag = alias
+        // 参考标签
+        this._seeTag = see
+        // 总结标签
+        this._summaryTag = summary
+        // 案例标签
+        this._exampleTag = example
 
+    }
     setAuthorTag(tag: string): this {
         this._authorTag = tag;
         return this;
@@ -42,7 +72,7 @@ export class BaseAnnotation {
         return this;
     }
 
-    setDescriptionTag(tag: boolean): this {
+    setDescriptionTag(tag: string): this {
         this._descriptionTag = tag;
         return this;
     }
@@ -71,6 +101,12 @@ export class BaseAnnotation {
         this._exampleTag = tag;
         return this;
     }
+    /*  public buildAnnotation(globalAnnotationConfig: GlobalAnnotationConfig, concreteAnnotationConfig: T): T {
+        
+ 
+         // 返回注解
+         return new BaseAnnotation()
+     } */
 
     public buildJSDoc(): string {
         let jsdoc = new JSDocGenerator()
@@ -93,9 +129,14 @@ export class BaseAnnotation {
 /**
  * 接口注解
  */
-export class InterfaceAnnotation extends BaseAnnotation {
+export class InterfaceAnnotation extends BaseAnnotation<InterfaceAnnotationConfig> {
     private _interfaceTag: boolean = true;
 
+    constructor(globalAnnotationConfig: GlobalAnnotationConfig, concreteAnnotationConfig: InterfaceAnnotationConfig, memberDeclaration: InterfaceDeclaration) {
+        super(globalAnnotationConfig, concreteAnnotationConfig, memberDeclaration)
+        const { interface: interfaceValue } = concreteAnnotationConfig
+        this._interfaceTag = interfaceValue
+    }
     setInterfaceTag(value: boolean): this {
         this._interfaceTag = value;
         return this;
@@ -117,7 +158,7 @@ export class InterfaceAnnotation extends BaseAnnotation {
 /**
  * 文件注解
  */
-export class FileAnnotation extends BaseAnnotation {
+export class FileAnnotation extends BaseAnnotation<FileAnnotationConfig> {
     private _fileTag: boolean = false;
     private _moduleTag: boolean = false;
 
@@ -144,8 +185,14 @@ export class FileAnnotation extends BaseAnnotation {
 /**
  * 枚举注解
  */
-export class EnumAnnotation extends BaseAnnotation {
+export class EnumAnnotation extends BaseAnnotation<EnumAnnotationConfig> {
     private _enumTag: boolean = true;
+
+    constructor(globalAnnotationConfig: GlobalAnnotationConfig, concreteAnnotationConfig: EnumAnnotationConfig, memberDeclaration: EnumDeclaration) {
+        super(globalAnnotationConfig, concreteAnnotationConfig, memberDeclaration)
+        const { enum: enumValue } = concreteAnnotationConfig
+        this._enumTag = enumValue
+    }
 
     setEnumTag(value: boolean): this {
         this._enumTag = value;
@@ -153,10 +200,12 @@ export class EnumAnnotation extends BaseAnnotation {
     }
 
     public buildJSDoc(): string {
-        let jsdoc = "/**"
-        this._nameTag && (jsdoc += `\n * @name ${this._nameTag}`)
-        this._enumTag && (jsdoc += `\n * @enum`)
-        jsdoc += '\n */'
+        let other = super.buildJSDoc()
+        let jsdoc = new JSDocGenerator()
+            .setEnumTag(this._enumTag)
+            .setNameTag(this._nameTag)
+            .union(other)
+            .build()
         return jsdoc
     }
 }
@@ -164,9 +213,17 @@ export class EnumAnnotation extends BaseAnnotation {
 /**
  * 自定义类型注解
  */
-export class TypedefAnnotation extends BaseAnnotation {
+export class TypedefAnnotation extends BaseAnnotation<TypedefAnnotationConfig> {
     private _typedefTag: boolean = true;
     private _typeTag: string = ""
+
+    constructor(globalAnnotationConfig: GlobalAnnotationConfig, concreteAnnotationConfig: TypedefAnnotationConfig, memberDeclaration: TypeAliasDeclaration) {
+        super(globalAnnotationConfig, concreteAnnotationConfig, memberDeclaration)
+        const { type, typedef } = concreteAnnotationConfig
+        this._typedefTag = typedef
+        this._typeTag = type ? AstUtil.getType(memberDeclaration) : ""
+
+    }
 
     setTypedefTag(value: boolean): this {
         this._typedefTag = value;
@@ -191,11 +248,24 @@ export class TypedefAnnotation extends BaseAnnotation {
 /**
  * 类注解模型
  */
-export class ClassAnnotation extends BaseAnnotation {
+export class ClassAnnotation extends BaseAnnotation<ClassAnnotationConfig> {
     private _classTag: boolean = true;
     private _abstract: boolean = false;
     private _extendsTag: string = "";
     private _implementsTag: Array<string> = []
+
+    constructor(globalAnnotationConfig: GlobalAnnotationConfig, concreteAnnotationConfig: ClassAnnotationConfig, memberDeclaration: ClassDeclaration) {
+        super(globalAnnotationConfig, concreteAnnotationConfig, memberDeclaration)
+        const { abstract: abstractTag, extends: extendsTag, implements: implementsTag } = concreteAnnotationConfig
+        // 获取抽象标志
+        this._abstract = abstractTag ? memberDeclaration.isAbstract() : false
+        // 获取继承的类名
+        this._extendsTag = extendsTag ? memberDeclaration.getExtends()?.getText() || "" : ""
+        // 获取实现的接口
+        this._implementsTag = implementsTag ? memberDeclaration.getImplements().map(implement => {
+            return implement.getText()
+        }) : []
+    }
 
     setClassTag(value: boolean): this {
         this._classTag = value;
@@ -234,13 +304,39 @@ export class ClassAnnotation extends BaseAnnotation {
 /**
  * 方法注解模型
  */
-export class MethodAnnotation extends BaseAnnotation {
+export class MethodAnnotation extends BaseAnnotation<MethodAnnotationConfig> {
     private _asyncTag: boolean = false;
     private _functionTag: boolean = true;
     private _throwsTag: Set<string> = new Set<string>;
     private _paramsTag: string[][] = [[]];
     private _returnsTag: string = "";
     private _staticTag: boolean = true;
+
+    constructor(globalAnnotationConfig: GlobalAnnotationConfig, concreteAnnotationConfig: MethodAnnotationConfig, memberDeclaration: MethodDeclaration | FunctionDeclaration) {
+        super(globalAnnotationConfig, concreteAnnotationConfig, memberDeclaration)
+        const { params, returns, throws, async, function: func, access } = concreteAnnotationConfig
+        // 方法标签
+        this._functionTag = func ? func : false
+        // 获取方法参数
+        this._paramsTag = params ? memberDeclaration.getParameters().map(param => {
+            return [param.getName(), param.getType().getText()]
+        }) : []
+        // 获取方法返回值
+        this._returnsTag = returns ? memberDeclaration.getReturnType().getText() : ""
+        // 获取方法抛出异常
+        this._throwsTag = throws ? AstUtil.getMethodThrows(memberDeclaration) : new Set<string>
+        // 获取方法是否异步
+        this._asyncTag = async ? !!memberDeclaration.getAsyncKeyword()?.getText() : false
+        // 获取方法访问控制信息
+        this._accessTag = access ? AstUtil.getModefier(memberDeclaration) : ""
+        /* if (access) {
+            memberDeclaration.getModifiers().forEach(modifier => {
+                if (modifier.getText()) {
+                    _access = modifier.getText()
+                }
+            })
+        } */
+    }
 
     setAsyncTag(value: boolean): this {
         this._asyncTag = value;
@@ -290,11 +386,32 @@ export class MethodAnnotation extends BaseAnnotation {
 /**
  * 属性注解模型
  */
-export class PropertyAnnotation extends BaseAnnotation {
+export class PropertyAnnotation extends BaseAnnotation<PropertyAnnotationConfig> {
     private _propertyTag: boolean = true;
     private _typeTag: string = "";
     private _staticTag: boolean = false;
     private _defaultTag: string = "";
+
+    constructor(globalAnnotationConfig: GlobalAnnotationConfig, concreteAnnotationConfig: PropertyAnnotationConfig, memberDeclaration: PropertyDeclaration) {
+        super(globalAnnotationConfig, concreteAnnotationConfig, memberDeclaration)
+
+        const { type, property, default: defaultTag, static: staticTag, access } = concreteAnnotationConfig
+        // 获取属性参数
+        this._typeTag = type ? memberDeclaration.getType().getText() : ""
+        // 获取默认值
+        this._defaultTag = defaultTag ? memberDeclaration.getInitializer()?.getText() || "" : ""
+        // 获取访问权限修饰符
+        this._accessTag = ""
+        if (access) {
+            memberDeclaration.getModifiers().forEach(modifier => {
+                if (modifier.getText() && modifier.getText() !== "static") {
+                    this._accessTag = modifier.getText()
+                }
+            })
+        }
+        // 获取是否静态变量
+        this._staticTag = staticTag ? memberDeclaration.isStatic() : false
+    }
 
     setPropertyTag(value: boolean): this {
         this._propertyTag = value;

@@ -45,6 +45,12 @@ export class ContextPicker {
         return lineNumber + 1
     }
     /**
+     * 拾取文本
+     */
+    public pickDocument() {
+        return this.editor.document
+    }
+    /**
      * 拾取并返回拾取信息上下文
      */
     public pick(): PickContext {
@@ -54,12 +60,12 @@ export class ContextPicker {
         const wordText = this.pickCursorWordText()
         // 获取行号
         const lineNumber = this.pickLineNumber()
+        // 获取文档
+        const document = this.pickDocument()
         // 返回拾取上下文对象
-        return { fileName, wordText, lineNumber };
+        return { fileName, wordText, lineNumber, document };
     }
 }
-
-
 
 export interface PickContext {
     /**
@@ -74,4 +80,6 @@ export interface PickContext {
      * 选中单词
      */
     wordText: string
+    /**获取到的文档 */
+    document: vscode.TextDocument
 }

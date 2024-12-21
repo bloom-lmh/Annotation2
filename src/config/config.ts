@@ -44,21 +44,20 @@ export class BaseAnnotationConfig {
     description: boolean;
     license: boolean;
     copyright: boolean;
-    tutorial: boolean;
     see: boolean;
     summary: boolean;
     example: boolean;
+    excludProps: Array<string> = []
 
     constructor(config: Partial<BaseAnnotationConfig> = {}) {
         this.author = config.author ?? false;
         this.access = config.access ?? false;
         this.alias = config.alias ?? false;
         this.version = config.version ?? false;
-        this.name = config.name ?? false;
-        this.description = config.description ?? false;
+        this.name = config.name ?? true;
+        this.description = config.description ?? true;
         this.license = config.license ?? false;
         this.copyright = config.copyright ?? false;
-        this.tutorial = config.tutorial ?? false;
         this.see = config.see ?? false;
         this.summary = config.summary ?? false;
         this.example = config.example ?? false;
@@ -71,7 +70,7 @@ export class InterfaceAnnotationConfig extends BaseAnnotationConfig {
     interface: boolean;
     constructor(config: Partial<InterfaceAnnotationConfig> = {}) {
         super(config);
-        this.interface = config.interface ?? false;
+        this.interface = config.interface ?? true;
     }
 }
 /**
@@ -82,8 +81,8 @@ export class TypedefAnnotationConfig extends BaseAnnotationConfig {
     type: boolean;
     constructor(config: Partial<TypedefAnnotationConfig> = {}) {
         super(config);
-        this.typedef = config.typedef ?? false;
-        this.type = config.type ?? false;
+        this.typedef = config.typedef ?? true;
+        this.type = config.type ?? true;
     }
 }
 /**
@@ -92,8 +91,8 @@ export class TypedefAnnotationConfig extends BaseAnnotationConfig {
 export class EnumAnnotationConfig extends BaseAnnotationConfig {
     enum: boolean;
     constructor(config: Partial<EnumAnnotationConfig> = {}) {
-        super(config);  // Initialize properties from BaseAnnotationConfig
-        this.enum = config.enum ?? false;
+        super(config);
+        this.enum = config.enum ?? true;
     }
 }
 /**
@@ -106,11 +105,11 @@ export class ClassAnnotationConfig extends BaseAnnotationConfig {
     implements: boolean;
 
     constructor(config: Partial<ClassAnnotationConfig> = {}) {
-        super(config);  // Initialize properties from BaseAnnotationConfig
-        this.class = config.class ?? false;
-        this.abstract = config.abstract ?? false;
-        this.extends = config.extends ?? false;
-        this.implements = config.implements ?? false;
+        super(config);
+        this.class = config.class ?? true;
+        this.abstract = config.abstract ?? true;
+        this.extends = config.extends ?? true;
+        this.implements = config.implements ?? true;
     }
 }
 
@@ -126,13 +125,13 @@ export class MethodAnnotationConfig extends BaseAnnotationConfig {
     static: boolean;
 
     constructor(config: Partial<MethodAnnotationConfig> = {}) {
-        super(config);  // Initialize properties from BaseAnnotationConfig
-        this.async = config.async ?? false;
-        this.function = config.function ?? false;
-        this.throws = config.throws ?? false;
-        this.params = config.params ?? false;
-        this.returns = config.returns ?? false;
-        this.static = config.static ?? false;
+        super(config);
+        this.async = config.async ?? true;
+        this.function = config.function ?? true;
+        this.throws = config.throws ?? true;
+        this.params = config.params ?? true;
+        this.returns = config.returns ?? true;
+        this.static = config.static ?? true;
     }
 }
 
@@ -146,11 +145,11 @@ export class PropertyAnnotationConfig extends BaseAnnotationConfig {
     default: boolean;
 
     constructor(config: Partial<PropertyAnnotationConfig> = {}) {
-        super(config);  // Initialize properties from BaseAnnotationConfig
+        super(config);
         this.property = config.property ?? false;
-        this.static = config.static ?? false;
-        this.type = config.type ?? false;
-        this.default = config.default ?? false;
+        this.static = config.static ?? true;
+        this.type = config.type ?? true;
+        this.default = config.default ?? true;
     }
 }
 
@@ -170,11 +169,12 @@ export class FileAnnotationConfig extends BaseAnnotationConfig {
     module: boolean;
 
     constructor(config: Partial<FileAnnotationConfig> = {}) {
-        super(config);  // Initialize properties from BaseAnnotationConfig
+        super(config);
         this.file = config.file ?? false;
         this.module = config.module ?? false;
     }
 }
+
 /**
  * 主配置类
  */

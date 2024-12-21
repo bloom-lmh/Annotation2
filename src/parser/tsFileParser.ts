@@ -14,4 +14,9 @@ export class TsFileParser {
         // 返回加载的文件
         return sourceFile
     }
+    // 从文本获取 SourceFile 对象
+    public getSourceFileFromText(text: string): SourceFile {
+        const project = new Project();
+        return project.createSourceFile('tempFile.ts', text);
+    }
 }

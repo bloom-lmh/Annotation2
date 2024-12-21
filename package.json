@@ -22,6 +22,10 @@
       {
         "command": "openConfigConsole",
         "title": "OPEN CONFIG CONSOLE"
+      },
+      {
+        "command": "addAllAnnotations",
+        "title": "ADD ALL ANNOTATIONS"
       }
     ],
     "keybindings": [
@@ -32,6 +36,10 @@
       {
         "command": "openConfigConsole",
         "key": "alt+shift+\\"
+      },
+      {
+        "command": "addAllAnnotations",
+        "key": "ctrl+alt+\\"
       }
     ]
   },

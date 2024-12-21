@@ -49,6 +49,7 @@
                         <v-text-field
                           v-if="typeof tagValue === 'string'"
                           variant="underlined"
+                          v-model="configItem[tagKey]"
                           :label="`@${tagKey}`"
                         ></v-text-field>
                         <v-switch

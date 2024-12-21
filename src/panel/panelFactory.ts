@@ -46,7 +46,6 @@ export class PanelFactory {
         });
         // 监听销毁事件
         this.panel.onDidDispose(() => {
-            console.log('Webview 面板已销毁');
             this.panel = null; // 销毁后清空引用
         });
         return this.panel

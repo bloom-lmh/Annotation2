@@ -6,10 +6,10 @@ import { TsFileParser } from './parser/tsFileParser';
 import path from 'path';
 import { Config } from './config/config';
 import { AnnotationFactory } from './annotation/annotationFactory';
-import { ConfigLoader } from './config/configLoader';
 import { WorkspaceUtil } from './utils/workspaceUtil';
 import { PanelFactory } from './panel/panelFactory';
 import { ConfigManager } from './config/configManager';
+import { ClassDeclaration } from 'ts-morph';
 // 插件激活
 export function activate(context: ExtensionContext) {
     // 获取工作区路径，加载配置
@@ -18,7 +18,6 @@ export function activate(context: ExtensionContext) {
     projectPaths.forEach(projectPath => {
         ConfigManager.addConfig(projectPath)
     })
-    /*  ConfigManager.visitAll() */
     // 模板路径
     const templatePath = path.join(context.extensionPath, 'src/webview', "template.html")
     // 创建面板
@@ -43,14 +42,11 @@ export function activate(context: ExtensionContext) {
             removeProjectPaths.push(projectPath)
         });
 
-        console.log(addProjectConfigs.length, removeProjectPaths.length);
         if (panel) {
             if (addProjectConfigs && addProjectConfigs.length > 0) {
-                console.log("A");
                 panel.webview.postMessage({ command: 'addProjectConfig', data: addProjectConfigs });
             }
             if (removeProjectPaths && removeProjectPaths.length > 0) {
-                console.log("B");
                 panel.webview.postMessage({ command: 'removeProjectConfig', data: removeProjectPaths });
             }
         }
@@ -79,55 +75,142 @@ export function activate(context: ExtensionContext) {
     })
     // 生成单行注释
     const disposable2 = vscode.commands.registerCommand('addSingleAnnotation', async () => {
-        try {
-            let st = new Date()
-            const editor = vscode.window.activeTextEditor;
-            if (!editor) {
-                vscode.window.showInformationMessage("编辑器获取失败")
-                return
+        let st = new Date()
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            vscode.window.showInformationMessage("编辑器获取失败")
+            return
+        }
+        // 创建拾取器对象拾取上下文信息
+        let { lineNumber, wordText, fileName: filePath, document } = new ContextPicker(editor).pick()
+        // 创建ts文件解析工具解析ts文件
+        // let sourceFile = new TsFileParser().parseTsFile(filePath)
+        let sourceFile = new TsFileParser().getSourceFileFromText(document.getText())
+        // 获取类、方法或者成员信息
+        let memberDeclaration = new AstUtil().getMemberInfo(sourceFile, wordText, lineNumber)
+        if (!memberDeclaration) {
+            vscode.window.showInformationMessage("获取成员信息失败")
+            return
+        }
+        // 获取文件所属项目路径
+        const projectPath = vscode.workspace.getWorkspaceFolder(editor.document.uri)?.uri.fsPath
+        if (!projectPath) {
+            vscode.window.showInformationMessage("获取项目路径失败")
+            return
+        }
+        // 加载用户配置
+        // let config: Config = ConfigLoader.loadConfig(path.join(projectPath, "annotation.config.json"))
+        let config: Config = ConfigManager.getConfig(projectPath)
+
+        // 调用注解工厂创建注解
+        let annotation = AnnotationFactory.getAnnotation(memberDeclaration, config)
+
+        // 构建jsdoc
+        let jsdoc = annotation?.buildJSDoc() || ''
+
+        // 调用注入器注入注解
+        const position = new vscode.Position(memberDeclaration.getStartLineNumber() - 1 || lineNumber - 1, 0); // 在当前行的开始插入
+        // 执行编辑
+        await editor.edit(editBuilder => {
+            editBuilder.insert(position, `${jsdoc}\n`);
+        });
+        let et = new Date()
+        console.log(et.getTime() - st.getTime() + 'ms');
+    });
+    // 生成全文件注释
+    // 生成全文件注释
+    const disposable3 = vscode.commands.registerCommand('addAllAnnotations', async () => {
+        const st = new Date();
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            vscode.window.showInformationMessage("编辑器获取失败");
+            return;
+        }
+
+        const document = editor.document;
+        const filePath = document.uri.fsPath;
+
+        // 创建 ts 文件解析工具解析 ts 文件
+        const sourceFile = new TsFileParser().getSourceFileFromText(document.getText());
+
+        // 获取文件所属项目路径
+        const projectPath = vscode.workspace.getWorkspaceFolder(editor.document.uri)?.uri.fsPath;
+        if (!projectPath) {
+            vscode.window.showInformationMessage("获取项目路径失败");
+            return;
+        }
+
+        // 加载用户配置
+        let config: Config = ConfigManager.getConfig(projectPath);
+
+        // 获取文件中的所有成员
+        const memberDeclarations = [
+            ...sourceFile.getClasses(),
+            ...sourceFile.getInterfaces(),
+            ...sourceFile.getEnums(),
+            ...sourceFile.getFunctions(),
+            ...sourceFile.getTypeAliases(),
+        ];
+
+        // 批量处理成员
+        const edits: vscode.TextEdit[] = [];
+
+        // 遍历每个类
+        for (const classDeclaration of sourceFile.getClasses()) {
+            const className = classDeclaration.getName();
+            const startLine = classDeclaration.getStartLineNumber() - 1;
+
+            // 为类本身生成注释
+            const classAnnotation = AnnotationFactory.getAnnotation(classDeclaration, config);
+            const classJsdoc = classAnnotation?.buildJSDoc() || '';
+            const classPosition = new vscode.Position(startLine, 0);
+            edits.push(vscode.TextEdit.insert(classPosition, `${classJsdoc}\n`));
+
+            // 为类中的方法和属性生成注释
+            for (const method of classDeclaration.getMethods()) {
+                const methodJsdoc = AnnotationFactory.getAnnotation(method, config)?.buildJSDoc() || '';
+                const methodPosition = new vscode.Position(method.getStartLineNumber() - 1, 0); // 方法起始位置
+                edits.push(vscode.TextEdit.insert(methodPosition, `${methodJsdoc}\n`));
             }
-            // 创建拾取器对象拾取上下文信息
-            let { lineNumber, wordText, fileName: filePath } = new ContextPicker(editor).pick()
-            // 创建ts文件解析工具解析ts文件
-            let sourceFile = new TsFileParser().parseTsFile(filePath)
-            // 获取类、方法或者成员信息
-            let memberDeclaration = new AstUtil().getMemberInfo(sourceFile, wordText, lineNumber)
-            // 获取文件所属项目路径
-            const projectPath = vscode.workspace.getWorkspaceFolder(editor.document.uri)?.uri.fsPath
-            if (!projectPath) {
-                vscode.window.showInformationMessage("获取项目路径失败")
-                return
+
+            for (const property of classDeclaration.getProperties()) {
+                const propertyJsdoc = AnnotationFactory.getAnnotation(property, config)?.buildJSDoc() || '';
+                const propertyPosition = new vscode.Position(property.getStartLineNumber() - 1, 0); // 属性起始位置
+                edits.push(vscode.TextEdit.insert(propertyPosition, `${propertyJsdoc}\n`));
             }
-            // 加载用户配置
-            // let config: Config = ConfigLoader.loadConfig(path.join(projectPath, "annotation.config.json"))
-            let config: Config = ConfigManager.getConfig(projectPath)
-            console.log(config);
+        }
 
-            // 调用注解工厂创建注解
-            let annotation = AnnotationFactory.getAnnotation(memberDeclaration, config)
+        // 批量处理其他成员
+        for (const memberDeclaration of memberDeclarations) {
+            // 排除类中的方法和属性，避免重复注释
+            if (memberDeclaration instanceof ClassDeclaration) continue;
 
-            // 构建jsdoc
-            let jsdoc = annotation?.buildJSDoc() || ''
+            const memberName = memberDeclaration.getName();
+            const startLine = memberDeclaration.getStartLineNumber() - 1;
 
-            // 调用注入器注入注解
-            /*  const selection = editor.selection;
-             const startLine = selection.start.line; */
-            const position = new vscode.Position(lineNumber - 1, 0); // 在当前行的开始插入
-            // 执行编辑
+            // 为每个成员生成注释
+            const annotation = AnnotationFactory.getAnnotation(memberDeclaration, config);
+            const jsdoc = annotation?.buildJSDoc() || '';
+            const position = new vscode.Position(startLine, 0);
+            edits.push(vscode.TextEdit.insert(position, `${jsdoc}\n`));
+        }
+
+        // 执行编辑
+        if (edits.length > 0) {
             await editor.edit(editBuilder => {
-                editBuilder.insert(position, `${jsdoc}\n`);
+                for (const edit of edits) {
+                    editBuilder.insert(edit.range.start, edit.newText);
+                }
             });
-
-            let et = new Date()
-            console.log(et.getTime() - st.getTime() + 'ms');
-        } catch (error: any) {
-            const errorMessage = typeof error === 'string' ? error : error.message;
-            vscode.window.showErrorMessage(errorMessage)
+            let et = new Date();
+            console.log('总共耗时: ' + (et.getTime() - st.getTime()) + 'ms');
+        } else {
+            vscode.window.showInformationMessage("没有找到可生成注释的成员");
         }
     });
-
     context.subscriptions.push(disposable1);
     context.subscriptions.push(disposable2);
+    context.subscriptions.push(disposable3);
     context.subscriptions.push(workspaceFolderDisposable);
 }
 
