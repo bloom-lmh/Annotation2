@@ -2,7 +2,7 @@ import { Project, SourceFile } from "ts-morph";
 /**
  * Ts文件解析器
  */
-export class TsFileParser {
+export class TsFileHelper {
     // 解析ts或js文件
     public parseTsFile(filePath: string): SourceFile {
         // 初始化 Project
@@ -15,8 +15,9 @@ export class TsFileParser {
         return sourceFile
     }
     // 从文本获取 SourceFile 对象
-    public getSourceFileFromText(text: string): SourceFile {
+    public parseSourceFileByText(text: string): SourceFile {
         const project = new Project();
-        return project.createSourceFile('tempFile.ts', text);
+        const sourceFile = project.createSourceFile('tempFile.ts', text);
+        return sourceFile
     }
 }

@@ -28,8 +28,8 @@ export class JSDocGenerator {
         value && (this.jsdoc += `\n * @name ${value}`)
         return this
     }
-    setDescriptionTag(value: string): this {
-        value && (this.jsdoc += `\n * @description ${value}`)
+    setDescriptionTag(value: boolean): this {
+        value && (this.jsdoc += `\n * @description`)
         return this
     }
     setLicenseTag(value: string): this {
@@ -115,7 +115,7 @@ export class JSDocGenerator {
     setParamsTag(value: string[][]): this {
         if (value && value.length > 0) {
             value.forEach(v => {
-                this.jsdoc += `\n * @param {${v[1]}} ${v[0]}`
+                this.jsdoc += `\n * @param {${v[1]}} - ${v[0]}`
             })
         }
         return this

@@ -1,7 +1,9 @@
 import { ClassDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, MethodDeclaration, MethodSignature, Project, PropertyDeclaration, PropertySignature, SourceFile, ts, TypeAliasDeclaration } from "ts-morph";
 import * as vscode from 'vscode'
 
-export class AstUtil {
+export class AstHelper {
+    // 获取全部的成员信息
+
 
     // 获取方法、类或属性信息
     public getMemberInfo(sourceFile: SourceFile, memberName: string, lineNumber: number): MemberDeclaration {
@@ -22,7 +24,6 @@ export class AstUtil {
         const typeMember = this.singleMemberVisit(types, memberName, lineNumber);
         const enumMember = this.singleMemberVisit(enums, memberName, lineNumber);
         const functionMember = this.singleMemberVisit(functions, memberName, lineNumber);
-
         // 返回成员信息
         return classMember || interfaceMember || typeMember || enumMember || functionMember;
     }
@@ -101,6 +102,7 @@ export class AstUtil {
         }
         return typeName
     }
+
 }
 export type MemberDeclaration =
     | ClassDeclaration

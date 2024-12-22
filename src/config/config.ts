@@ -1,117 +1,72 @@
 /**
- * 翻译配置
+ * 基础注解配置
  */
-export class TranslateConfig {
-    open: boolean;
-    api: Array<string> | string;
-    wordMap: { [key: string]: string };
-    memory: boolean;
-    constructor(config: Partial<TranslateConfig> = {}) {
-        this.open = config.open ?? false;
-        this.api = config.api ?? "";
-        this.wordMap = config.wordMap ?? {};
-        this.memory = config.memory ?? false;
+export class BaseAnnotationConfig {
+    public isAuthorTag: boolean;  // 是否包含作者信息
+    public isAccessTag: boolean;  // 是否包含访问控制
+    public isAliasTag: boolean;  // 是否包含别名
+    public isVersionTag: boolean;  // 是否包含版本
+    public isNameTag: boolean;  // 是否包含名称
+    public isDescriptionTag: boolean;  // 是否包含描述
+    public isLicenseTag: boolean;  // 是否包含许可证
+    public isCopyrightTag: boolean;  // 是否包含版权
+    public isSeeTag: boolean;  // 是否包含 See 参考
+    public isSummaryTag: boolean;  // 是否包含摘要
+    public isExampleTag: boolean;  // 是否包含示例
+
+    constructor(projectConfig: Partial<BaseAnnotationConfig> = {}) {
+        // 解构项目配置
+        const { isAuthorTag, isAccessTag, isAliasTag, isVersionTag, isNameTag, isDescriptionTag, isLicenseTag, isCopyrightTag, isSeeTag, isSummaryTag, isExampleTag } = projectConfig
+        // 设置属性，有则采用项目配置否则则采用默认值
+        this.isAuthorTag = isAuthorTag ?? false;
+        this.isAccessTag = isAccessTag ?? true;
+        this.isAliasTag = isAliasTag ?? false;
+        this.isVersionTag = isVersionTag ?? false;
+        this.isNameTag = isNameTag ?? true;
+        this.isDescriptionTag = isDescriptionTag ?? true;
+        this.isLicenseTag = isLicenseTag ?? false;
+        this.isCopyrightTag = isCopyrightTag ?? false;
+        this.isSeeTag = isSeeTag ?? false;
+        this.isSummaryTag = isSummaryTag ?? false;
+        this.isExampleTag = isExampleTag ?? false;
     }
 }
-
 /**
  * 全局描述信息配置
  */
 export class GlobalAnnotationConfig {
-    author: string;
-    version: string;
-    description: string;
-    license: string;
-    copyright: string;
+    public authorInfo: string;
+    public versionInfo: string;
+    public licenseInfo: string;
+    public copyrightInfo: string;
 
-    constructor(config: Partial<GlobalAnnotationConfig> = {}) {
-        this.author = config.author ?? '';
-        this.version = config.version ?? '';
-        this.description = config.description ?? '';
-        this.license = config.license ?? '';
-        this.copyright = config.copyright ?? '';
-    }
-}
-/**
- * 基础注解配置
- */
-export class BaseAnnotationConfig {
-    author: boolean;
-    access: boolean;
-    alias: boolean;
-    version: boolean;
-    name: boolean;
-    description: boolean;
-    license: boolean;
-    copyright: boolean;
-    see: boolean;
-    summary: boolean;
-    example: boolean;
-    excludProps: Array<string> = []
-
-    constructor(config: Partial<BaseAnnotationConfig> = {}) {
-        this.author = config.author ?? false;
-        this.access = config.access ?? false;
-        this.alias = config.alias ?? false;
-        this.version = config.version ?? false;
-        this.name = config.name ?? true;
-        this.description = config.description ?? true;
-        this.license = config.license ?? false;
-        this.copyright = config.copyright ?? false;
-        this.see = config.see ?? false;
-        this.summary = config.summary ?? false;
-        this.example = config.example ?? false;
-    }
-}
-/**
- * 接口类型配置
- */
-export class InterfaceAnnotationConfig extends BaseAnnotationConfig {
-    interface: boolean;
-    extends: boolean
-    constructor(config: Partial<InterfaceAnnotationConfig> = {}) {
-        super(config);
-        this.interface = config.interface ?? true;
-        this.extends = config.extends ?? true
-    }
-}
-/**
- * 自定义类型配置
- */
-export class TypedefAnnotationConfig extends BaseAnnotationConfig {
-    typedef: boolean;
-    type: boolean;
-    constructor(config: Partial<TypedefAnnotationConfig> = {}) {
-        super(config);
-        this.typedef = config.typedef ?? true;
-        this.type = config.type ?? true;
-    }
-}
-/**
- * 枚举类型配置
- */
-export class EnumAnnotationConfig extends BaseAnnotationConfig {
-    enum: boolean;
-    constructor(config: Partial<EnumAnnotationConfig> = {}) {
-        super(config);
-        this.enum = config.enum ?? true;
+    constructor(projectConfig: Partial<GlobalAnnotationConfig> = {}) {
+        // 解构项目配置
+        const { authorInfo, versionInfo, licenseInfo, copyrightInfo } = projectConfig;
+        // 设置属性，有则采用项目配置否则则采用默认值
+        this.authorInfo = authorInfo ?? '';
+        this.versionInfo = versionInfo ?? '';
+        this.licenseInfo = licenseInfo ?? '';
+        this.copyrightInfo = copyrightInfo ?? '';
     }
 }
 /**
  * 类注解配置
  */
 export class ClassAnnotationConfig extends BaseAnnotationConfig {
-    class: boolean;
-    abstract: boolean;
-    extends: boolean;
-    implements: boolean;
+    public isClassTag: boolean;  // 是否是类
+    public isAbstractTag: boolean;  // 是否是抽象类
+    public isExtendsTag: boolean;  // 是否继承
+    public isImplementsTag: boolean;  // 是否实现接口
 
-    constructor(config: Partial<ClassAnnotationConfig> = {}) {
-        super(config);
-        this.class = config.class ?? true;
-        this.abstract = config.abstract ?? true;
-        this.extends = config.extends ?? true;
-        this.implements = config.implements ?? true;
+    constructor(projectConfig: Partial<ClassAnnotationConfig> = {}) {
+        super(projectConfig);
+        // 解构配置并设置默认值
+        const { isClassTag, isAbstractTag, isExtendsTag, isImplementsTag } = projectConfig;
+        this.isClassTag = isClassTag ?? true;
+        this.isAbstractTag = isAbstractTag ?? true;
+        this.isExtendsTag = isExtendsTag ?? true;
+        this.isImplementsTag = isImplementsTag ?? true;
     }
 }
 
@@ -119,101 +74,171 @@ export class ClassAnnotationConfig extends BaseAnnotationConfig {
  * 方法注解配置
  */
 export class MethodAnnotationConfig extends BaseAnnotationConfig {
-    async: boolean;
-    function: boolean;
-    throws: boolean;
-    params: boolean;
-    returns: boolean;
-    static: boolean;
+    public isAsyncTag: boolean;  // 是否异步
+    public isFunctionTag: boolean;  // 是否是函数
+    public isThrowsTag: boolean;  // 是否包含抛出异常
+    public isParamsTag: boolean;  // 是否包含参数
+    public isReturnsTag: boolean;  // 是否包含返回值
+    public isStaticTag: boolean;  // 是否是静态方法
 
-    constructor(config: Partial<MethodAnnotationConfig> = {}) {
-        super(config);
-        this.async = config.async ?? true;
-        this.function = config.function ?? true;
-        this.throws = config.throws ?? true;
-        this.params = config.params ?? true;
-        this.returns = config.returns ?? true;
-        this.static = config.static ?? true;
+    constructor(projectConfig: Partial<MethodAnnotationConfig> = {}) {
+        super(projectConfig);
+        // 解构配置并设置默认值
+        const { isAsyncTag, isFunctionTag, isThrowsTag, isParamsTag, isReturnsTag, isStaticTag } = projectConfig;
+        this.isAsyncTag = isAsyncTag ?? true;
+        this.isFunctionTag = isFunctionTag ?? true;
+        this.isThrowsTag = isThrowsTag ?? true;
+        this.isParamsTag = isParamsTag ?? true;
+        this.isReturnsTag = isReturnsTag ?? true;
+        this.isStaticTag = isStaticTag ?? true;
     }
 }
-
 /**
  * 属性注解配置
  */
 export class PropertyAnnotationConfig extends BaseAnnotationConfig {
-    property: boolean;
-    static: boolean;
-    type: boolean;
-    default: boolean;
+    public isPropertyTag: boolean;  // 是否是属性
+    public isStaticTag: boolean;  // 是否是静态属性
+    public isTypeTag: boolean;  // 是否包含类型
+    public isDefaultTag: boolean;  // 是否包含默认值
 
-    constructor(config: Partial<PropertyAnnotationConfig> = {}) {
-        super(config);
-        this.property = config.property ?? false;
-        this.static = config.static ?? true;
-        this.type = config.type ?? true;
-        this.default = config.default ?? true;
+    constructor(projectConfig: Partial<PropertyAnnotationConfig> = {}) {
+        super(projectConfig);
+        // 解构配置并设置默认值
+        const { isPropertyTag, isStaticTag, isTypeTag, isDefaultTag } = projectConfig;
+        this.isPropertyTag = isPropertyTag ?? true;
+        this.isStaticTag = isStaticTag ?? true;
+        this.isTypeTag = isTypeTag ?? true;
+        this.isDefaultTag = isDefaultTag ?? true;
     }
 }
-
 /**
- * 系统配置
+ * 接口类型配置
  */
-export class SystemConfig {
-    constructor(config: Partial<SystemConfig> = {}) {
+export class InterfaceAnnotationConfig extends BaseAnnotationConfig {
+    public isInterfaceTag: boolean;  // 是否是接口
+    public isExtendsTag: boolean;  // 是否继承
 
+    constructor(projectConfig: Partial<InterfaceAnnotationConfig> = {}) {
+        super(projectConfig);
+        // 解构项目配置
+        const { isInterfaceTag, isExtendsTag } = projectConfig
+        // 设置属性，有则采用项目配置否则则采用默认值
+        this.isInterfaceTag = isInterfaceTag ?? true;
+        this.isExtendsTag = isExtendsTag ?? true;
+    }
+}
+/**
+ * 枚举类型配置
+ */
+export class EnumAnnotationConfig extends BaseAnnotationConfig {
+    public isEnumTag: boolean;  // 是否是枚举类型
+
+    constructor(projectConfig: Partial<EnumAnnotationConfig> = {}) {
+        super(projectConfig);
+        // 解构配置并设置默认值
+        const { isEnumTag } = projectConfig;
+        // 设置属性，有则采用项目配置否则则采用默认值
+        this.isEnumTag = isEnumTag ?? true;  // 默认为 true
+    }
+}
+/**
+ * 自定义类型配置
+ */
+export class TypedefAnnotationConfig extends BaseAnnotationConfig {
+    public isTypedefTag: boolean;  // 是否是自定义类型
+    public isTypeTag: boolean;  // 是否是类型
+
+    constructor(projectConfig: Partial<TypedefAnnotationConfig> = {}) {
+        super(projectConfig);
+        // 解构项目配置
+        const { isTypedefTag, isTypeTag } = projectConfig
+        // 设置属性，有则采用项目配置否则则采用默认值
+        this.isTypedefTag = isTypedefTag ?? true;
+        this.isTypeTag = isTypeTag ?? true;
     }
 }
 /**
  * 文件注释类
  */
 export class FileAnnotationConfig extends BaseAnnotationConfig {
-    file: boolean;
-    module: boolean;
+    public isFileTag: boolean;  // 是否是文件
+    public isModuleTag: boolean;  // 是否是模块
 
-    constructor(config: Partial<FileAnnotationConfig> = {}) {
-        super(config);
-        this.file = config.file ?? false;
-        this.module = config.module ?? false;
+    constructor(projectConfig: Partial<FileAnnotationConfig> = {}) {
+        super(projectConfig);
+        // 解构配置并设置默认值
+        const { isFileTag, isModuleTag } = projectConfig;
+        this.isFileTag = isFileTag ?? false;
+        this.isModuleTag = isModuleTag ?? false;
     }
+}
+/**
+ * 翻译配置
+ */
+export class TranslateConfig {
+    public isOpen: boolean;
+    public api: Array<string> | string;
+    public wordMap: { [key: string]: string };
+    public isMemoryEnabled: boolean;
+
+    constructor(translateConfig: Partial<TranslateConfig> = {}) {
+        // 解构翻译配置
+        const { isOpen, api, wordMap, isMemoryEnabled } = translateConfig
+        // 设置属性，没有则采用默认值
+        this.isOpen = isOpen ?? false;
+        this.api = api ?? "";
+        this.wordMap = wordMap ?? {};
+        this.isMemoryEnabled = isMemoryEnabled ?? false;
+    }
+}
+/**
+ * 系统配置
+ */
+export class SystemConfig {
+    // 
+    constructor(projectConfig: Partial<SystemConfig> = {}) { }
 }
 
 /**
  * 主配置类
  */
 export class Config {
-    interfaceAnnotationConfig?: InterfaceAnnotationConfig
-    typedefAnnotationConfig?: TypedefAnnotationConfig
-    enumAnnotationConfig?: EnumAnnotationConfig
-    classAnnotationConfig?: ClassAnnotationConfig;
-    methodAnnotationConfig?: MethodAnnotationConfig;
-    propertyAnnotationConfig?: PropertyAnnotationConfig;
-    globalAnnotationConfig?: GlobalAnnotationConfig;
-    fileAnnotationConfig?: FileAnnotationConfig
-    translateConfig?: TranslateConfig;
-    systemConfig?: SystemConfig
+    public interfaceAnnotationConfig?: InterfaceAnnotationConfig;
+    public typedefAnnotationConfig?: TypedefAnnotationConfig;
+    public enumAnnotationConfig?: EnumAnnotationConfig;
+    public classAnnotationConfig?: ClassAnnotationConfig;
+    public methodAnnotationConfig?: MethodAnnotationConfig;
+    public propertyAnnotationConfig?: PropertyAnnotationConfig;
+    public globalAnnotationConfig?: GlobalAnnotationConfig;
+    public fileAnnotationConfig?: FileAnnotationConfig;
+    public translateConfig?: TranslateConfig;
+    public systemConfig?: SystemConfig;
 
-    constructor(config: {
-        interfaceAnnotationConfig?: Partial<InterfaceAnnotationConfig>
-        typedefAnnotationConfig?: Partial<TypedefAnnotationConfig>
-        enumAnnotationConfig?: Partial<EnumAnnotationConfig>
+    constructor(projectConfig: {
+        interfaceAnnotationConfig?: Partial<InterfaceAnnotationConfig>;
+        typedefAnnotationConfig?: Partial<TypedefAnnotationConfig>;
+        enumAnnotationConfig?: Partial<EnumAnnotationConfig>;
         classAnnotationConfig?: Partial<ClassAnnotationConfig>;
         methodAnnotationConfig?: Partial<MethodAnnotationConfig>;
         propertyAnnotationConfig?: Partial<PropertyAnnotationConfig>;
         globalAnnotationConfig?: Partial<GlobalAnnotationConfig>;
         translateConfig?: Partial<TranslateConfig>;
-        fileAnnotationConfig?: Partial<FileAnnotationConfig>
-        systemConfig?: Partial<SystemConfig>
+        fileAnnotationConfig?: Partial<FileAnnotationConfig>;
+        systemConfig?: Partial<SystemConfig>;
     } = {}) {
-        this.interfaceAnnotationConfig = new InterfaceAnnotationConfig(config.interfaceAnnotationConfig)
-        this.typedefAnnotationConfig = new TypedefAnnotationConfig(config.typedefAnnotationConfig)
-        this.enumAnnotationConfig = new EnumAnnotationConfig(config.enumAnnotationConfig)
-        this.classAnnotationConfig = new ClassAnnotationConfig(config.classAnnotationConfig);
-        this.methodAnnotationConfig = new MethodAnnotationConfig(config.methodAnnotationConfig);
-        this.propertyAnnotationConfig = new PropertyAnnotationConfig(config.propertyAnnotationConfig);
-        this.globalAnnotationConfig = new GlobalAnnotationConfig(config.globalAnnotationConfig);
-        this.translateConfig = new TranslateConfig(config.translateConfig);
-        this.fileAnnotationConfig = new FileAnnotationConfig(config.fileAnnotationConfig)
-        this.systemConfig = new SystemConfig(config.systemConfig)
+        const { interfaceAnnotationConfig, typedefAnnotationConfig, enumAnnotationConfig, classAnnotationConfig
+            , methodAnnotationConfig, propertyAnnotationConfig, globalAnnotationConfig, translateConfig, fileAnnotationConfig, systemConfig
+        } = projectConfig
+        this.interfaceAnnotationConfig = new InterfaceAnnotationConfig(interfaceAnnotationConfig);
+        this.typedefAnnotationConfig = new TypedefAnnotationConfig(typedefAnnotationConfig);
+        this.enumAnnotationConfig = new EnumAnnotationConfig(enumAnnotationConfig);
+        this.classAnnotationConfig = new ClassAnnotationConfig(classAnnotationConfig);
+        this.methodAnnotationConfig = new MethodAnnotationConfig(methodAnnotationConfig);
+        this.propertyAnnotationConfig = new PropertyAnnotationConfig(propertyAnnotationConfig);
+        this.globalAnnotationConfig = new GlobalAnnotationConfig(globalAnnotationConfig);
+        this.translateConfig = new TranslateConfig(translateConfig);
+        this.fileAnnotationConfig = new FileAnnotationConfig(fileAnnotationConfig);
+        this.systemConfig = new SystemConfig(systemConfig);
     }
 }
-

@@ -41,7 +41,6 @@ export class ConfigManager {
             console.log("key:" + key, 'value:' + value);
         }
         console.log("\nsize:" + this.configMaps.size);
-
     }
     /**
      * 开启文件监听

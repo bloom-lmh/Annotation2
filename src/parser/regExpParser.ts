@@ -1,158 +1,19 @@
 import { ClassDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, MethodDeclaration, PropertyDeclaration, TypeAliasDeclaration } from "ts-morph";
-import { AstUtil, MemberDeclaration } from "../utils/astUtil";
+import { AstHelper, MemberDeclaration } from "../ast/astHelper";
 import { ClassMember, InterfaceMember, MemberType, MethodMember, EnumMember, PropertyMember, TypedefMember } from "./member";
 import { TextDocument } from "vscode";
 
-/**
- * 成员信息解析器
- */
-export abstract class MemberParseStrategy {
-    protected memberDeclaration: MemberDeclaration
-
-    constructor(memberDeclaration: MemberDeclaration) {
-        this.memberDeclaration = memberDeclaration
-    }
-
-    public parseMember(): MemberType | null {
-        // 若是方法，创建方法注释对象
-        if (this.memberDeclaration instanceof MethodDeclaration || this.memberDeclaration instanceof FunctionDeclaration) {
-            return this.parseMethod()
-        }
-        // 若是属性，创建属性注释对象
-        if (this.memberDeclaration instanceof PropertyDeclaration) {
-            return this.parseProperty()
-        }
-        // 若是类，创建类注释对象
-        if (this.memberDeclaration instanceof ClassDeclaration) {
-            return this.parseClass()
-        }
-        // 若是枚举，创建枚举注释对象
-        if (this.memberDeclaration instanceof EnumDeclaration) {
-            // return this.parseEnum()
-        }
-        // 若是接口，创建接口注释对象
-        if (this.memberDeclaration instanceof InterfaceDeclaration) {
-            return this.parseInterface()
-        }
-
-        // 若是自定义类型，创建自定义类型注释对象
-        if (this.memberDeclaration instanceof TypeAliasDeclaration) {
-            return this.parseTypedef()
-        }
-        return null
-    }
-    /**
-    * 解析类
-    */
-    protected parseClass(): ClassMember {
-        this.memberDeclaration = (this.memberDeclaration as ClassDeclaration)
-        // 成员名
-        const _name = this.memberDeclaration?.getName()
-        // 获取抽象标志
-        const _abstract = this.memberDeclaration?.isAbstract()
-        // 获取继承的类名
-        const _extends = this.memberDeclaration.getExtends()?.getText()
-        // 获取实现的接口
-        const _implements = this.memberDeclaration.getImplements().map(implement => {
-            return implement.getText()
-        })
-        return new ClassMember(_name, true, _abstract, _extends, _implements)
-    }
-    /**
-     * 解析方法
-     */
-    protected parseMethod(): MethodMember {
-        this.memberDeclaration = (this.memberDeclaration as MethodDeclaration | FunctionDeclaration)
-        // 成员名
-        const _name = this.memberDeclaration?.getName()
-        // 获取方法参数
-        const _params = this.memberDeclaration.getParameters().map(param => {
-            return [param.getName(), param.getType().getText()]
-        })
-        // 获取方法返回值
-        const _returns = this.memberDeclaration.getReturnType().getText()
-        // 获取方法抛出异常
-        const _throws = AstUtil.getMethodThrows(this.memberDeclaration)
-        // 获取方法是否异步
-        const _async = !!this.memberDeclaration.getAsyncKeyword()?.getText()
-        // 获取方法访问控制信息
-        const _access = AstUtil.getModefier(this.memberDeclaration)
-        // 返回方法成员
-        // todo 判断static
-        return new MethodMember(_name, _async, true, _throws, _params, _returns, true, _access)
-    }
-
-    /**
-     * 解析属性
-     */
-    protected parseProperty(): PropertyMember | MethodMember {
-        this.memberDeclaration = (this.memberDeclaration as PropertyDeclaration)
-        // 成员名
-        const _name = this.memberDeclaration?.getName()
-        // 获取属性参数
-        const _type = this.memberDeclaration.getType().getText()
-        // 获取默认值
-        const _default = this.memberDeclaration.getInitializer()?.getText()
-        // 获取访问权限修饰符
-        const _access = AstUtil.getModefier(this.memberDeclaration)
-        // 获取是否静态变量
-        const _static = this.memberDeclaration.isStatic()
-        // 返回属性成员
-        return new PropertyMember(_name, true, _type, _static, _default)
-    }
-
-    /**
-     * 解析接口
-     */
-    protected parseInterface(): InterfaceMember {
-        this.memberDeclaration = (this.memberDeclaration as InterfaceDeclaration)
-        // 成员名
-        const _name = this.memberDeclaration?.getName()
-        // 返回接口成员
-        return new InterfaceMember(_name, true)
-    }
-
-    /**
-     * 解析枚举
-     */
-    protected parseEnum(): EnumMember {
-        this.memberDeclaration = (this.memberDeclaration as EnumDeclaration)
-        // 成员名
-        const _name = this.memberDeclaration?.getName()
-        // 返回接口成员
-        return new EnumMember(_name, true)
-    }
-
-    /**
-     * 解析自定义类
-     */
-    protected parseTypedef(): TypedefMember {
-        this.memberDeclaration = (this.memberDeclaration as TypeAliasDeclaration)
-        // 成员名
-        const _name = this.memberDeclaration?.getName()
-        // 类型
-        const _type = AstUtil.getType(this.memberDeclaration)
-        // 返回接口成员
-        return new TypedefMember(_name, true, _type)
-    }
-}
 
 
 /**
  * 正则解析器
  */
-export class RegExpParseStrategy extends MemberParseStrategy {
-    /**
-     * 文本片段
-     */
-    private textMemberDeclaration: string
+export class RegExpParser {
 
 
-    constructor(memberDeclaration: MemberDeclaration, document: TextDocument) {
-        super(memberDeclaration)
-        // 获取成员所在开始行和结束行
-        let startLineNumber = this.memberDeclaration?.getStartLineNumber() || 0
-        let endLineNumber = this.memberDeclaration?.getEndLineNumber()
+    public parseMember(memberDeclaration: MemberDeclaration, document: TextDocument): MemberType | null {
+        let startLineNumber = memberDeclaration?.getStartLineNumber() || 0
+        let endLineNumber = memberDeclaration?.getEndLineNumber()
         // 获取源文件的文本
         let text = document.getText();
 
@@ -160,17 +21,43 @@ export class RegExpParseStrategy extends MemberParseStrategy {
         let lines = text.split('\n');
         let memberText = lines.slice(startLineNumber - 1, endLineNumber).join('\n'); // -1 是因为行号从 1 开始，数组从 0 开始
         // 成员文本
-        this.textMemberDeclaration = memberText
+        const textMemberDeclaration = memberText
+        // 若是方法，创建方法注释对象
+        if (memberDeclaration instanceof MethodDeclaration || memberDeclaration instanceof FunctionDeclaration) {
+            return this.parseMethod(textMemberDeclaration)
+        }
+        // 若是属性，创建属性注释对象
+        if (memberDeclaration instanceof PropertyDeclaration) {
+            return this.parseProperty(textMemberDeclaration)
+        }
+        // 若是类，创建类注释对象
+        if (memberDeclaration instanceof ClassDeclaration) {
+            return this.parseClass(textMemberDeclaration)
+        }
+        // 若是枚举，创建枚举注释对象
+        if (memberDeclaration instanceof EnumDeclaration) {
+            return this.parseEnum(textMemberDeclaration)
+        }
+        // 若是接口，创建接口注释对象
+        if (memberDeclaration instanceof InterfaceDeclaration) {
+            return this.parseInterface(textMemberDeclaration)
+        }
+
+        // 若是自定义类型，创建自定义类型注释对象
+        if (memberDeclaration instanceof TypeAliasDeclaration) {
+            return this.parseTypedef(textMemberDeclaration)
+        }
+        return null
     }
     /**
       * 解析类
       */
-    protected parseClass(): ClassMember {
+    protected parseClass(textMemberDeclaration: string): ClassMember {
         // 正则表达式，用于匹配类的基本信息：是否是 abstract 类、类名、继承类和实现接口
         const regex = /(?<abstract>abstract)?\s*class\s+(?<name>\w+)\s*(?:extends\s+(?<extends>\w+))?\s*(?:implements\s+(?<implements>[A-Za-z, ]+))?/;
 
         // 匹配类声明
-        const match = this.textMemberDeclaration.match(regex);
+        const match = textMemberDeclaration.match(regex);
 
         if (match && match.groups) {
             // 解构获取类的相关信息
@@ -195,12 +82,12 @@ export class RegExpParseStrategy extends MemberParseStrategy {
     /**
      * 解析方法
      */
-    protected parseMethod(): MethodMember {
+    protected parseMethod(textMemberDeclaration: string): MethodMember {
         // 改进后的正则表达式
         const regex = /(?<accessModifier>public|private|protected)?\s*(?<static>static)?\s*(?<async>async)?\s*(?<name>\w+)\s*\((?<params>.*?)\)\s*(?::\s*(?<returnType>\w+))?(?:\s*throws\s*(?<throws>[\w, ]+))?/;
 
         // 匹配
-        const match = this.textMemberDeclaration.match(regex);
+        const match = textMemberDeclaration.match(regex);
 
         if (match && match.groups) {
             const { accessModifier, static: isStatic, async, name, params, returnType, throws } = match.groups;
@@ -224,12 +111,12 @@ export class RegExpParseStrategy extends MemberParseStrategy {
     /**
      * 解析属性
      */
-    protected parseProperty(): PropertyMember | MethodMember {
+    protected parseProperty(textMemberDeclaration: string): PropertyMember | MethodMember {
         // 正则表达式，用于匹配属性的声明信息（包括默认值）
         const regex = /(?<accessModifier>public|private|protected)?\s*(?<static>static)?\s*(?<name>\w+)\s*:\s*(?<type>\w+)\s*(?<defaultValue>=\s*[^;]+)?/;
 
         // 匹配属性声明
-        const match = this.textMemberDeclaration.match(regex);
+        const match = textMemberDeclaration.match(regex);
 
         if (match && match.groups) {
             // 解构提取属性信息
@@ -259,12 +146,12 @@ export class RegExpParseStrategy extends MemberParseStrategy {
     /**
      * 解析接口
      */
-    protected parseInterface(): InterfaceMember {
+    protected parseInterface(textMemberDeclaration: string): InterfaceMember {
         // 正则表达式，用于匹配接口声明
         const regex = /interface\s+(?<name>\w+)\s*(?:extends\s+(?<extends>\w+(?:,\s*\w+)*))?/;
 
         // 匹配接口声明
-        const match = this.textMemberDeclaration.match(regex);
+        const match = textMemberDeclaration.match(regex);
 
         if (match && match.groups) {
             // 解构提取接口信息
@@ -287,12 +174,12 @@ export class RegExpParseStrategy extends MemberParseStrategy {
     /**
      * 解析枚举
      */
-    protected parseEnum(): EnumMember {
+    protected parseEnum(textMemberDeclaration: string): EnumMember {
         // 正则表达式，用于匹配枚举声明
         const regex = /enum\s+(?<name>\w+)\s*{(?<members>[^}]+)}/;
 
         // 匹配枚举声明
-        const match = this.textMemberDeclaration.match(regex);
+        const match = textMemberDeclaration.match(regex);
 
         if (match && match.groups) {
             // 解构提取枚举信息
@@ -321,12 +208,12 @@ export class RegExpParseStrategy extends MemberParseStrategy {
     /**
      * 解析自定义类
      */
-    protected parseTypedef(): TypedefMember {
+    protected parseTypedef(textMemberDeclaration: string): TypedefMember {
         // 正则表达式，用于匹配类型别名（typedef）
         const regex = /type\s+(?<name>\w+)\s*=\s*(?<type>[\w\s\|\&\(\)\[\]]+)/;
 
         // 匹配类型别名声明
-        const match = this.textMemberDeclaration.match(regex);
+        const match = textMemberDeclaration.match(regex);
 
         if (match && match.groups) {
             // 解构提取类型别名信息
@@ -370,11 +257,4 @@ export class RegExpParseStrategy extends MemberParseStrategy {
         const matches = [...methodBody.matchAll(regex)];
         return new Set(matches.map(match => match[1]));  // 提取所有异常类型
     }
-}
-/**
- * 抽象语法树解析器
- */
-export class AstParseStrategy extends MemberParseStrategy {
-
-
 }
