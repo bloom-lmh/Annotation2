@@ -253,3 +253,13 @@ export class TypedefAnnotation extends BaseAnnotation {
 ```
 
 ## 演示默认注解生成
+
+修复bug
+
+后续将支持
+更加强大的配置功能
+- 翻译接口
+- 配置导出导入
+- 
+getset集成
+代码统计集成

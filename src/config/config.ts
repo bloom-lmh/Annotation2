@@ -68,9 +68,11 @@ export class BaseAnnotationConfig {
  */
 export class InterfaceAnnotationConfig extends BaseAnnotationConfig {
     interface: boolean;
+    extends: boolean
     constructor(config: Partial<InterfaceAnnotationConfig> = {}) {
         super(config);
         this.interface = config.interface ?? true;
+        this.extends = config.extends ?? true
     }
 }
 /**
