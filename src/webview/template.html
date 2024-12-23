@@ -13,9 +13,7 @@
       <v-container>
         <v-card>
           <v-toolbar color="primary" title="配置控制台">
-            <v-btn @click="submitConfig" prepend-icon="$vuetify" variant="tonal" class="mr-4">
-              提交配置
-            </v-btn>
+            <v-btn @click="submitConfig" prepend-icon="$vuetify" variant="tonal" class="mr-4"> 提交配置 </v-btn>
           </v-toolbar>
           <v-combobox
             clearable
@@ -42,8 +40,9 @@
               </v-tabs>
 
               <v-tabs-window class="flex-fill" v-model="tab">
-                <v-tabs-window-item v-for="(configItem, key) in configs" :key="key" :value="key">
-                  <v-container>
+                <v-tabs-window-item v-for="(configItem, key,index) in configs" :key="key" :value="key">
+                  <v-container v-if="fixItems.includes(configNames[index])">维护中...</v-container>
+                  <v-container v-else>
                     <v-row>
                       <v-col v-for="(tagValue, tagKey) in configItem" :key="tagKey" cols="12" md="4" sm="4">
                         <v-text-field
@@ -104,6 +103,7 @@
             '翻译配置',
             '系统配置'
           ];
+          let fixItems = ['文件注释配置', '翻译配置', '系统配置'];
           // 配置项图标
           let configIcons = [
             'mdi-memory',
@@ -164,7 +164,8 @@
             selectedProject,
             onSelectedProject,
             configNames,
-            configIcons
+            configIcons,
+            fixItems
           };
         }
       });
