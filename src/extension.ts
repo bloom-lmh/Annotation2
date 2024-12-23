@@ -20,6 +20,7 @@ export function activate(context: ExtensionContext) {
   projectPaths.forEach(projectPath => {
     ConfigManager.addConfig(projectPath)
   })
+
   // 模板路径
   const templatePath = path.join(context.extensionPath, 'src/webview', "template.html")
   // 创建面板
@@ -192,6 +193,11 @@ export function activate(context: ExtensionContext) {
         classDeclaration.getProperties().forEach(property => {
           addMemberComment(property, document, regExpParser, editBuilder, config);
         });
+
+        // 为类中的每个构造函数添加注释
+        classDeclaration.getConstructors().forEach(constructor => {
+          addMemberComment(constructor, document, regExpParser, editBuilder, config);
+        });
       });
 
       // 遍历类以外的其他声明（例如函数、枚举等）
@@ -201,6 +207,7 @@ export function activate(context: ExtensionContext) {
     });
 
     vscode.window.showInformationMessage("注释已成功添加到所有成员!");
+
 
   });
   context.subscriptions.push(disposable1);
