@@ -1,4 +1,4 @@
-import { ClassDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, MethodDeclaration, PropertyDeclaration, TypeAliasDeclaration } from "ts-morph";
+import { ClassDeclaration, ConstructorDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, MethodDeclaration, PropertyDeclaration, TypeAliasDeclaration } from "ts-morph";
 import { AstHelper, MemberDeclaration } from "../ast/astHelper";
 import { ClassMember, InterfaceMember, MemberType, MethodMember, EnumMember, PropertyMember, TypedefMember } from "./member";
 import { TextDocument } from "vscode";
@@ -23,7 +23,7 @@ export class RegExpParser {
     // 成员文本
     const textMemberDeclaration = memberText
     // 若是方法，创建方法注释对象
-    if (memberDeclaration instanceof MethodDeclaration || memberDeclaration instanceof FunctionDeclaration) {
+    if (memberDeclaration instanceof MethodDeclaration || memberDeclaration instanceof FunctionDeclaration || memberDeclaration instanceof ConstructorDeclaration) {
       return this.parseMethod(textMemberDeclaration)
     }
     // 若是属性，创建属性注释对象
@@ -100,9 +100,14 @@ export class RegExpParser {
       const _async = async !== undefined;  // 判断是否为异步方法
       const _access = accessModifier || '';  // 默认访问修饰符为空
       const _static = !!isStatic; // 判断是否为静态方法
-
-      // 返回方法成员
-      return new MethodMember(_name, _async, true, _throws, _params, _returns, _static, _access);
+      let _function = true
+      let _constructor = false
+      if (name === "constructor") {
+        _function = false
+        _constructor = true
+      }
+      // 返回方法成员 
+      return new MethodMember(_name, _async, _function, _constructor, _throws, _params, _returns, _static, _access);
     } else {
       // 如果没有匹配到任何内容，返回默认值或者抛出异常
       throw new Error("Method declaration parsing failed.");
@@ -163,7 +168,7 @@ export class RegExpParser {
 
 
       // 返回方法成员
-      return new MethodMember(_name, _async, true, _throws, _params, _returns, _static, _access);
+      return new MethodMember(_name, _async, true, false, _throws, _params, _returns, _static, _access);
 
     }
     return null

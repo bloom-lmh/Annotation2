@@ -1,7 +1,8 @@
 {
   "name": "annotation2",
-  "displayName": "Annotation2",
-  "description": "A vscode plug-in that generates jsdoc style comments",
+  "publisher": "SWUST-WEBLAB-LMH",
+  "displayName": "annotation",
+  "description": "A plugin that quickly generates jsdoc comments",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.95.0"
@@ -64,9 +65,6 @@
   },
   "dependencies": {
     "chokidar": "^4.0.1",
-    "ts-morph": "^24.0.0",
-    "vscode-languageclient": "^9.0.1",
-    "vscode-languageserver": "^9.0.1",
-    "vscode-languageserver-textdocument": "^1.0.12"
+    "ts-morph": "^24.0.0"
   }
 }

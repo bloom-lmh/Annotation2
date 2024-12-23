@@ -96,6 +96,8 @@ export function activate(context: ExtensionContext) {
     }
     // 获取类、方法或者成员信息
     let memberDeclaration = new AstHelper().getMemberInfo(sourceFile, wordText, lineNumber)
+
+
     // 成员信息获取失败
     if (!memberDeclaration) {
       vscode.window.showErrorMessage("获取成员声明失败!")
@@ -103,6 +105,7 @@ export function activate(context: ExtensionContext) {
     }
     // 采用正则策略获取成员信息
     let member = new RegExpParser().parseMember(memberDeclaration, document)
+
     // 成员获取失败
     if (!member) {
       vscode.window.showErrorMessage("获取成员信息失败!")

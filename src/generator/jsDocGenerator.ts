@@ -104,6 +104,10 @@ export class JSDocGenerator {
     value && (this.jsdoc += `\n * @function`)
     return this
   }
+  setConstructorTag(value: boolean): this {
+    value && (this.jsdoc += `\n * @constructor`)
+    return this
+  }
   setThrowsTag(value: Set<string>): this {
     if (value && value.size > 0) {
       value.forEach(v => {
