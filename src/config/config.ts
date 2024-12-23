@@ -44,10 +44,10 @@ export class GlobalAnnotationConfig {
     // 解构项目配置
     const { authorInfo, versionInfo, licenseInfo, copyrightInfo } = projectConfig;
     // 设置属性，有则采用项目配置否则则采用默认值
-    this.authorInfo = authorInfo ?? '';
-    this.versionInfo = versionInfo ?? '';
-    this.licenseInfo = licenseInfo ?? '';
-    this.copyrightInfo = copyrightInfo ?? '';
+    this.authorInfo = authorInfo ?? '<作者名字> [<电子邮件地址>]';
+    this.versionInfo = versionInfo ?? '1.0.0';
+    this.licenseInfo = licenseInfo ?? 'MIT';
+    this.copyrightInfo = copyrightInfo ?? '<年份> <版权所有者>';
   }
 }
 /**

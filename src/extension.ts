@@ -10,7 +10,6 @@ import { WorkspaceUtil } from './utils/workspaceUtil';
 import { PanelFactory } from './panel/panelFactory';
 import { ConfigManager } from './config/configManager';
 import { RegExpParser } from './parser/regExpParser';
-import { ClassDeclaration } from 'ts-morph';
 
 // 插件激活
 export function activate(context: ExtensionContext) {
@@ -97,7 +96,6 @@ export function activate(context: ExtensionContext) {
     }
     // 获取类、方法或者成员信息
     let memberDeclaration = new AstHelper().getMemberInfo(sourceFile, wordText, lineNumber)
-
 
     // 成员信息获取失败
     if (!memberDeclaration) {
