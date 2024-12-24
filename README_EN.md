@@ -4,8 +4,9 @@ Here’s the translation of your document from Chinese to English:
 
 # Introduction
 - [Github Link](https://github.com/bloom-lmh/Annotation2)
-- [Gitee Link](https://github.com/bloom-lmh/Annotation2)
-- [中文文档链接](./README.md)
+- [Gitee Link](https://gitee.com/bloom_lmh/annotation2)
+- [中文文档链接](https://github.com/bloom-lmh/Annotation2/README.md)
+- [官方网站](https://bloom-lmh.github.io/swust-weblab-site/)
 
 ## What is JSDoc Annotation?
 

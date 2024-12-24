@@ -1,7 +1,9 @@
 # 简介
 - [Github地址](https://github.com/bloom-lmh/Annotation2)
-- [Gitee地址](https://github.com/bloom-lmh/Annotation2)
-- [English document link](./README_EN.md)
+- [Gitee地址](https://gitee.com/bloom_lmh/annotation2)
+- [English document link](https://github.com/bloom-lmh/Annotation2/README_EN.md)
+- [官方网站/Official website](https://bloom-lmh.github.io/swust-weblab-site/)
+
 ## 什么是 JSDoc Annotation？
 
 JSDoc Annotation 是一款轻量级、可高度定制的注释生成插件，旨在为您的 TypeScript 或 JavaScript 文件中的类、方法、属性等成员，快速生成符合 [JSDoc](https://jsdoc.bootcss.com/) 风格的注释。通过简便的命令操作，它让开发过程更加高效、流畅，极大提升代码注释的生成效率，带来未来感十足的开发体验。
