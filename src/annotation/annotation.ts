@@ -327,6 +327,7 @@ export class PropertyAnnotation extends BaseAnnotation<PropertyAnnotationConfig>
     let jsdoc = new JSDocGenerator()
       .setNameTag(this._nameTag)
       .setTypeTag(this._typeTag)
+      .setAccessTag(this._accessTag)
       .setStaticTag(this.staticTag)
       .setDefaultTag(this.defaultTag)
       .union(other)
@@ -339,7 +340,7 @@ export class PropertyAnnotation extends BaseAnnotation<PropertyAnnotationConfig>
  */
 export class InterfaceAnnotation extends BaseAnnotation<InterfaceAnnotationConfig> {
   private _interfaceTag: boolean = true;
-  private _extends: string[] = []
+  private _extendsTag: string[] = []
 
   constructor(globalAnnotationConfig: GlobalAnnotationConfig, concreteAnnotationConfig: InterfaceAnnotationConfig, member: InterfaceMember) {
     // 初始化公共配置
@@ -350,7 +351,7 @@ export class InterfaceAnnotation extends BaseAnnotation<InterfaceAnnotationConfi
     const { extends: _extends } = member
     // 设置属性
     this._interfaceTag = isInterfaceTag
-    this._extends = _extends
+    this._extendsTag = _extends
   }
   setInterfaceTag(value: boolean): this {
     this._interfaceTag = value;
@@ -365,6 +366,7 @@ export class InterfaceAnnotation extends BaseAnnotation<InterfaceAnnotationConfi
     let jsdoc = new JSDocGenerator()
       .setNameTag(this._nameTag)
       .setInterfaceTag(this._interfaceTag)
+      .setExtendsTag(this._extendsTag)
       .union(other)
       .build()
     return jsdoc
@@ -402,7 +404,6 @@ export class EnumAnnotation extends BaseAnnotation<EnumAnnotationConfig> {
     let jsdoc = new JSDocGenerator()
       .setNameTag(this._nameTag)
       .setEnumTag(this._enumTag)
-      .setNameTag(this._nameTag)
       .union(other)
       .build()
     return jsdoc

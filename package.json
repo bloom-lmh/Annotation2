@@ -1,9 +1,9 @@
 {
-  "name": "annotation2",
+  "name": "annotation",
   "publisher": "SWUST-WEBLAB-LMH",
-  "displayName": "annotation",
+  "displayName": "JSDoc Annotation",
   "description": "A plugin that quickly generates jsdoc comments",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.95.0"
   },

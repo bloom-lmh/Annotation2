@@ -143,7 +143,6 @@ export class RegExpParser {
       return new PropertyMember(_name, true, _type, _static, _default, _access);
     }
     return new PropertyMember()
-
   }
 
   private parseArrowFunction(textMemberDeclaration: string): MethodMember | null {
@@ -242,7 +241,8 @@ export class RegExpParser {
    */
   protected parseTypedef(textMemberDeclaration: string): TypedefMember {
     // 正则表达式，用于匹配类型别名（typedef）
-    const regex = /type\s+(?<name>\w+)\s*=\s*(?<type>[\w\s\|\&\(\)\[\]]+)/;
+    // const regex = /type\s+(?<name>\w+)\s*=\s*(?<type>[\w\s\|\&\(\)\[\]]+)/;
+    const regex = /type\s+(?<name>\w+)\s*=\s*(?<type>(?:(?:[\w\s\|\&]+)|(?:Array<[\w\s\[\],<>]+>)|(?:[\w\s\[\]]+\[]))|(?:\(\s*([\w\s,<>:]+)\s*\)\s*=>\s*\{?[\w\s,]*\}?)|(?:\(\s*([\w\s,<>:]+)\s*\)\s*=>\s*[\w\s<>]+))/;
 
     // 匹配类型别名声明
     const match = textMemberDeclaration.match(regex);

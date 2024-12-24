@@ -6,6 +6,11 @@ import { Config } from '../config/config';
 /**
  * 面板工厂
  */
+/**
+ * @name PanelFactory
+ * @class
+ * @description
+ */
 export class PanelFactory {
   private static panel: vscode.WebviewPanel | null
   public static getConfigPanel(templatePath: string): vscode.WebviewPanel {

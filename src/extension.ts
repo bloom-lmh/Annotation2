@@ -21,7 +21,7 @@ export function activate(context: ExtensionContext) {
   })
 
   // 模板路径
-  const templatePath = path.join(context.extensionPath, 'src/webview', "template.html")
+  const templatePath = path.join(context.extensionPath, 'out/webview', "template.html")
   // 创建面板
   let panel: vscode.WebviewPanel | null
   // 监听项目变化,动态注入配置

@@ -1,265 +1,201 @@
-# annotation2 README
-# 12月8日-12月12日
-## 尝试使用语言服务器
-语言服务器[语言服务器](https://code.visualstudio.com/docs/extensions/overview#_language-servers)插件模式中使用C/S结构的的服务器端，用于高消耗的特殊插件场景，如语言解析、智能提示等。与之相对，客户端则是普通的插件，两者通过VSCode的API进行通信。是一种可以提升语言编辑体验的特殊VS Code插件。有了语言服务器[语言服务器](https://code.visualstudio.com/docs/extensions/overview#_language-servers)插件模式中使用C/S结构的的服务器端，用于高消耗的特殊插件场景，如语言解析、智能提示等。与之相对，客户端则是普通的插件，两者通过VSCode的API进行通信。，你可以实现如**自动补全、错误检查（诊断）、转跳**到定义等等其他VS Code[语言特性](https://liiked.github.io/VS-Code-Extension-Doc-ZH/#/language-extensions/programmatic-language-features)。
+# 简介
+- [Github地址](https://github.com/bloom-lmh/Annotation2)
+- [Gitee地址](https://github.com/bloom-lmh/Annotation2)
+- [English document link](./README_EN.md)
+## 什么是 JSDoc Annotation？
 
+JSDoc Annotation 是一款轻量级、可高度定制的注释生成插件，旨在为您的 TypeScript 或 JavaScript 文件中的类、方法、属性等成员，快速生成符合 [JSDoc](https://jsdoc.bootcss.com/) 风格的注释。通过简便的命令操作，它让开发过程更加高效、流畅，极大提升代码注释的生成效率，带来未来感十足的开发体验。
 
-![](https://s3.bmp.ovh/imgs/2024/12/12/3f1c2530a6b0533f.png)
+## 特色功能
 
-## 完全面向JSDOC
-重构源代码的注解模型部分，完全面向JSDOC，添加了几乎所有JSDOC所定义的标签
-<div style="display: flex;">
-  <div style="flex: 1;padding:10px; color:red;">
-  旧注解模型：只支持部分标签
-  <br/>
+JSDoc Annotation参考了市面上热门的注释生成插件，如IEAD中Easy Javadoc的和VSCODE中的koroFileHeader插件，并结合了他们的优点而诞生。无论你是后端程序员还是前端程序员，都能让你在开发中有熟悉的感觉。其功能包括:
+
+1.快捷生成单个成员注释：类、方法、属性、枚举、接口、自定义属性的JSDoc注释
+2.快捷生成全文件类、方法、属性、枚举、接口、自定义属性的JSDoc注释
+3.进行个性化配置
+  - 对类、方法、属性、枚举、接口、自定义属性注释标签进行配置
+  - 全局标签设置
+  - 自定义翻译接口（维护中）
+  - 系统配置（维护中）
+- 支持配置的迁移和复用，让你无论在什么设备上都可以使用自己习惯的注释生成方式（维护中）
+
+## 兼容性
+JSDoc Annotation目前只能支持最新的VSCODE版本，对低版本的VSCODE的兼容处理还在进行中。当然也希望用户更新最新的VSCODE来使用，这样或许有更好的体验，[VSCODE官网](https://code.visualstudio.com/)。
+
+## 性能
+JSDoc Annotation采用了抽象语法树结合正则的方式来进行类、方法等成员的解析和注释生成。即保证了准确性又保证了优越的性能。经过统计：
+- 生成单个注释(1500行代码)大约需要10-50ms
+- 生成全文档注释(1500行代码)大约需要50-200ms
+
+## 命令清单
+JSDoc Annotation目前支持的命令如下：
+| 命令          | 功能                                                         |
+| ------------- | ------------------------------------------------------------ |
+| `alt+\`       | 对类、方法、属性、枚举、接口、自定义类型生成块级JSDOC注释    |
+| `ctrl+alt+\` | 对全文件的类、方法、属性、枚举、接口、自定义类型生成块级JSDOC注释 |
+| `ctrl+shift+\`| 打开配置面板|
+
+--- 
+# 基本使用
+
+## 单个成员生成注释
+对于单个成员生成注释十分简单，只需要将光标对准类、方法、属性然后按下`alt+\`即可生成块级注释
+
+### **生成类注释**
+![生成类注释演示](https://s3.bmp.ovh/imgs/2024/12/24/e0ad6a4974683468.gif)
+
+```JavaScript
+class SuperMan { }
+interface Fly { }
+interface Attack { }
+/**
+ * @name Man
+ * @abstract
+ * @class
+ * @implements {Fly}
+ * @implements {Attack}
+ * @extends SuperMan
+ * @description
+ */
+abstract class Man extends SuperMan implements Fly, Attack {}
+```
+
+### **生成方法注释**
+
+![生成方法注释演示](https://s3.bmp.ovh/imgs/2024/12/24/4c3780bb47e68c0e.gif)
 
 ```javascript
-export class MethodAnnotation extends Annotation {
-    private methodName: string
-    private parameters: Map<string, string>
-    private returnType: string
-    private throwErrors: Set<string>
-    private methodConfig: MethodAnnotationConfig
-}
-  "globalConfig": {
-    "author": "ccf",
-    "email": "1357526355@qq.com",
-    "tel": "15520513797",
-    "dateTime": "YYYY-MM-DD hh:mm:ss",
-    "version": "1.0.1",
-    "description": "描述点什么"
+/**
+ * @name fetchData
+ * @function
+ * @access public
+ * @static
+ * @async
+ * @param {string} name
+ * @param {number} age
+ * @returns {Promise}
+ * @description
+ */
+public static async fetchData(name: string, age: number): Promise<string> {
+  let a = 1
+  try {
+    console.log("a");
+  } catch (error) {
+    throw new Error("test error")
   }
-```
-
-  </div>
-  <div style="flex: 1; padding:10px;color:green; ">
-  新注解模型：支持几乎全部JSDOC标签
-    <br/>
-
-```javascript
-// 通用标签
-  export abstract class BaseAnnotation {
-    protected _name: string | null = null;      // 类名
-    protected _author: string | null = null;     // 作者信息
-    protected _deprecated: boolean | null = null; // 是否已过时
-    protected _memberof: string | null = null; // 所属的类或模块
-    protected _example: string | null = null; // 示例代码
-    protected _since: string | null = null; // 标记某个功能或方法自哪个版本开始存在
-    protected _version: string | null = null; // 当前的版本
-    protected _see: string | null = null; // 相关参考
-    protected _description: string | null = null; // 描述或注释
-    protected _private: boolean | null = null; // 是否为私有
-    protected _protected: boolean | null = null; // 是否为受保护
-    protected _public: boolean | null = null; // 是否为公共
-    protected _readonly: boolean | null = null; // 是否为只读
-}
-// 类专用标签
-export class ClassAnnotation extends BaseAnnotation {
-    protected _class: boolean | null = null; // 是否标记为类
-    protected _abstract: boolean | null = null; // 是否为抽象类
-    protected _isConstructor: boolean | null = null; // 是否标记为构造函数
-    protected _interface: boolean | null = null; // 是否为接口
-    protected _extends: string | null = null; // 继承的父类
-    protected _implements: string | null = ''; // 实现的接口
-    protected _params: Array<[string, string]> | Map<string, string> | null = null; // 构造函数参数
-    protected _implement: string | null = null; // 实现描述
-    protected _returns: string | null = null; // 返回值类型
-}
-// 方法专用标签
-export class MethodAnnotation extends BaseAnnotation {
-    protected _method: boolean | null = null; // 是否标记为方法
-    protected _abstract: boolean | null = null; // 是否为抽象方法
-    protected _async: boolean | null = null; // 是否为异步方法
-    protected _params: Array<[string, string]> | Map<string, string> | null = null; // 参数列表，格式：[参数名, 类型]
-    protected _returns: string | null = null; // 返回值类型
-    protected _throws: string | null = null; // 抛出的异常描述
-    protected _override: boolean | null = null; // 是否覆盖父类方法
-}
-// 属性专用标签
-export class PropertyAnnotation extends BaseAnnotation {
-    protected _property: boolean | null = null; // 是否标记为属性
-    protected _static: boolean | null = null; // 是否为静态属性
-    protected _type: string | null = null; // 属性的类型
-    protected _defaultValue: string | number | boolean | null = null; // 属性的默认值
+  if (a === 1) {
+    throw new Error("asd")
+  }
+  return "aa"
 }
 ```
 
-  </div>
-</div>
+### **生成属性注释**
 
-主要采用了建造者模式
-## 性能优化-AST语法树的异步并行遍历
-根据测试
-- 对于有着1500行代码的单个TS文件的抽象语法树的解析时间大约在30-50ms
-- 对于1500行代码生成的抽象语法树进行遍历需要的实践大约在800-1300ms
-
-所以可以得出结论：性能损耗主要体现在对AST语法树的遍历上，而非对抽象语法树的解析上
-于是我所做的工作就是对抽象语法树遍历算法进行了优化，主要策略就是依托Promise的特性来进行异步并行遍历以此提高遍历性能（以前对方法和属性的遍历是同步的，先遍历完方法再遍历属性）。
-
-<div style="display: flex;">
-   <div style="flex: 1;padding:10px; color:red;">
-  旧AST遍历算法：同步执行方法和属性的遍历
-  <br/>
+![生成属性注释演示](https://s3.bmp.ovh/imgs/2024/12/24/f291ba8b5de0f2a2.gif)
 
 ```javascript
-    public static getMemberInfoByName(sourceFile: SourceFile, memberName: string, lineNumber: number): ClassDeclaration | MethodDeclaration | PropertyDeclaration | FunctionDeclaration | null {
-        // 获取文件中的类
-        for (const classMember of sourceFile.getClasses()) {
-            // 若类满足条件返回类
-            if (classMember.getName() === memberName && classMember.getStartLineNumber() === lineNumber) {
-                return classMember
-            }
-            // 遍历类中的方法，若方法满足条件返回方法
-            for (const methodMember of classMember.getMethods()) {
-                if (methodMember.getName() === memberName && methodMember.getStartLineNumber() === lineNumber) {
-                    return methodMember
-                }
-            }
-            // 遍历类中的属性，若属性满足条件返回属性
-            for (const propertyMember of classMember.getProperties()) {
-                if (propertyMember.getName() === memberName && propertyMember.getStartLineNumber() === lineNumber) {
-                    return propertyMember
-                }
-            }
-        }
+/**
+ * @name name
+ * @type {string}
+ * @access private
+ * @static
+ * @default "小芳"
+ * @description
+ */
+private static name: string = "小芳"
 ```
 
-  </div>
-<div style="flex: 1;padding:10px; color:green;">
-  新AST遍历算法：异步并行执行方法和属性遍历
-  <br/>
+### **生成枚举注释**
+
+![生成枚举注释演示](https://s3.bmp.ovh/imgs/2024/12/24/abd1aaf96d6d2213.gif)
 
 ```javascript
-    public async parseMemberInfo(sourceFile: SourceFile, memberName: string, lineNumber: number) {
-        const classDetails = await Promise.all(
-            sourceFile.getClasses().map(async cls => {
-                const className = cls.getName();
+/**
+ * @name Color
+ * @enum
+ * @description
+ */
+enum Color {
 
-                // 并行处理属性和方法
-                const [methods, properties] = await Promise.all([
-                    Promise.all(
-                        cls.getMethods().map(async method => ({
-                            name: method.getName(),
-                            parameters: method.getParameters().map(param => ({
-                                name: param.getName(),
-                                type: param.getType().getText(),
-                            })),
-                            returnType: method.getReturnType().getText(),
-                        }))
-                    ),
-                    Promise.all(
-                        cls.getProperties().map(async prop => ({
-                            name: prop.getName(),
-                            type: prop.getType().getText(),
-                            isReadonly: prop.isReadonly(),
-                        }))
-                    ),
-                ]);
-
-                return { className, methods, properties };
-            })
-        );
-        return classDetails
-    }
-```
-
-  </div>
-</div>
-
-## 节能模式
-即便做了以上的优化，但性能提升还是不够明显。我们在享受AST带来的强大功能的同时确实无法避免的要为性能做出牺牲。
-但是我不会让用户强制接受这种牺牲，因为AST语法树的功能面向的是生成JSDOC接口文档的，大部分用户仅仅需要一些相对简单的注解功能。
-所以我想到了一种新的策略，我叫它节能模式。
-
-
-# 12月14日-12月19日
-## 新的文件监控器
-这次我使用了chokidar来对配置文件变化进行监控对比老版本代码简化了很多
-```javascript
-public static watchFiles(files: Array<string>, handler: FileWatchHandler, config?: ChokidarOptions) {
-    // 设置默认值
-    config = config || {
-        // 持续监听
-        persistent: true,
-        depth: 0
-    }
-    // 创建监听器
-    const watcher = chokidar.watch(files, config);
-    // 对文件进行监听
-    for (const key in handler) {
-        if (handler.hasOwnProperty(key)) { // 过滤掉继承的属性
-            // 类型断言，告诉 TypeScript key 必须是 'add' | 'change' | 'unlink' 之一
-            const eventHandler = handler[key as 'add' | 'change' | 'unlink'];
-            // 确保 handler[key] 是一个函数
-            if (typeof eventHandler === 'function') {
-                watcher.on(key, eventHandler);
-            }
-        }
-    }
-```
-
-```javascript
-public static startConfigWatch() {
-    // 获取工作区配置文件
-    const projectConfigFiles = WorkspaceUtil.getProjectPaths()
-    /* 'annotation.config.json' */
-    // 调用文件监听器监听文件
-    FileWatcher.watchFiles(projectConfigFiles, {
-        add: (path) => {
-            if (basename(path) === 'annotation.config.json') {
-                //console.log("add:" + path);
-                this.addConfig(path)
-            }
-        },
-        unlink: (path) => {
-            if (basename(path) === 'annotation.config.json') {
-                //console.log("remove:" + path);
-                this.removeConfig(path)
-            }
-        },
-        change: (path) => {
-            if (basename(path) === 'annotation.config.json') {
-                //console.log("change:" + path);
-                this.addConfig(path)
-            }
-        },
-    }, {
-        // 持续监听
-        persistent: true,
-        depth: 0
-    })
 }
 ```
+### **生成接口注释**
 
-## 添加新的注解模型
-### 枚举注解模型
+![生成接口注释演示](https://s3.bmp.ovh/imgs/2024/12/24/4931b813631514b5.gif)
+
 ```javascript
-export class EnumAnnotation extends BaseAnnotation {
-    private _enumTag: boolean = true;
+interface A { }
+interface B { }
+/**
+ * @name C
+ * @interface
+ * @extends A
+ * @extends B
+ * @description
+ */
+interface C extends A, B { }
 ```
-### 接口注解模型
+### **生成自定义类型注释**
+
+![生成自定义类型注释演示](https://s3.bmp.ovh/imgs/2024/12/24/5b8e309514ba0221.gif)
+
 ```javascript
-export class InterfaceAnnotation extends BaseAnnotation {
-    private _interfaceTag: boolean = true;
-}
+/**
+ * @name myname
+ * @typedef {string | number} myname
+ * @description
+ */
+type myname = string | number;
 ```
+###
 
-### 自定义类型注解模型
+## 全文档成员生成注释
+JSDoc Annotation不仅支持生成单个成员的注释，还可以一键对全文件所有成员添加注释，使用命令`ctrl+alt+\`即可为全文件的的方法、类、属性等成员生成注释
+![全文档成员生成注释演示](https://s3.bmp.ovh/imgs/2024/12/24/5124b70c283d00ba.gif)
+
+--- 
+# 配置
+
+## 默认配置
+
+JSDoc Annotation支持用户个性化的配置，但是为了开箱即用，JSDoc Annotation对常用的选项进行了默认设置，即约定大于配置。用户不必进行过多的配置或者可以不需要进行配置就能享受到目前市面上最流行的注释方式。
+默认配置的标签如下所示：
 ```javascript
-export class TypedefAnnotation extends BaseAnnotation {
-    private _typedefTag: boolean = true;
-    private _typeTag: string = ""
-}
+/* 类注释默认支持的标签 */
+@name;@class;@abstract;@extends;@implements
+/* 方法注释默认支持的标签 */
+@name；@params；@async；@function；@constructor；
+@throwsTag；@paramsTag；@returnsTag； @staticTag
+/* 属性注释默认支持的标签 */
+@name;@propertyTag；@typeTag；@staticTag；@defaultTag
+/* 枚举注释默认支持的标签 */
+@name;@enum;
+/* 自定义类型注释默认支持的标签 */
+@name;@type
+/* 接口类型注释默认支持的标签 */
+@name;@interface;@extends
 ```
 
-## 演示默认注解生成
+## 进阶配置
+当然如果你想进行配置，JSDoc Annotation也支持个性化的配置方案，使用命令`shift+alt+\`即可打开配置面板。
+![配置面版界面](https://s3.bmp.ovh/imgs/2024/12/24/4e83b3e8c0a2cfab.jpg)
 
-修复bug
 
-后续将支持
-更加强大的配置功能
-- 翻译接口
-- 配置导出导入
-- 
-getset集成
-代码统计集成
+## 配置案例
+比如，如果你希望当前项目在生成类注释时加上作者标签，你可以这样进行配置
+1. 从项目选择下拉框中选择当前项目
+2. 然后在类注释配置中选择打开作者标签
+3. 在全局配置中写上你想要的作者名
+
+![配置案例演示](https://s3.bmp.ovh/imgs/2024/12/24/f96b0b278637fb29.gif)
+
+# 维护与支持
+
+目前JSDoc Annotation版本为1.0.0，还有一些BUG还没有暴露，所以后续我会对插件进行更充分的测试，并对出现的BUG进行维护。
+项目源码已经放到github上，希望大家可以为我提出一些建议，我会根据建议进行改进。
+如果喜欢的朋友也可以为我点点赞，这也是我前进的动力。
+
+
+
+

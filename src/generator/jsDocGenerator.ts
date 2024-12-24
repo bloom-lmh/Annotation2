@@ -84,8 +84,16 @@ export class JSDocGenerator {
     value && (this.jsdoc += `\n * @abstract`)
     return this
   }
-  setExtendsTag(value: string): this {
-    value && (this.jsdoc += `\n * @extends ${value}`)
+  setExtendsTag(value: string | Array<string>): this {
+    if (value) {
+      if (Array.isArray(value) && value.length > 0) {
+        value.forEach(item => {
+          this.jsdoc += `\n * @extends ${item}`
+        })
+      } else {
+        this.jsdoc += `\n * @extends ${value}`
+      }
+    }
     return this
   }
   setImplementsTag(value: Array<string>): this {
