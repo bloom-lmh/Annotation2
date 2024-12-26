@@ -37,14 +37,30 @@ JSDoc Annotation目前支持的命令如下：
 | `ctrl+alt+\` | 对全文件的类、方法、属性、枚举、接口、自定义类型生成块级JSDOC注释 |
 | `ctrl+shift+\`| 打开配置面板|
 
---- 
+# 安装与下载
+
+### VSCODE编辑器中搜索
+
+在VSCODE 插件市场搜索JSDoc Annotation下载即可使用
+
+<img src="https://s3.bmp.ovh/imgs/2024/12/25/d8f5a3e8bc183bee.png" alt="插件市场" style="zoom:150%;" />
+
+
+
+<img src="https://s3.bmp.ovh/imgs/2024/12/25/a2cb6b67cc832554.png" alt="插件图" style="zoom:150%;" />
+
+### VSCODE市场下载安装包
+
+可以去VSCODE市场下载对应的JSDoc Annotation的安装包，比如annotation-1.0.0.vsix，然后本地导入
+但是注意使用安装包你将无法再享受到后续功能的更新！
+
 # 基本使用
 
 ## 单个成员生成注释
 对于单个成员生成注释十分简单，只需要将光标对准类、方法、属性然后按下`alt+\`即可生成块级注释
 
 ### **生成类注释**
-![生成类注释演示](https://s3.bmp.ovh/imgs/2024/12/24/e0ad6a4974683468.gif)
+<img src="https://s3.bmp.ovh/imgs/2024/12/24/e0ad6a4974683468.gif" alt="生成类注释演示" style="zoom:150%;" />
 
 ```JavaScript
 class SuperMan { }
@@ -64,7 +80,7 @@ abstract class Man extends SuperMan implements Fly, Attack {}
 
 ### **生成方法注释**
 
-![生成方法注释演示](https://s3.bmp.ovh/imgs/2024/12/24/4c3780bb47e68c0e.gif)
+<img src="https://s3.bmp.ovh/imgs/2024/12/24/4c3780bb47e68c0e.gif" alt="生成方法注释演示" style="zoom:150%;" />
 
 ```javascript
 /**
@@ -94,7 +110,7 @@ public static async fetchData(name: string, age: number): Promise<string> {
 
 ### **生成属性注释**
 
-![生成属性注释演示](https://s3.bmp.ovh/imgs/2024/12/24/f291ba8b5de0f2a2.gif)
+<img src="https://s3.bmp.ovh/imgs/2024/12/24/f291ba8b5de0f2a2.gif" alt="生成属性注释演示" style="zoom:150%;" />
 
 ```javascript
 /**
@@ -110,7 +126,7 @@ private static name: string = "小芳"
 
 ### **生成枚举注释**
 
-![生成枚举注释演示](https://s3.bmp.ovh/imgs/2024/12/24/abd1aaf96d6d2213.gif)
+<img src="https://s3.bmp.ovh/imgs/2024/12/24/abd1aaf96d6d2213.gif" alt="生成枚举注释演示" style="zoom:150%;" />
 
 ```javascript
 /**
@@ -124,7 +140,7 @@ enum Color {
 ```
 ### **生成接口注释**
 
-![生成接口注释演示](https://s3.bmp.ovh/imgs/2024/12/24/4931b813631514b5.gif)
+<img src="https://s3.bmp.ovh/imgs/2024/12/24/4931b813631514b5.gif" alt="生成接口注释演示" style="zoom:150%;" />
 
 ```javascript
 interface A { }
@@ -140,7 +156,7 @@ interface C extends A, B { }
 ```
 ### **生成自定义类型注释**
 
-![生成自定义类型注释演示](https://s3.bmp.ovh/imgs/2024/12/24/5b8e309514ba0221.gif)
+<img src="https://s3.bmp.ovh/imgs/2024/12/24/5b8e309514ba0221.gif" alt="生成自定义类型注释演示" style="zoom:150%;" />
 
 ```javascript
 /**
@@ -154,9 +170,9 @@ type myname = string | number;
 
 ## 全文档成员生成注释
 JSDoc Annotation不仅支持生成单个成员的注释，还可以一键对全文件所有成员添加注释，使用命令`ctrl+alt+\`即可为全文件的的方法、类、属性等成员生成注释
-![全文档成员生成注释演示](https://s3.bmp.ovh/imgs/2024/12/24/5124b70c283d00ba.gif)
+<img src="https://s3.bmp.ovh/imgs/2024/12/24/5124b70c283d00ba.gif" alt="全文档成员生成注释演示" style="zoom:150%;" />
 
---- 
+---
 # 配置
 
 ## 默认配置
@@ -181,7 +197,7 @@ JSDoc Annotation支持用户个性化的配置，但是为了开箱即用，JSDo
 
 ## 进阶配置
 当然如果你想进行配置，JSDoc Annotation也支持个性化的配置方案，使用命令`shift+alt+\`即可打开配置面板。
-![配置面版界面](https://s3.bmp.ovh/imgs/2024/12/24/4e83b3e8c0a2cfab.jpg)
+<img src="https://s3.bmp.ovh/imgs/2024/12/24/4e83b3e8c0a2cfab.jpg" alt="配置面版界面" style="zoom:150%;" />
 
 
 ## 配置案例
@@ -190,14 +206,13 @@ JSDoc Annotation支持用户个性化的配置，但是为了开箱即用，JSDo
 2. 然后在类注释配置中选择打开作者标签
 3. 在全局配置中写上你想要的作者名
 
-![配置案例演示](https://s3.bmp.ovh/imgs/2024/12/24/f96b0b278637fb29.gif)
+<img src="https://s3.bmp.ovh/imgs/2024/12/24/f96b0b278637fb29.gif" alt="配置案例演示" style="zoom:150%;" />
 
 # 维护与支持
 
 目前JSDoc Annotation版本为1.0.0，还有一些BUG还没有暴露，所以后续我会对插件进行更充分的测试，并对出现的BUG进行维护。
 项目源码已经放到github上，希望大家可以为我提出一些建议，我会根据建议进行改进。
 如果喜欢的朋友也可以为我点点赞，这也是我前进的动力。
-
 
 
 

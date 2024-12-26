@@ -44,7 +44,16 @@ The following commands are currently supported by JSDoc Annotation:
 | `ctrl+alt+\`    | Generate block-level JSDoc comments for all classes, methods, properties, enums, interfaces, and custom types in the file |
 | `ctrl+shift+\`  | Open the configuration panel |
 
----
+# Installation and Download
+
+### Search in the VSCode editor
+
+You can search for "JSDoc Annotation" in the VSCode Marketplace to download and use it.
+
+### Download VSIX Package from VSCode Marketplace
+
+You can download the corresponding JSDoc Annotation installation package, such as `annotation-1.0.0.vsix`, from the VSCode Marketplace and import it locally.
+ However, note that using the installation package means you will not receive future updates or new features!
 
 # Basic Usage
 
