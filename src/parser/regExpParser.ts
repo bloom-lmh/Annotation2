@@ -96,7 +96,7 @@ export class RegExpParser {
       const _name = name || '';
       const _params = this.parseParams(params || '');
       const _returns = returnType || ''; // 默认返回类型为空
-      const _throws = this.parseThrownErrors(throws || ""); // 默认无异常
+      const _throws = this.parseThrownErrors(textMemberDeclaration); // 默认无异常
       const _async = async !== undefined;  // 判断是否为异步方法
       const _access = accessModifier || '';  // 默认访问修饰符为空
       const _static = !!isStatic; // 判断是否为静态方法
@@ -113,9 +113,11 @@ export class RegExpParser {
       throw new Error("Method declaration parsing failed.");
     }
   }
+
+
   /**
-   * 解析属性
-   */
+ * 解析属性
+ */
   protected parseProperty(textMemberDeclaration: string): PropertyMember | MethodMember {
 
     // 正则表达式，用于匹配属性的声明信息（包括默认值）
@@ -144,7 +146,9 @@ export class RegExpParser {
     }
     return new PropertyMember()
   }
-
+  /**
+    * 解析箭头函数
+    */
   private parseArrowFunction(textMemberDeclaration: string): MethodMember | null {
 
 
@@ -286,6 +290,7 @@ export class RegExpParser {
    * @returns 
    */
   private parseThrownErrors(methodBody: string): Set<string> {
+
     const regex = /throw\s+new\s+(\w+)\(/g;  // 捕获 `throw new Error()` 中的异常类型
     const matches = [...methodBody.matchAll(regex)];
     return new Set(matches.map(match => match[1]));  // 提取所有异常类型

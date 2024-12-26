@@ -5,7 +5,7 @@ import { TextDocument } from "vscode";
 /**
  * 抽象语法树解析器
  */
-export class AstParseStrategy {
+export class AstParser {
   public parseMember(memberDeclaration: MemberDeclaration): MemberType | null {
     // 若是方法，创建方法注释对象
     if (memberDeclaration instanceof MethodDeclaration || memberDeclaration instanceof FunctionDeclaration) {
