@@ -3,7 +3,7 @@
   "publisher": "SWUST-WEBLAB-LMH",
   "displayName": "JSDoc Annotation",
   "description": "A plugin that quickly generates jsdoc comments",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "icon": "./logo.png",
   "engines": {
     "vscode": "^1.95.0"
@@ -28,6 +28,10 @@
       {
         "command": "addAllAnnotations",
         "title": "ADD ALL ANNOTATIONS"
+      },
+      {
+        "command": "test",
+        "title": "TEST"
       }
     ],
     "keybindings": [
@@ -42,6 +46,10 @@
       {
         "command": "addAllAnnotations",
         "key": "ctrl+alt+\\"
+      },
+      {
+        "command": "test",
+        "key": "ctrl+shift+alt+\\"
       }
     ]
   },

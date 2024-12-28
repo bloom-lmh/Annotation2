@@ -1,7 +1,7 @@
 # 简介
 - [Github地址](https://github.com/bloom-lmh/Annotation2)
 - [Gitee地址](https://gitee.com/bloom_lmh/annotation2)
-- [English document link](https://github.com/bloom-lmh/Annotation2/README_EN.md)
+- [English document link](https://github.com/bloom-lmh/Annotation2/blob/master/README_EN.md)
 - [官方网站/Official website](https://bloom-lmh.github.io/swust-weblab-site/)
 
 ## 什么是 JSDoc Annotation？
@@ -36,23 +36,6 @@ JSDoc Annotation目前支持的命令如下：
 | `alt+\`       | 对类、方法、属性、枚举、接口、自定义类型生成块级JSDOC注释    |
 | `ctrl+alt+\` | 对全文件的类、方法、属性、枚举、接口、自定义类型生成块级JSDOC注释 |
 | `ctrl+shift+\`| 打开配置面板|
-
-# 安装与下载
-
-### VSCODE编辑器中搜索
-
-在VSCODE 插件市场搜索JSDoc Annotation下载即可使用
-
-<img src="https://s3.bmp.ovh/imgs/2024/12/25/d8f5a3e8bc183bee.png" alt="插件市场" style="zoom:150%;" />
-
-
-
-<img src="https://s3.bmp.ovh/imgs/2024/12/25/a2cb6b67cc832554.png" alt="插件图" style="zoom:150%;" />
-
-### VSCODE市场下载安装包
-
-可以去VSCODE市场下载对应的JSDoc Annotation的安装包，比如annotation-1.0.0.vsix，然后本地导入
-但是注意使用安装包你将无法再享受到后续功能的更新！
 
 # 基本使用
 

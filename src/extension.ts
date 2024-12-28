@@ -53,8 +53,6 @@ export function activate(context: ExtensionContext) {
         panel.webview.postMessage({ command: 'removeProjectConfig', data: removeProjectPaths });
       }
     }
-
-
   });
 
 
@@ -137,6 +135,8 @@ export function activate(context: ExtensionContext) {
       editBuilder.insert(position, `${jsdoc}\n`);
     });
   });
+
+
   // 生成全文件注释
   const disposable3 = vscode.commands.registerCommand('addAllAnnotations', async () => {
     const editor = vscode.window.activeTextEditor;
@@ -212,9 +212,14 @@ export function activate(context: ExtensionContext) {
 
 
   });
+  const disposable4 = vscode.commands.registerCommand('test', async () => {
+    console.log("a");
+  })
+
   context.subscriptions.push(disposable1);
   context.subscriptions.push(disposable2);
   context.subscriptions.push(disposable3);
+  context.subscriptions.push(disposable4);
   context.subscriptions.push(workspaceFolderDisposable);
 }
 /**
