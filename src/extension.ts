@@ -11,6 +11,8 @@ import { PanelFactory } from './panel/panelFactory';
 import { ConfigManager } from './config/configManager';
 import { RegExpParser } from './parser/regExpParser';
 import { AstParser } from './parser/astParser';
+import { MemberHandlerChain } from './handler/menberHandlerChain';
+import { RegExpMemberHandleStrategy } from './strategy/regExpMemberHandleStrategy';
 
 // 插件激活
 export function activate(context: ExtensionContext) {
@@ -102,8 +104,11 @@ export function activate(context: ExtensionContext) {
       vscode.window.showErrorMessage("获取成员声明失败!")
       return
     }
+    let memberHandlerChain = new MemberHandlerChain()
+    let member = memberHandlerChain.handle(memberDeclaration, new RegExpMemberHandleStrategy(document))
+
     // 采用正则策略获取成员信息
-    let member = new RegExpParser().parseMember(memberDeclaration, document)
+    //let member = new RegExpParser().parseMember(memberDeclaration, document)
     if (!member) {
       member = new AstParser().parseMember(memberDeclaration)
     }

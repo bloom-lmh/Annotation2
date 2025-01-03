@@ -79,6 +79,4 @@ export class AstMemberHandleStrategy implements MemberHandleStrategy {
     // 返回接口成员
     return new TypedefMember(_name, true, _type)
   }
-
-
 }
