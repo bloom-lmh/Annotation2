@@ -2,7 +2,7 @@ import { ExtensionContext } from 'vscode';
 import * as vscode from 'vscode';
 import { ContextPicker } from './picker/contextPicker';
 import { AstHelper, MemberDeclaration } from './ast/astHelper';
-import { TsFileHelper } from './ast/tsFileHelper';
+import { AstParser } from './ast/astParser';
 import path from 'path';
 import { Config } from './config/config';
 import { AnnotationFactory } from './annotation/annotationFactory';
@@ -10,9 +10,8 @@ import { WorkspaceUtil } from './utils/workspaceUtil';
 import { PanelFactory } from './panel/panelFactory';
 import { ConfigManager } from './config/configManager';
 import { RegExpParser } from './parser/regExpParser';
-import { AstParser } from './parser/astParser';
-import { MemberHandlerChain } from './handler/menberHandlerChain';
-import { RegExpMemberHandleStrategy } from './strategy/regExpMemberHandleStrategy';
+import { MemberHandlerChain } from './member/menberHandlerChain';
+import { RegExpMemberHandleStrategy } from './member/regExpMemberHandleStrategy';
 
 // 插件激活
 export function activate(context: ExtensionContext) {
@@ -89,7 +88,7 @@ export function activate(context: ExtensionContext) {
     // 创建拾取器对象拾取上下文信息
     let { lineNumber, wordText, document } = new ContextPicker(editor).pick()
     // 创建ts文件解析工具解析ts文件
-    let sourceFile = new TsFileHelper().parseSourceFileByText(document.getText())
+    let sourceFile = new AstParser().parseByText(document.getText())
     // 解析为抽象语法树失败
     if (!sourceFile) {
       vscode.window.showErrorMessage("抽象语法树解析失败!")
@@ -107,11 +106,7 @@ export function activate(context: ExtensionContext) {
     let memberHandlerChain = new MemberHandlerChain()
     let member = memberHandlerChain.handle(memberDeclaration, new RegExpMemberHandleStrategy(document))
 
-    // 采用正则策略获取成员信息
-    //let member = new RegExpParser().parseMember(memberDeclaration, document)
-    if (!member) {
-      member = new AstParser().parseMember(memberDeclaration)
-    }
+
     // 成员获取失败
     if (!member) {
       vscode.window.showErrorMessage("获取成员信息失败!")
@@ -120,10 +115,10 @@ export function activate(context: ExtensionContext) {
     // 获取文件所属项目路径
     const projectPath = vscode.workspace.getWorkspaceFolder(editor.document.uri)?.uri.fsPath
     // 获取项目路径失败
-    if (!projectPath) {
-      vscode.window.showInformationMessage("获取项目路径失败!")
-      return
-    }
+    /*  if (!projectPath) {
+       vscode.window.showInformationMessage("获取项目路径失败!")
+       return
+     } */
     // 加载用户配置
     let config: Config = ConfigManager.getConfig(projectPath)
 
@@ -152,7 +147,7 @@ export function activate(context: ExtensionContext) {
     }
 
     const document = editor.document;
-    const sourceFile = new TsFileHelper().parseSourceFileByText(document.getText());
+    const sourceFile = new AstParser().parseByText(document.getText());
 
     if (!sourceFile) {
       vscode.window.showErrorMessage("抽象语法树解析失败!");
@@ -175,11 +170,11 @@ export function activate(context: ExtensionContext) {
 
     // 获取文件所属项目路径
     const projectPath = vscode.workspace.getWorkspaceFolder(editor.document.uri)?.uri.fsPath;
-
-    if (!projectPath) {
-      vscode.window.showInformationMessage("获取项目路径失败!");
-      return;
-    }
+    /* 
+        if (!projectPath) {
+          vscode.window.showInformationMessage("获取项目路径失败!");
+          return;
+        } */
 
     // 加载用户配置
     let config: Config = ConfigManager.getConfig(projectPath);

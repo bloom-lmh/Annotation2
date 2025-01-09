@@ -222,7 +222,7 @@ For instance, if you want to add an author tag when generating class comments in
 
 # Maintenance and Support
 
-Currently, JSDoc Annotation version 1.0.0 is available, and some bugs have not yet been exposed. So I will continue testing the plugin and maintaining it for any bugs that appear. The project source code is available on GitHub, and I hope users can provide suggestions, which will help me improve the plugin.
+Currently, JSDoc Annotation version 1.0.5 is available, and some bugs have not yet been exposed. So I will continue testing the plugin and maintaining it for any bugs that appear. The project source code is available on GitHub, and I hope users can provide suggestions, which will help me improve the plugin.
 
 If you like it, please give me a thumbs-up; it’s also my motivation to continue working on this project.
 

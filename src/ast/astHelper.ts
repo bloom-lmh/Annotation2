@@ -2,9 +2,26 @@ import { ClassDeclaration, ConstructorDeclaration, EnumDeclaration, FunctionDecl
 import * as vscode from 'vscode'
 
 export class AstHelper {
-  // 获取全部的成员信息
+  // 获取单个成员信息
+  public getOneMemberDeclaration(sourceFile: SourceFile, memberName: string, lineNumber: number) {
+    // 获取接口信息
+    const interfaces = sourceFile.getInterfaces();
+    // 获取类信息
+    const classes = sourceFile.getClasses();
+    // 获取类型别名声明
+    const types = sourceFile.getTypeAliases();
+    // 获取枚举信息
+    const enums = sourceFile.getEnums();
+    // 获取方法信息
+    const functions = sourceFile.getFunctions();
+  }
+
+  public getAllMemberDeclaration() {
+
+  }
 
 
+  // 查询接口成员
   // 获取方法、类或属性信息
   public getMemberInfo(sourceFile: SourceFile, memberName: string, lineNumber: number): MemberDeclaration {
     // 获取接口信息
@@ -43,7 +60,6 @@ export class AstHelper {
           return constructor; // 返回匹配的构造函数
         }
       }
-
 
       // 2. 查找方法
       const methodDeclaration = member.getMethods().find(method => method.getName() === memberName && method.getStartLineNumber() === lineNumber);

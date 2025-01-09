@@ -1,7 +1,7 @@
 import { ClassDeclaration, EnumDeclaration, InterfaceDeclaration, MethodDeclaration, PropertyDeclaration, TypeAliasDeclaration } from "ts-morph";
 import { MemberDeclaration } from "../ast/astHelper";
 import { Member } from "../parser/member";
-import { MemberHandleStrategy } from "../strategy/memberHandleStrategy";
+import { MemberHandleStrategy } from "../member/memberHandleStrategy";
 
 export interface MemberHandler {
   setNext(memberHandler: MemberHandler): MemberHandler;

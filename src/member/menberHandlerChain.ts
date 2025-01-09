@@ -1,6 +1,6 @@
 import { MemberDeclaration } from "../ast/astHelper"
 import { Member } from "../parser/member"
-import { MemberHandleStrategy } from "../strategy/memberHandleStrategy"
+import { MemberHandleStrategy } from "../member/memberHandleStrategy"
 import { ClassMemberHandler, EnumMemberHandler, InterfaceMemberHandler, MemberHandler, MethodMemberHandler, PropertyMemberHandler, TypedefMemberHandler } from "./memberHandler"
 
 export class MemberHandlerChain implements MemberHandler {

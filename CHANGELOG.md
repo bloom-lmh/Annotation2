@@ -13,10 +13,17 @@
 - 修复了 `parseMethod` 正则无法匹配方法体中 `throw` 异常的问题.
 - Fixed the issue where the `parseMethod` regular expression could not match `throw` exceptions in method bodies.
 
-## [1.0.3] - 2024-12-27
+## [1.0.4] - 2024-12-27
 ### 更改
 - 更新了 Markdown 中英文文档的链接.
 - Updated the English documentation links in the Markdown files.
 
 
-需要对没有项目路径的文件也生成注释
+## [1.0.5] - 2024-1-09
+### 修复
+- 修复了没有项目路径的文件不可生成注释的问题.
+- Fixed an issue where files without project paths could not generate comments.
+
+### 更改
+- 优化代码结构，引入职责链模式处理注释成员生成。
+- Optimize code structure and introduce chain of responsibility mode to handle comment member generation.

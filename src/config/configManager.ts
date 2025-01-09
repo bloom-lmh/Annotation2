@@ -25,7 +25,8 @@ export class ConfigManager {
 
   }
   // 获取配置
-  public static getConfig(projectPath: string): Config {
+  public static getConfig(projectPath: string | null | undefined): Config {
+    if (!projectPath) return new Config()
     // 尝试获取缓存的用户配置
     let config = this.configMaps.get(projectPath) || new Config()
     // 返回配置
