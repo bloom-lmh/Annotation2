@@ -95,20 +95,20 @@ export class AstHelper {
     const methodDeclarations: (MethodDeclaration | MethodSignature)[] = [];
     const propertyDeclarations: (PropertyDeclaration | PropertySignature)[] = [];
 
-    for (const member of memberDeclarations) {
+    for (const memberDeclaration of memberDeclarations) {
       // 收集类或接口声明
-      classOrInterfaceDeclarations.push(member);
+      classOrInterfaceDeclarations.push(memberDeclaration);
 
       // 如果是类，则收集构造函数
-      if (member instanceof ClassDeclaration) {
-        constructorDeclarations.push(...member.getConstructors());
+      if (memberDeclaration instanceof ClassDeclaration) {
+        constructorDeclarations.push(...memberDeclaration.getConstructors());
       }
 
       // 收集方法
-      methodDeclarations.push(...member.getMethods());
+      methodDeclarations.push(...memberDeclaration.getMethods());
 
       // 收集属性
-      propertyDeclarations.push(...member.getProperties());
+      propertyDeclarations.push(...memberDeclaration.getProperties());
     }
 
     return {

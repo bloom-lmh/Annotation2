@@ -1,9 +1,9 @@
 import { MemberDeclaration } from "../ast/astHelper"
 import { Member } from "../parser/member"
 import { MemberHandleStrategy } from "../member/memberHandleStrategy"
-import { ClassMemberHandler, EnumMemberHandler, InterfaceMemberHandler, MemberHandler, MethodMemberHandler, PropertyMemberHandler, TypedefMemberHandler } from "./memberHandler"
+import { BatchMemberHandler, ClassMemberHandler, EnumMemberHandler, InterfaceMemberHandler, MemberHandler, MethodMemberHandler, PropertyMemberHandler, TypedefMemberHandler } from "./memberHandler"
 
-export class MemberHandlerChain implements MemberHandler {
+export class MemberHandlerChain implements MemberHandler, BatchMemberHandler {
   private memberHandlerChain: MemberHandler
 
   constructor() {
@@ -24,5 +24,12 @@ export class MemberHandlerChain implements MemberHandler {
 
   handle(memberDeclaration: MemberDeclaration, memberHandleStrategy: MemberHandleStrategy): Member | null {
     return this.memberHandlerChain.handle(memberDeclaration, memberHandleStrategy)
+  }
+
+  batchHandle(memberDeclarations: Array<MemberDeclaration>, memberHandleStrategy: MemberHandleStrategy): Array<Member | null> {
+    const members = memberDeclarations.map(memberDeclaration => {
+      return this.memberHandlerChain.handle(memberDeclaration, memberHandleStrategy)
+    })
+    return members
   }
 }

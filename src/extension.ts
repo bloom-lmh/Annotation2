@@ -226,12 +226,20 @@ export function activate(context: ExtensionContext) {
 
     const document = editor.document;
     const sourceFile = new AstParser().parseByText(document.getText());
-    // 获取全部的Declaration
-
     if (!sourceFile) {
       vscode.window.showErrorMessage("抽象语法树解析失败!");
       return;
     }
+    // 获取全部的Declaration
+    const allDeclarations = new AstHelper().getAllMemberDeclaration(sourceFile)
+    // 创建成员处理器链
+    const memberHandlerChain = new MemberHandlerChain()
+    // 采用策略模式
+    //  memberHandlerChain.batchHandle()
+    // 对象映射为成员对象
+
+    console.log(allDeclarations);
+
     let et = Date.now()
     console.log(et - st + "ms");
   })

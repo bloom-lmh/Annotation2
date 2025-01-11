@@ -7,6 +7,9 @@ export interface MemberHandler {
   setNext(memberHandler: MemberHandler): MemberHandler;
   handle(memberDeclaration: MemberDeclaration, memberHandleStrategy: MemberHandleStrategy): Member | null;
 }
+export interface BatchMemberHandler {
+  batchHandle(memberDeclarations: Array<MemberDeclaration>, memberHandleStrategy: MemberHandleStrategy): Array<Member | null>
+}
 
 
 export abstract class AbstractMemberHandler implements MemberHandler {
