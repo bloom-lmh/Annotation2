@@ -95,8 +95,8 @@ export function activate(context: ExtensionContext) {
       return
     }
     // 获取类、方法或者成员信息
-    let memberDeclaration = new AstHelper().getMemberInfo(sourceFile, wordText, lineNumber)
-
+    let memberDeclaration = new AstHelper().getOneMemberDeclarationSync(sourceFile, wordText, lineNumber)
+    //let memberDeclaration = await new AstHelper().getOneMemberDeclaration(sourceFile, wordText, lineNumber)
 
     // 成员信息获取失败
     if (!memberDeclaration) {
@@ -134,11 +134,13 @@ export function activate(context: ExtensionContext) {
     await editor.edit(editBuilder => {
       editBuilder.insert(position, `${jsdoc}\n`);
     });
+
   });
 
 
   // 生成全文件注释
   const disposable3 = vscode.commands.registerCommand('addAllAnnotations', async () => {
+    let st = Date.now()
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {
@@ -209,11 +211,29 @@ export function activate(context: ExtensionContext) {
     });
 
     vscode.window.showInformationMessage("注释已成功添加到所有成员!");
-
+    let et = Date.now()
+    console.log(et - st + "ms");
 
   });
   const disposable4 = vscode.commands.registerCommand('test', async () => {
-    console.log("a");
+    let st = Date.now()
+    const editor = vscode.window.activeTextEditor;
+
+    if (!editor) {
+      vscode.window.showErrorMessage("编辑器获取失败!");
+      return;
+    }
+
+    const document = editor.document;
+    const sourceFile = new AstParser().parseByText(document.getText());
+    // 获取全部的Declaration
+
+    if (!sourceFile) {
+      vscode.window.showErrorMessage("抽象语法树解析失败!");
+      return;
+    }
+    let et = Date.now()
+    console.log(et - st + "ms");
   })
 
   context.subscriptions.push(disposable1);

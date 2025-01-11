@@ -1,4 +1,4 @@
-import { ClassDeclaration, EnumDeclaration, InterfaceDeclaration, MethodDeclaration, PropertyDeclaration, TypeAliasDeclaration } from "ts-morph";
+import { ClassDeclaration, ConstructorDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, MethodDeclaration, PropertyDeclaration, TypeAliasDeclaration } from "ts-morph";
 import { MemberDeclaration } from "../ast/astHelper";
 import { Member } from "../parser/member";
 import { MemberHandleStrategy } from "../member/memberHandleStrategy";
@@ -32,7 +32,7 @@ export class ClassMemberHandler extends AbstractMemberHandler {
 export class MethodMemberHandler extends AbstractMemberHandler {
   handle(memberDeclaration: MemberDeclaration, memberHandleStrategy: MemberHandleStrategy): Member | null {
     // 若是方法声明，则处理
-    if (memberDeclaration instanceof MethodDeclaration) return memberHandleStrategy.handleMethod(memberDeclaration)
+    if (memberDeclaration instanceof MethodDeclaration || memberDeclaration instanceof FunctionDeclaration || memberDeclaration instanceof ConstructorDeclaration) return memberHandleStrategy.handleMethod(memberDeclaration)
     // 返回空
     if (!this.nextMemberHandler) return null
     // 若成员声明不是类声明，且有下一个直接交给下一个处理

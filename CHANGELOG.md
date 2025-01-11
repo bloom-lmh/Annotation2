@@ -27,3 +27,12 @@
 ### 更改
 - 优化代码结构，引入职责链模式处理注释成员生成。
 - Optimize code structure and introduce chain of responsibility mode to handle comment member generation.
+
+
+后续开发计划
+- 解决泛型的问题
+- 优化多个注释生成代码
+- 多元化配置方式以及配置项目的确定
+- 加入翻译功能以及单词映射
+- 加入get set 方法
+- 加入文件注释，包括代码行数统计
