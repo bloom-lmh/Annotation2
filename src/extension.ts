@@ -232,13 +232,13 @@ export function activate(context: ExtensionContext) {
     }
     // 获取全部的Declaration
     const allDeclarations = new AstHelper().getAllMemberDeclaration(sourceFile)
+    console.log(allDeclarations);
+
     // 创建成员处理器链
     const memberHandlerChain = new MemberHandlerChain()
-    // 采用策略模式
-    //  memberHandlerChain.batchHandle()
-    // 对象映射为成员对象
-
-    console.log(allDeclarations);
+    // 采用正则策略 对象映射为成员对象
+    const members = await memberHandlerChain.batchHandleAll(allDeclarations, new RegExpMemberHandleStrategy(document))
+    console.log(members);
 
     let et = Date.now()
     console.log(et - st + "ms");

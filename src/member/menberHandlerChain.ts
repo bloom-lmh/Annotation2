@@ -1,4 +1,4 @@
-import { MemberDeclaration } from "../ast/astHelper"
+import { MemberDeclaration, MemberDeclarations } from "../ast/astHelper"
 import { Member } from "../parser/member"
 import { MemberHandleStrategy } from "../member/memberHandleStrategy"
 import { BatchMemberHandler, ClassMemberHandler, EnumMemberHandler, InterfaceMemberHandler, MemberHandler, MethodMemberHandler, PropertyMemberHandler, TypedefMemberHandler } from "./memberHandler"
@@ -25,11 +25,32 @@ export class MemberHandlerChain implements MemberHandler, BatchMemberHandler {
   handle(memberDeclaration: MemberDeclaration, memberHandleStrategy: MemberHandleStrategy): Member | null {
     return this.memberHandlerChain.handle(memberDeclaration, memberHandleStrategy)
   }
-
   batchHandle(memberDeclarations: Array<MemberDeclaration>, memberHandleStrategy: MemberHandleStrategy): Array<Member | null> {
     const members = memberDeclarations.map(memberDeclaration => {
-      return this.memberHandlerChain.handle(memberDeclaration, memberHandleStrategy)
+      return this.handle(memberDeclaration, memberHandleStrategy)
     })
     return members
+  }
+
+  async batchHandleAll(memberDeclarations: MemberDeclarations, memberHandleStrategy: MemberHandleStrategy): Promise<(Member | null)[]> {
+    const { interfaces, classes, typeAliases, enums, functions, constructors, methods, properties } = memberDeclarations
+
+    // 并行处理所有类别
+    const promises = [
+      this.batchHandle(interfaces, memberHandleStrategy),
+      this.batchHandle(classes, memberHandleStrategy),
+      this.batchHandle(typeAliases, memberHandleStrategy),
+      this.batchHandle(enums, memberHandleStrategy),
+      this.batchHandle(functions, memberHandleStrategy),
+      this.batchHandle(constructors, memberHandleStrategy),
+      this.batchHandle(methods, memberHandleStrategy),
+      this.batchHandle(properties, memberHandleStrategy)
+    ]
+
+    // 等待所有类别处理完成
+    const results = await Promise.all(promises)
+
+    // 展平结果
+    return results.flatMap(memberArray => memberArray)
   }
 }

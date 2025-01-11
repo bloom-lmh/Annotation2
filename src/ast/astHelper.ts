@@ -14,7 +14,7 @@ export type MemberDeclaration =
   | null
   | undefined;
 
-interface MemberDeclarations {
+export interface MemberDeclarations {
   interfaces: InterfaceDeclaration[];
   classes: ClassDeclaration[];
   typeAliases: TypeAliasDeclaration[];

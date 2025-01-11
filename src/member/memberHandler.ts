@@ -3,14 +3,21 @@ import { MemberDeclaration } from "../ast/astHelper";
 import { Member } from "../parser/member";
 import { MemberHandleStrategy } from "../member/memberHandleStrategy";
 
+export interface SyncMemberHandler {
+  setNext(memberHandler: MemberHandler): MemberHandler;
+  handle(memberDeclaration: MemberDeclaration, memberHandleStrategy: MemberHandleStrategy): Member | null;
+}
 export interface MemberHandler {
   setNext(memberHandler: MemberHandler): MemberHandler;
   handle(memberDeclaration: MemberDeclaration, memberHandleStrategy: MemberHandleStrategy): Member | null;
 }
+
+export interface SyncBatchMemberHandler {
+  batchHandle(memberDeclarations: Array<MemberDeclaration>, memberHandleStrategy: MemberHandleStrategy): Promise<Array<Member | null>>
+}
 export interface BatchMemberHandler {
   batchHandle(memberDeclarations: Array<MemberDeclaration>, memberHandleStrategy: MemberHandleStrategy): Array<Member | null>
 }
-
 
 export abstract class AbstractMemberHandler implements MemberHandler {
   protected nextMemberHandler: MemberHandler | null = null
