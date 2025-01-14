@@ -1,5 +1,5 @@
 import { ClassAnnotationConfig, Config, EnumAnnotationConfig, GlobalAnnotationConfig, InterfaceAnnotationConfig, MethodAnnotationConfig, PropertyAnnotationConfig, TypedefAnnotationConfig } from "../config/config";
-import { ClassAnnotation, EnumAnnotation, InterfaceAnnotation, MethodAnnotation, PropertyAnnotation, TypedefAnnotation } from "./annotation";
+import { BaseAnnotation, ClassAnnotation, EnumAnnotation, InterfaceAnnotation, MethodAnnotation, PropertyAnnotation, TypedefAnnotation } from "./annotation";
 import { ClassMember, EnumMember, InterfaceMember, Member, MethodMember, PropertyMember, TypedefMember } from "../parser/member";
 
 /**
@@ -7,7 +7,7 @@ import { ClassMember, EnumMember, InterfaceMember, Member, MethodMember, Propert
  */
 export class AnnotationFactory {
   // 根据成员声明信息和配置生成注解
-  public static getAnnotation(member: Member, config: Config) {
+  public static getAnnotation(member: Member | null, config: Config) {
     // 解析配置
     let { classAnnotationConfig, methodAnnotationConfig, propertyAnnotationConfig, enumAnnotationConfig, globalAnnotationConfig, interfaceAnnotationConfig, typedefAnnotationConfig, translateConfig } = config
     globalAnnotationConfig = globalAnnotationConfig || new GlobalAnnotationConfig()
@@ -42,5 +42,10 @@ export class AnnotationFactory {
       typedefAnnotationConfig = typedefAnnotationConfig || new TypedefAnnotationConfig()
       return new TypedefAnnotation(globalAnnotationConfig, typedefAnnotationConfig, member)
     }
+  }
+  public static getAnnotations(members: Array<Member | null>, config: Config) {
+    return members.map(member =>
+      this.getAnnotation(member, config)
+    )
   }
 }

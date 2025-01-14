@@ -6,6 +6,7 @@ import { ClassMember, EnumMember, InterfaceMember, Member, MethodMember, Propert
  * 全体注解公共标签
  */
 export class BaseAnnotation<T extends BaseAnnotationConfig> {
+  protected startLineNumber: number = 0
   protected _authorTag: string = ""
   protected _accessTag: string = ""
   protected _aliasTag: boolean = false
@@ -24,7 +25,7 @@ export class BaseAnnotation<T extends BaseAnnotationConfig> {
     // 获取方法配置
     const { isAuthorTag, isAliasTag, isVersionTag, isNameTag, isDescriptionTag, isLicenseTag, isCopyrightTag, isSeeTag, isSummaryTag, isExampleTag } = concreteAnnotationConfig
     // 解构成员信息
-    const { name } = member
+    const { name, startLineNumber } = member
     // 成员名
     this._nameTag = isNameTag ? name : ""
     // 作者标签
@@ -45,7 +46,8 @@ export class BaseAnnotation<T extends BaseAnnotationConfig> {
     this._summaryTag = isSummaryTag
     // 案例标签
     this._exampleTag = isExampleTag
-
+    // 开始行号
+    this.startLineNumber = startLineNumber
   }
   setAuthorTag(tag: string): this {
     this._authorTag = tag;
@@ -101,7 +103,9 @@ export class BaseAnnotation<T extends BaseAnnotationConfig> {
     this._exampleTag = tag;
     return this;
   }
-
+  getStartLineNumber() {
+    return this.startLineNumber
+  }
   public buildJSDoc(): string {
     let jsdoc = new JSDocGenerator()
       .setAuthorTag(this._authorTag)

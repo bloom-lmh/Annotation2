@@ -11,9 +11,9 @@ export class MemberHandlerChain implements MemberHandler {
     this.memberHandlerChain
       .setNext(new MethodMemberHandler())
       .setNext(new PropertyMemberHandler())
-      .setNext(new InterfaceMemberHandler())
       .setNext(new EnumMemberHandler())
       .setNext(new TypedefMemberHandler())
+      .setNext(new InterfaceMemberHandler())
 
   }
   setNext(memberHandler: MemberHandler): MemberHandler {
@@ -25,6 +25,10 @@ export class MemberHandlerChain implements MemberHandler {
 
   async handle(memberDeclaration: MemberDeclaration, memberHandleStrategy: MemberHandleStrategy): Promise<Member | null> {
     const result = await this.memberHandlerChain.handle(memberDeclaration, memberHandleStrategy);
+    if (result && memberDeclaration) {
+      // 获取开始行并设置
+      result.setStartLineNumber(memberDeclaration.getStartLineNumber() - 1)
+    }
     return result;
   }
   async batchHandle(memberDeclarations: Array<MemberDeclaration>, memberHandleStrategy: MemberHandleStrategy): Promise<Array<Member | null>> {

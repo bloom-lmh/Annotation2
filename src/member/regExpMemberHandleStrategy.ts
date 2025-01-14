@@ -233,7 +233,6 @@ export class RegExpMemberHandleStrategy implements MemberHandleStrategy {
      */
   private parseArrowFunction(textMemberDeclaration: string): MethodMember | null {
 
-
     const regex = /(?<accessModifier>private|protected|public)?\s*(?<static>static)?\s*(?<async>async)?\s*(?<functionName>\w+)\s*=\s*(?<asyncKeyword>async)?\s*\((?<params>[^)]*)\)\s*(?::\s*(?<returnType>[^ ]+))?\s*=>\s*[^a-zA-Z0-9]*\b(?<exceptionType>\w*)\b/;
 
     const match = textMemberDeclaration.match(regex);

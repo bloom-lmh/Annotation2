@@ -3,9 +3,13 @@
  */
 export abstract class Member {
   public name: string;
+  public startLineNumber: number = 0
 
   constructor(name: string = "") {
     this.name = name;
+  }
+  setStartLineNumber(startLineNumber: number) {
+    this.startLineNumber = startLineNumber
   }
 }
 

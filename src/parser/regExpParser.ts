@@ -1,4 +1,4 @@
-import { ClassDeclaration, ConstructorDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, MethodDeclaration, PropertyDeclaration, TypeAliasDeclaration } from "ts-morph";
+import { ArrowFunction, ClassDeclaration, ConstructorDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, MethodDeclaration, PropertyDeclaration, TypeAliasDeclaration } from "ts-morph";
 import { AstHelper, MemberDeclaration } from "../ast/astHelper";
 import { ClassMember, InterfaceMember, MemberType, MethodMember, EnumMember, PropertyMember, TypedefMember } from "./member";
 import { TextDocument } from "vscode";
@@ -75,8 +75,7 @@ export class RegExpParser {
       // 返回封装的 ClassMember 实例
       return new ClassMember(_name, true, _abstract, _extends, implementsList);
     } else {
-      // 如果没有匹配到类信息，抛出异常
-      throw new Error("Class declaration parsing failed.");
+      return new ClassMember()
     }
   }
   /**
@@ -110,7 +109,7 @@ export class RegExpParser {
       return new MethodMember(_name, _async, _function, _constructor, _throws, _params, _returns, _static, _access);
     } else {
       // 如果没有匹配到任何内容，返回默认值或者抛出异常
-      throw new Error("Method declaration parsing failed.");
+      return new MethodMember()
     }
   }
 
@@ -145,7 +144,7 @@ export class RegExpParser {
       return new PropertyMember(_name, true, _type, _static, _default, _access);
     } else {
       // 如果没有匹配到任何内容，返回默认值或者抛出异常
-      throw new Error("Property declaration parsing failed.");
+      return new PropertyMember()
     }
   }
   /**
@@ -178,7 +177,7 @@ export class RegExpParser {
     }
     else {
       // 如果没有匹配到任何内容，返回默认值或者抛出异常
-      throw new Error("ArrowFunction declaration parsing failed.");
+      return null
     }
   }
 
@@ -207,7 +206,7 @@ export class RegExpParser {
     } else {
 
       // 如果没有匹配到接口声明，抛出异常
-      throw new Error("Interface declaration parsing failed.");
+      return new InterfaceMember()
     }
   }
 
@@ -241,7 +240,7 @@ export class RegExpParser {
       return new EnumMember(_name, true, _members);
     } else {
       // 如果没有匹配到枚举声明，抛出异常
-      throw new Error("Enum declaration parsing failed.");
+      return new EnumMember()
     }
   }
 
@@ -270,7 +269,7 @@ export class RegExpParser {
       return new TypedefMember(_name, true, _type);
     } else {
       // 如果没有匹配到类型别名声明，抛出异常
-      throw new Error("Typedef declaration parsing failed.");
+      return new TypedefMember()
     }
   }
 
