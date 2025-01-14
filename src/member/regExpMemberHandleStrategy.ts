@@ -2,7 +2,7 @@ import { TextDocument } from "vscode"
 import { ClassMember, EnumMember, InterfaceMember, Member, MethodMember, PropertyMember, TypedefMember } from "../parser/member"
 import { MemberHandleStrategy } from "./memberHandleStrategy"
 import { MemberDeclaration } from "../ast/astHelper"
-
+import * as vscode from 'vscode';
 /**
  * @name RegExpMemberHandleStrategy
  * @class
@@ -39,8 +39,13 @@ export class RegExpMemberHandleStrategy implements MemberHandleStrategy {
       // 返回封装的 ClassMember 实例
       return new ClassMember(_name, true, _abstract, _extends, implementsList);
     } else {
-      // 如果没有匹配到类信息，抛出异常
-      throw new Error("Class declaration parsing failed.");
+      let startLineNumber = memberDeclaration?.getStartLineNumber()
+
+      vscode.window.showInformationMessage(`
+        存在类声明解析失败，采用默认类注解，出错位置行号：${startLineNumber} 
+        There is a class declaration parsing failure, using the default class annotation, error location line number：${startLineNumber} 
+        `)
+      return new ClassMember()
     }
   }
   handleMethod(memberDeclaration: MemberDeclaration): Member | null {
@@ -71,14 +76,19 @@ export class RegExpMemberHandleStrategy implements MemberHandleStrategy {
       // 返回方法成员 
       return new MethodMember(_name, _async, _function, _constructor, _throws, _params, _returns, _static, _access);
     } else {
-      // 如果没有匹配到任何内容，返回默认值或者抛出异常
-      throw new Error("Method declaration parsing failed.");
+      let startLineNumber = memberDeclaration?.getStartLineNumber()
+      vscode.window.showInformationMessage(`
+        存在方法声明解析失败，采用默认方法注解，出错位置行号：${startLineNumber} 
+        There is a method declaration parsing failure, using the default method annotation, error location line number：${startLineNumber} 
+        `)
+      return new MethodMember()
     }
   }
   handleProperty(memberDeclaration: MemberDeclaration): Member | null {
     this.preHandle(memberDeclaration)
     // 正则表达式，用于匹配属性的声明信息（包括默认值）
     const regex = /(?<accessModifier>public|private|protected)?\s*(?<static>static)?\s*(?<name>\w+)\s*:\s*(?<type>\w+)\s*(?<defaultValue>=\s*[^;]+)?/;
+    // 首先尝试解析箭头函数
     let methodMember = this.parseArrowFunction(this.textMemberDeclaration)
     if (methodMember) return methodMember
     // 匹配属性声明
@@ -100,8 +110,14 @@ export class RegExpMemberHandleStrategy implements MemberHandleStrategy {
       const _default = defaultValue ? defaultValue.trim().slice(1).trim() : ''; // 去掉 `=` 号
       // 返回封装的 PropertyMember 实例
       return new PropertyMember(_name, true, _type, _static, _default, _access);
+    } else {
+      let startLineNumber = memberDeclaration?.getStartLineNumber()
+      vscode.window.showInformationMessage(`
+        存在属性声明解析失败，采用默认属性注解，出错位置行号：${startLineNumber} 
+        There is a property declaration parsing failure, using the default property annotation, error location line number：${startLineNumber} 
+        `)
+      return new PropertyMember()
     }
-    return new PropertyMember()
   }
   handleInterface(memberDeclaration: MemberDeclaration): Member | null {
     this.preHandle(memberDeclaration)
@@ -124,9 +140,13 @@ export class RegExpMemberHandleStrategy implements MemberHandleStrategy {
       // 返回封装的 InterfaceMember 实例
       return new InterfaceMember(_name, true, _extends);
     } else {
+      let startLineNumber = memberDeclaration?.getStartLineNumber()
 
-      // 如果没有匹配到接口声明，抛出异常
-      throw new Error("Interface declaration parsing failed.");
+      vscode.window.showInformationMessage(`
+        存在接口声明解析失败，采用默认接口注解，出错位置行号：${startLineNumber} 
+        There is a interface declaration parsing failure, using the default interface annotation, error location line number：${startLineNumber} 
+        `)
+      return new InterfaceMember()
     }
   }
   handleEnum(memberDeclaration: MemberDeclaration): Member | null {
@@ -156,8 +176,13 @@ export class RegExpMemberHandleStrategy implements MemberHandleStrategy {
       // 返回封装的 EnumMember 实例
       return new EnumMember(_name, true, _members);
     } else {
-      // 如果没有匹配到枚举声明，抛出异常
-      throw new Error("Enum declaration parsing failed.");
+      let startLineNumber = memberDeclaration?.getStartLineNumber()
+
+      vscode.window.showInformationMessage(`
+        存在枚举声明解析失败，采用默认枚举注解，出错位置行号：${startLineNumber} 
+        There is a enum declaration parsing failure, using the default enum annotation, error location line number：${startLineNumber} 
+        `)
+      return new EnumMember()
     }
   }
   handleTypedef(memberDeclaration: MemberDeclaration): Member | null {
@@ -182,23 +207,26 @@ export class RegExpMemberHandleStrategy implements MemberHandleStrategy {
       // 返回封装的 TypedefMember 实例
       return new TypedefMember(_name, true, _type);
     } else {
-      // 如果没有匹配到类型别名声明，抛出异常
-      throw new Error("Typedef declaration parsing failed.");
+      let startLineNumber = memberDeclaration?.getStartLineNumber()
+
+      vscode.window.showInformationMessage(`
+        存在自定义类型声明解析失败，采用默认接口注解，出错位置行号：${startLineNumber} 
+        There is a typedef declaration parsing failure, using the default typedef annotation, error location line number：${startLineNumber} 
+        `)
+      return new TypedefMember()
     }
   }
 
   private preHandle(memberDeclaration: MemberDeclaration) {
-    if (!this.textMemberDeclaration) {
-      let startLineNumber = memberDeclaration?.getStartLineNumber() || 0
-      let endLineNumber = memberDeclaration?.getEndLineNumber()
-      // 获取源文件的文本
-      let text = this.document.getText();
-      // 截取成员代码块所在的字符串（从 sn 行到 nn 行）
-      let lines = text.split('\n');
-      let memberText = lines.slice(startLineNumber - 1, endLineNumber).join('\n'); // -1 是因为行号从 1 开始，数组从 0 开始
-      // 成员文本
-      this.textMemberDeclaration = memberText
-    }
+    let startLineNumber = memberDeclaration?.getStartLineNumber() || 0
+    let endLineNumber = memberDeclaration?.getEndLineNumber()
+    // 获取源文件的文本
+    let text = this.document.getText();
+    // 截取成员代码块所在的字符串（从 sn 行到 nn 行）
+    let lines = text.split('\n');
+    let memberText = lines.slice(startLineNumber - 1, endLineNumber).join('\n'); // -1 是因为行号从 1 开始，数组从 0 开始
+    // 成员文本
+    this.textMemberDeclaration = memberText
   }
   /**
      * 解析箭头函数

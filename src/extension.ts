@@ -104,7 +104,7 @@ export function activate(context: ExtensionContext) {
       return
     }
     let memberHandlerChain = new MemberHandlerChain()
-    let member = memberHandlerChain.handle(memberDeclaration, new RegExpMemberHandleStrategy(document))
+    let member = await memberHandlerChain.handle(memberDeclaration, new RegExpMemberHandleStrategy(document))
 
 
     // 成员获取失败
@@ -232,8 +232,18 @@ export function activate(context: ExtensionContext) {
     }
     // 获取全部的Declaration
     const allDeclarations = new AstHelper().getAllMemberDeclaration(sourceFile)
-    console.log(allDeclarations);
-
+    /*  // 初始化正则解析器
+     const regExpParser = new RegExpParser();
+     // 获取文件所属项目路径
+     const projectPath = vscode.workspace.getWorkspaceFolder(editor.document.uri)?.uri.fsPath;
+     // 加载用户配置
+     let config: Config = ConfigManager.getConfig(projectPath);
+     await editor.edit(editBuilder => {
+       // 遍历类以外的其他声明（例如函数、枚举等）
+       allDeclarations.methods.forEach(declaration => {
+         addMemberComment(declaration, document, regExpParser, editBuilder, config);
+       });
+     }); */
     // 创建成员处理器链
     const memberHandlerChain = new MemberHandlerChain()
     // 采用正则策略 对象映射为成员对象

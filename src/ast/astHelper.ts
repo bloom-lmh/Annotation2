@@ -62,19 +62,16 @@ export class AstHelper {
     // 从类中收集复合成员
     const classMembers = this.collectCompositeMember<ClassDeclaration>(classDeclarations);
 
-    // 合并接口和类的声明
-    const allInterfaces = [...interfaceDeclarations, ...interfaceMembers.classOrInterfaceDeclarations];
-    const allClasses = [...classDeclarations, ...classMembers.classOrInterfaceDeclarations];
-
     // 累积构造函数、方法和属性
     const allConstructors = [...classMembers.constructorDeclarations];
+
     const allMethods = [...interfaceMembers.methodDeclarations, ...classMembers.methodDeclarations];
     const allProperties = [...interfaceMembers.propertyDeclarations, ...classMembers.propertyDeclarations];
 
     // 返回所有收集到的声明
     return {
-      interfaces: allInterfaces,
-      classes: allClasses,
+      interfaces: interfaceDeclarations,
+      classes: classDeclarations,
       typeAliases: typeDeclarations,
       enums: enumDeclarations,
       functions: functionDeclarations,
@@ -85,7 +82,6 @@ export class AstHelper {
   }
 
   private collectCompositeMember<T extends InterfaceDeclaration | ClassDeclaration>(memberDeclarations: T[]): {
-    classOrInterfaceDeclarations: T[];
     constructorDeclarations: ConstructorDeclaration[];
     methodDeclarations: (MethodDeclaration | MethodSignature)[];
     propertyDeclarations: (PropertyDeclaration | PropertySignature)[];
@@ -96,8 +92,6 @@ export class AstHelper {
     const propertyDeclarations: (PropertyDeclaration | PropertySignature)[] = [];
 
     for (const memberDeclaration of memberDeclarations) {
-      // 收集类或接口声明
-      classOrInterfaceDeclarations.push(memberDeclaration);
 
       // 如果是类，则收集构造函数
       if (memberDeclaration instanceof ClassDeclaration) {
@@ -112,7 +106,6 @@ export class AstHelper {
     }
 
     return {
-      classOrInterfaceDeclarations,
       constructorDeclarations,
       methodDeclarations,
       propertyDeclarations,

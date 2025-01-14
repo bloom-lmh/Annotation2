@@ -143,8 +143,10 @@ export class RegExpParser {
       const _default = defaultValue ? defaultValue.trim().slice(1).trim() : ''; // 去掉 `=` 号
       // 返回封装的 PropertyMember 实例
       return new PropertyMember(_name, true, _type, _static, _default, _access);
+    } else {
+      // 如果没有匹配到任何内容，返回默认值或者抛出异常
+      throw new Error("Property declaration parsing failed.");
     }
-    return new PropertyMember()
   }
   /**
     * 解析箭头函数
@@ -174,7 +176,10 @@ export class RegExpParser {
       return new MethodMember(_name, _async, true, false, _throws, _params, _returns, _static, _access);
 
     }
-    return null
+    else {
+      // 如果没有匹配到任何内容，返回默认值或者抛出异常
+      throw new Error("ArrowFunction declaration parsing failed.");
+    }
   }
 
   /**

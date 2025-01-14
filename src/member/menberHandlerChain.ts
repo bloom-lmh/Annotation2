@@ -1,9 +1,9 @@
 import { MemberDeclaration, MemberDeclarations } from "../ast/astHelper"
 import { Member } from "../parser/member"
 import { MemberHandleStrategy } from "../member/memberHandleStrategy"
-import { BatchMemberHandler, ClassMemberHandler, EnumMemberHandler, InterfaceMemberHandler, MemberHandler, MethodMemberHandler, PropertyMemberHandler, TypedefMemberHandler } from "./memberHandler"
+import { ClassMemberHandler, EnumMemberHandler, InterfaceMemberHandler, MemberHandler, MethodMemberHandler, PropertyMemberHandler, TypedefMemberHandler } from "./memberHandler"
 
-export class MemberHandlerChain implements MemberHandler, BatchMemberHandler {
+export class MemberHandlerChain implements MemberHandler {
   private memberHandlerChain: MemberHandler
 
   constructor() {
@@ -11,9 +11,10 @@ export class MemberHandlerChain implements MemberHandler, BatchMemberHandler {
     this.memberHandlerChain
       .setNext(new MethodMemberHandler())
       .setNext(new PropertyMemberHandler())
+      .setNext(new InterfaceMemberHandler())
       .setNext(new EnumMemberHandler())
       .setNext(new TypedefMemberHandler())
-      .setNext(new InterfaceMemberHandler())
+
   }
   setNext(memberHandler: MemberHandler): MemberHandler {
     if (!this.memberHandlerChain) {
@@ -22,19 +23,20 @@ export class MemberHandlerChain implements MemberHandler, BatchMemberHandler {
     return this.memberHandlerChain.setNext(memberHandler)
   }
 
-  handle(memberDeclaration: MemberDeclaration, memberHandleStrategy: MemberHandleStrategy): Member | null {
-    return this.memberHandlerChain.handle(memberDeclaration, memberHandleStrategy)
+  async handle(memberDeclaration: MemberDeclaration, memberHandleStrategy: MemberHandleStrategy): Promise<Member | null> {
+    const result = await this.memberHandlerChain.handle(memberDeclaration, memberHandleStrategy);
+    return result;
   }
-  batchHandle(memberDeclarations: Array<MemberDeclaration>, memberHandleStrategy: MemberHandleStrategy): Array<Member | null> {
+  async batchHandle(memberDeclarations: Array<MemberDeclaration>, memberHandleStrategy: MemberHandleStrategy): Promise<Array<Member | null>> {
     const members = memberDeclarations.map(memberDeclaration => {
       return this.handle(memberDeclaration, memberHandleStrategy)
     })
-    return members
+    const results = await Promise.all(members)
+    return results
   }
 
   async batchHandleAll(memberDeclarations: MemberDeclarations, memberHandleStrategy: MemberHandleStrategy): Promise<(Member | null)[]> {
     const { interfaces, classes, typeAliases, enums, functions, constructors, methods, properties } = memberDeclarations
-
     // 并行处理所有类别
     const promises = [
       this.batchHandle(interfaces, memberHandleStrategy),
