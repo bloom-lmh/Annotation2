@@ -12,6 +12,8 @@ import { ConfigManager } from './config/configManager';
 import { RegExpParser } from './parser/regExpParser';
 import { MemberHandlerChain } from './member/menberHandlerChain';
 import { RegExpMemberHandleStrategy } from './member/regExpMemberHandleStrategy';
+import { AddAnnotationCommandExecutor } from './command/addAnnotationCommandExecutor';
+import { AddAnnotationsCommandExecutor } from './command/addAnnotationsCommandExecutor';
 
 // 插件激活
 export function activate(context: ExtensionContext) {
@@ -77,107 +79,11 @@ export function activate(context: ExtensionContext) {
   })
 
   // 生成单行注释
-  const disposable2 = vscode.commands.registerCommand('addSingleAnnotation', async () => {
-    // 获取编辑器
-    const editor = vscode.window.activeTextEditor;
-    // 编辑器失败
-    if (!editor) {
-      vscode.window.showErrorMessage("编辑器获取失败!")
-      return
-    }
-    // 创建拾取器对象拾取上下文信息
-    let { lineNumber, wordText, document } = new ContextPicker(editor).pick()
-    // 创建ts文件解析工具解析ts文件
-    let sourceFile = new AstParser().parseByText(document.getText())
-    // 解析为抽象语法树失败
-    if (!sourceFile) {
-      vscode.window.showErrorMessage("抽象语法树解析失败!")
-      return
-    }
-    // 获取类、方法或者成员信息
-    let memberDeclaration = new AstHelper().getOneMemberDeclarationSync(sourceFile, wordText, lineNumber)
-    //let memberDeclaration = await new AstHelper().getOneMemberDeclaration(sourceFile, wordText, lineNumber)
-
-    // 成员信息获取失败
-    if (!memberDeclaration) {
-      vscode.window.showErrorMessage("获取成员声明失败!")
-      return
-    }
-    let memberHandlerChain = new MemberHandlerChain()
-    let member = await memberHandlerChain.handle(memberDeclaration, new RegExpMemberHandleStrategy(document))
-
-
-    // 成员获取失败
-    if (!member) {
-      vscode.window.showErrorMessage("获取成员信息失败!")
-      return
-    }
-    // 获取文件所属项目路径
-    const projectPath = vscode.workspace.getWorkspaceFolder(editor.document.uri)?.uri.fsPath
-    // 获取项目路径失败
-    /*  if (!projectPath) {
-       vscode.window.showInformationMessage("获取项目路径失败!")
-       return
-     } */
-    // 加载用户配置
-    let config: Config = ConfigManager.getConfig(projectPath)
-
-    // 调用注解工厂创建注解
-    let annotation = AnnotationFactory.getAnnotation(member, config)
-
-    // 构建jsdoc
-    let jsdoc = annotation?.buildJSDoc() || ''
-
-    // 调用注入器注入注解
-    const position = new vscode.Position(memberDeclaration.getStartLineNumber() - 1 || lineNumber - 1, 0); // 在当前行的开始插入
-    // 执行编辑
-    await editor.edit(editBuilder => {
-      editBuilder.insert(position, `${jsdoc}\n`);
-    });
-
+  const disposable2 = vscode.commands.registerCommand('addAnnotation', async () => {
+    new AddAnnotationCommandExecutor().executeCommand()
   });
-  const disposable3 = vscode.commands.registerCommand('addAllAnnotations', async () => {
-    const editor = vscode.window.activeTextEditor;
-
-    if (!editor) {
-      vscode.window.showErrorMessage("编辑器获取失败!");
-      return;
-    }
-
-    // 创建拾取器对象拾取上下文信息
-    let { lineNumber, wordText, document } = new ContextPicker(editor).pick()
-    const sourceFile = new AstParser().parseByText(document.getText());
-    if (!sourceFile) {
-      vscode.window.showErrorMessage("抽象语法树解析失败!");
-      return;
-    }
-    // 获取全部的Declaration
-    const allDeclarations = new AstHelper().getAllMemberDeclaration(sourceFile)
-    // 创建成员处理器链
-    const memberHandlerChain = new MemberHandlerChain()
-    // 采用正则策略 对象映射为成员对象
-    const members = await memberHandlerChain.batchHandleAll(allDeclarations, new RegExpMemberHandleStrategy(document))
-    // 获取文件所属项目路径
-    const projectPath = vscode.workspace.getWorkspaceFolder(editor.document.uri)?.uri.fsPath;
-    // 加载用户配置
-    let config: Config = ConfigManager.getConfig(projectPath)
-    // 调用注解工厂创建注解将全部的成员对象转换为对应的注解对象
-    let annotations = AnnotationFactory.getAnnotations(members, config)
-
-    // 执行编辑
-    editor.edit(editBuilder => {
-      // 创建注解并生成
-      annotations.forEach(annotation => {
-        // 构建jsdoc
-        let jsdoc = annotation?.buildJSDoc() || ''
-
-        // 调用注入器注入注解
-        const position = new vscode.Position(annotation?.getStartLineNumber() || lineNumber - 1, 0); // 在当前行的开始插入
-        editBuilder.insert(position, `${jsdoc}\n`);
-      })
-
-    });
-    vscode.window.showInformationMessage("注释已成功添加到所有成员!");
+  const disposable3 = vscode.commands.registerCommand('addAnnotations', async () => {
+    new AddAnnotationsCommandExecutor().executeCommand()
   })
 
   // 生成全文件注释
@@ -197,7 +103,6 @@ export function activate(context: ExtensionContext) {
       return;
     }
 
-    // 获取所有类、函数、枚举、接口、类型别名的声明
     const allDeclarations = [
       ...sourceFile.getFunctions(),
       ...sourceFile.getEnums(),
@@ -205,19 +110,11 @@ export function activate(context: ExtensionContext) {
       ...sourceFile.getTypeAliases()
     ];
 
-    // 获取所有类的声明
     const classDeclarations = sourceFile.getClasses();
 
-    // 初始化正则解析器
     const regExpParser = new RegExpParser();
-
-    // 获取文件所属项目路径
     const projectPath = vscode.workspace.getWorkspaceFolder(editor.document.uri)?.uri.fsPath;
-    /* 
-        if (!projectPath) {
-          vscode.window.showInformationMessage("获取项目路径失败!");
-          return;
-        } */
+
 
     // 加载用户配置
     let config: Config = ConfigManager.getConfig(projectPath);

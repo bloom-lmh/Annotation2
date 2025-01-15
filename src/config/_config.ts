@@ -18,18 +18,18 @@ export class ClassAnnotationConfig implements IClassAnnotationConfig {
   // 构造器内部解构配置
   constructor(config: Partial<IClassAnnotationConfig> = {}) {
     const {
-      isClassTag = false,
-      isAbstractTag = false,
-      isExtendsTag = false,
-      isImplementsTag = false,
+      isClassTag = true,
+      isAbstractTag = true,
+      isExtendsTag = true,
+      isImplementsTag = true,
       isAuthorTag = false,
       isAliasTag = false,
       isVersionTag = false,
-      isNameTag = false,
-      isDescriptionTag = false,
+      isNameTag = true,
+      isDescriptionTag = true,
       isSeeTag = false,
       isExampleTag = false,
-      isTemplateTag = false,
+      isTemplateTag = true,
     } = config;
 
     // 使用解构后的值进行赋值
@@ -129,22 +129,22 @@ export class MethodAnnotationConfig implements IMethodAnnotationConfig {
   // 构造器使用解构语法
   constructor(config: Partial<IMethodAnnotationConfig> = {}) {
     const {
-      isAsyncTag = false,
-      isFunctionTag = false,
-      isConstructorTag = false,
-      isThrowsTag = false,
-      isParamsTag = false,
-      isReturnsTag = false,
-      isStaticTag = false,
-      isAccessTag = false,
+      isAsyncTag = true,
+      isFunctionTag = true,
+      isConstructorTag = true,
+      isThrowsTag = true,
+      isParamsTag = true,
+      isReturnsTag = true,
+      isStaticTag = true,
+      isAccessTag = true,
       isAuthorTag = false,
       isAliasTag = false,
       isVersionTag = false,
-      isNameTag = false,
-      isDescriptionTag = false,
+      isNameTag = true,
+      isDescriptionTag = true,
       isSeeTag = false,
       isExampleTag = false,
-      isTemplateTag = false,
+      isTemplateTag = true,
     } = config;
 
     // 使用解构后的值进行赋值
@@ -264,16 +264,16 @@ export class PropertyAnnotationConfig implements IPropertyAnnotationConfig {
   // 构造器使用解构语法
   constructor(config: Partial<IPropertyAnnotationConfig> = {}) {
     const {
-      isPropertyTag = false,
-      isStaticTag = false,
-      isTypeTag = false,
-      isDefaultTag = false,
-      isAliasTag = false,
-      isNameTag = false,
-      isDescriptionTag = false,
+      isPropertyTag = true,
+      isStaticTag = true,
+      isTypeTag = true,
+      isDefaultTag = true,
+      isAliasTag = true,
+      isNameTag = true,
+      isDescriptionTag = true,
       isSeeTag = false,
       isExampleTag = false,
-      isTemplateTag = false,
+      isTemplateTag = true,
     } = config;
 
     // 使用解构后的值进行赋值
@@ -348,18 +348,16 @@ export class EnumAnnotationConfig implements IEnumAnnotationConfig {
   isDescriptionTag: boolean;
   isSeeTag: boolean;
   isExampleTag: boolean;
-  isTemplateTag: boolean;
 
   // 构造器使用解构语法
   constructor(config: Partial<IEnumAnnotationConfig> = {}) {
     const {
-      isEnumTag = false,
+      isEnumTag = true,
       isAliasTag = false,
-      isNameTag = false,
-      isDescriptionTag = false,
+      isNameTag = true,
+      isDescriptionTag = true,
       isSeeTag = false,
       isExampleTag = false,
-      isTemplateTag = false,
     } = config;
 
     // 使用解构后的值进行赋值
@@ -369,7 +367,6 @@ export class EnumAnnotationConfig implements IEnumAnnotationConfig {
     this.isDescriptionTag = isDescriptionTag;
     this.isSeeTag = isSeeTag;
     this.isExampleTag = isExampleTag;
-    this.isTemplateTag = isTemplateTag;
   }
 
   // 链式编程的 set 方法
@@ -403,10 +400,7 @@ export class EnumAnnotationConfig implements IEnumAnnotationConfig {
     return this;
   }
 
-  setTemplateTag(value: boolean): this {
-    this.isTemplateTag = value;
-    return this;
-  }
+
 }
 
 export class TypedefAnnotationConfig implements ITypedefAnnotationConfig {
@@ -417,19 +411,17 @@ export class TypedefAnnotationConfig implements ITypedefAnnotationConfig {
   isDescriptionTag: boolean;
   isSeeTag: boolean;
   isExampleTag: boolean;
-  isTemplateTag: boolean;
 
   // 构造器使用解构语法
   constructor(config: Partial<ITypedefAnnotationConfig> = {}) {
     const {
-      isTypedefTag = false,
-      isTypeTag = false,
-      isAliasTag = false,
-      isNameTag = false,
-      isDescriptionTag = false,
-      isSeeTag = false,
-      isExampleTag = false,
-      isTemplateTag = false,
+      isTypedefTag = true,
+      isTypeTag = true,
+      isAliasTag = true,
+      isNameTag = true,
+      isDescriptionTag = true,
+      isSeeTag = true,
+      isExampleTag = true,
     } = config;
 
     // 使用解构后的值进行赋值
@@ -440,7 +432,6 @@ export class TypedefAnnotationConfig implements ITypedefAnnotationConfig {
     this.isDescriptionTag = isDescriptionTag;
     this.isSeeTag = isSeeTag;
     this.isExampleTag = isExampleTag;
-    this.isTemplateTag = isTemplateTag;
   }
 
   // 链式编程的 set 方法
@@ -478,9 +469,95 @@ export class TypedefAnnotationConfig implements ITypedefAnnotationConfig {
     this.isExampleTag = value;
     return this;
   }
+}
+export class InterfaceAnnotationConfig implements IInterfaceAnnotationConfig {
+  isInterfaceTag: boolean;
+  isExtendsTag: boolean;
+  isAuthorTag: boolean;
+  isVersionTag: boolean;
+  isTemplateTag: boolean;
+  isAliasTag: boolean;
+  isNameTag: boolean;
+  isDescriptionTag: boolean;
+  isSeeTag: boolean;
+  isExampleTag: boolean;
+
+  // 构造器使用解构语法
+  constructor(config: Partial<IInterfaceAnnotationConfig> = {}) {
+    const {
+      isInterfaceTag = true,
+      isExtendsTag = true,
+      isAuthorTag = false,
+      isVersionTag = false,
+      isTemplateTag = true,
+      isAliasTag = false,
+      isNameTag = true,
+      isDescriptionTag = true,
+      isSeeTag = false,
+      isExampleTag = false,
+    } = config;
+
+    // 使用解构后的值进行赋值
+    this.isInterfaceTag = isInterfaceTag;
+    this.isExtendsTag = isExtendsTag;
+    this.isAuthorTag = isAuthorTag;
+    this.isVersionTag = isVersionTag;
+    this.isTemplateTag = isTemplateTag;
+    this.isAliasTag = isAliasTag;
+    this.isNameTag = isNameTag;
+    this.isDescriptionTag = isDescriptionTag;
+    this.isSeeTag = isSeeTag;
+    this.isExampleTag = isExampleTag;
+  }
+
+  // 链式编程的 set 方法
+  setInterfaceTag(value: boolean): this {
+    this.isInterfaceTag = value;
+    return this;
+  }
+
+  setExtendsTag(value: boolean): this {
+    this.isExtendsTag = value;
+    return this;
+  }
+
+  setAuthorTag(value: boolean): this {
+    this.isAuthorTag = value;
+    return this;
+  }
+
+  setVersionTag(value: boolean): this {
+    this.isVersionTag = value;
+    return this;
+  }
 
   setTemplateTag(value: boolean): this {
     this.isTemplateTag = value;
+    return this;
+  }
+
+  setAliasTag(value: boolean): this {
+    this.isAliasTag = value;
+    return this;
+  }
+
+  setNameTag(value: boolean): this {
+    this.isNameTag = value;
+    return this;
+  }
+
+  setDescriptionTag(value: boolean): this {
+    this.isDescriptionTag = value;
+    return this;
+  }
+
+  setSeeTag(value: boolean): this {
+    this.isSeeTag = value;
+    return this;
+  }
+
+  setExampleTag(value: boolean): this {
+    this.isExampleTag = value;
     return this;
   }
 }
@@ -496,21 +573,19 @@ export class FileAnnotationConfig implements IFileAnnotationConfig {
   isAuthorTag: boolean;
   isDescriptionTag: boolean;
   isSeeTag: boolean;
-  isTemplateTag: boolean;
 
   // 构造器使用解构语法
   constructor(config: Partial<IFileAnnotationConfig> = {}) {
     const {
       isNamespaceTag = false,
-      isModuleTag = false,
+      isModuleTag = true,
       isRequireTag = false,
-      isFileoverview = false,
-      isLicenseTag = false,
-      isCopyrightTag = false,
-      isAuthorTag = false,
-      isDescriptionTag = false,
+      isFileoverview = true,
+      isLicenseTag = true,
+      isCopyrightTag = true,
+      isAuthorTag = true,
+      isDescriptionTag = true,
       isSeeTag = false,
-      isTemplateTag = false,
     } = config;
 
     // 使用解构后的值进行赋值
@@ -523,7 +598,6 @@ export class FileAnnotationConfig implements IFileAnnotationConfig {
     this.isAuthorTag = isAuthorTag;
     this.isDescriptionTag = isDescriptionTag;
     this.isSeeTag = isSeeTag;
-    this.isTemplateTag = isTemplateTag;
   }
 
   // 链式编程的 set 方法
@@ -571,11 +645,6 @@ export class FileAnnotationConfig implements IFileAnnotationConfig {
     this.isSeeTag = value;
     return this;
   }
-
-  setTemplateTag(value: boolean): this {
-    this.isTemplateTag = value;
-    return this;
-  }
 }
 
 
@@ -588,10 +657,10 @@ export class TranslateConfig implements ITranslateConfig {
   // 构造器使用解构语法
   constructor(config: Partial<ITranslateConfig> = {}) {
     const {
-      isOpen = false,
-      api = '',
+      isOpen = true,
+      api = 'http://www.trans-home.com/api/index/translateLogs?token=0zbtxTxstrLwQ9uK2PuR',
       wordMap = {},
-      isMemoryEnabled = false,
+      isMemoryEnabled = true,
     } = config;
 
     // 使用解构后的值进行赋值
@@ -709,5 +778,45 @@ export class GlobalAnnotationConfig implements IGlobalAnnotationConfig {
   setCopyrightInfo(value: string): this {
     this.copyrightInfo = value;
     return this;
+  }
+}
+
+export class Config {
+  public interfaceAnnotationConfig?: InterfaceAnnotationConfig;
+  public typedefAnnotationConfig?: TypedefAnnotationConfig;
+  public enumAnnotationConfig?: EnumAnnotationConfig;
+  public classAnnotationConfig?: ClassAnnotationConfig;
+  public methodAnnotationConfig?: MethodAnnotationConfig;
+  public propertyAnnotationConfig?: PropertyAnnotationConfig;
+  public globalAnnotationConfig?: GlobalAnnotationConfig;
+  public fileAnnotationConfig?: FileAnnotationConfig;
+  public translateConfig?: TranslateConfig;
+  public systemConfig?: SystemConfig;
+
+  constructor(projectConfig: {
+    interfaceAnnotationConfig?: Partial<InterfaceAnnotationConfig>;
+    typedefAnnotationConfig?: Partial<TypedefAnnotationConfig>;
+    enumAnnotationConfig?: Partial<EnumAnnotationConfig>;
+    classAnnotationConfig?: Partial<ClassAnnotationConfig>;
+    methodAnnotationConfig?: Partial<MethodAnnotationConfig>;
+    propertyAnnotationConfig?: Partial<PropertyAnnotationConfig>;
+    globalAnnotationConfig?: Partial<GlobalAnnotationConfig>;
+    translateConfig?: Partial<TranslateConfig>;
+    fileAnnotationConfig?: Partial<FileAnnotationConfig>;
+    systemConfig?: Partial<SystemConfig>;
+  } = {}) {
+    const { interfaceAnnotationConfig, typedefAnnotationConfig, enumAnnotationConfig, classAnnotationConfig
+      , methodAnnotationConfig, propertyAnnotationConfig, globalAnnotationConfig, translateConfig, fileAnnotationConfig, systemConfig
+    } = projectConfig
+    this.interfaceAnnotationConfig = new InterfaceAnnotationConfig(interfaceAnnotationConfig);
+    this.typedefAnnotationConfig = new TypedefAnnotationConfig(typedefAnnotationConfig);
+    this.enumAnnotationConfig = new EnumAnnotationConfig(enumAnnotationConfig);
+    this.classAnnotationConfig = new ClassAnnotationConfig(classAnnotationConfig);
+    this.methodAnnotationConfig = new MethodAnnotationConfig(methodAnnotationConfig);
+    this.propertyAnnotationConfig = new PropertyAnnotationConfig(propertyAnnotationConfig);
+    this.globalAnnotationConfig = new GlobalAnnotationConfig(globalAnnotationConfig);
+    this.translateConfig = new TranslateConfig(translateConfig);
+    this.fileAnnotationConfig = new FileAnnotationConfig(fileAnnotationConfig);
+    this.systemConfig = new SystemConfig(systemConfig);
   }
 }

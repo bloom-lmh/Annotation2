@@ -18,16 +18,16 @@
   "contributes": {
     "commands": [
       {
-        "command": "addSingleAnnotation",
-        "title": "ADD SINGLE ANNOTATION"
+        "command": "addAnnotation",
+        "title": "ADD ANNOTATION"
       },
       {
         "command": "openConfigConsole",
         "title": "OPEN CONFIG CONSOLE"
       },
       {
-        "command": "addAllAnnotations",
-        "title": "ADD ALL ANNOTATIONS"
+        "command": "addAnnotations",
+        "title": "ADD ANNOTATIONS"
       },
       {
         "command": "test",
@@ -36,7 +36,7 @@
     ],
     "keybindings": [
       {
-        "command": "addSingleAnnotation",
+        "command": "addAnnotation",
         "key": "alt+\\"
       },
       {
@@ -44,14 +44,23 @@
         "key": "alt+shift+\\"
       },
       {
-        "command": "addAllAnnotations",
+        "command": "addAnnotations",
         "key": "ctrl+alt+\\"
       },
       {
         "command": "test",
         "key": "ctrl+shift+alt+\\"
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Annotation config path settings",
+      "properties": {
+        "annotation.setting": {
+          "configPath": ""
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

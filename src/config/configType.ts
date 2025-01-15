@@ -46,14 +46,14 @@ export interface IInterfaceAnnotationConfig extends Omit<IBaseAnnotationConfig, 
   isInterfaceTag: boolean;  // 是否是接口
   isExtendsTag: boolean;  // 是否继承
 }
-export interface IEnumAnnotationConfig extends Omit<IBaseAnnotationConfig, 'isAuthorTag' | 'isAccessTag' | 'isVersionTag' | onlyFile> {
+export interface IEnumAnnotationConfig extends Omit<IBaseAnnotationConfig, 'isAuthorTag' | 'isAccessTag' | 'isVersionTag' | 'isTemplateTag' | onlyFile> {
   isEnumTag: boolean;  // 是否是枚举类型
 }
-export interface ITypedefAnnotationConfig extends Omit<IBaseAnnotationConfig, 'isAuthorTag' | 'isAccessTag' | 'isVersionTag' | onlyFile> {
+export interface ITypedefAnnotationConfig extends Omit<IBaseAnnotationConfig, 'isAuthorTag' | 'isAccessTag' | 'isVersionTag' | 'isTemplateTag' | onlyFile> {
   isTypedefTag: boolean;  // 是否是自定义类型
   isTypeTag: boolean;  // 是否是类型
 }
-export interface IFileAnnotationConfig extends Omit<IBaseAnnotationConfig, 'isAccessTag' | 'isAliasTag' | 'isVersionTag' | 'isNameTag' | 'isDescription' | 'isSummaryTag' | 'isExampleTag'> {
+export interface IFileAnnotationConfig extends Omit<IBaseAnnotationConfig, 'isAccessTag' | 'isAliasTag' | 'isVersionTag' | 'isNameTag' | 'isDescription' | 'isSummaryTag' | 'isExampleTag' | 'isTemplateTag'> {
 
 }
 export interface ITranslateConfig {

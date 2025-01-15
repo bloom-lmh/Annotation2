@@ -28,7 +28,7 @@
 - 优化代码结构，引入职责链模式处理注释成员生成。
 - Optimize code structure and introduce chain of responsibility mode to handle comment member generation.
 
-## [1.0.6] - 2024-1-09 (开发中......)
+## [1.0.6] - 2024-1-09 
 ### 修复/fix
 - 采用默认注解进行填充的方法修复了对未知复杂代码结构不可生成注解的问题，提高了代码的健壮性，但这只是一种简单处理的方式，后续会尽量包括更多的代码结构支持。
 - Filling with default annotations fixes the problem of not generating annotations for unknown complex code structures and improves the robustness of the code, but this is only a simple way to deal with it and will include more code structure support in the future.
