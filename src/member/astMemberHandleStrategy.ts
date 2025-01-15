@@ -38,7 +38,6 @@ export class AstMemberHandleStrategy implements MemberHandleStrategy {
     // 返回方法成员
     // todo 判断static
     return new MethodMember(_name, _async, true, false, _throws, _params, _returns, true, _access)
-
   }
   handleProperty(memberDeclaration: MemberDeclaration): Member | null {
     memberDeclaration = (memberDeclaration as PropertyDeclaration)
