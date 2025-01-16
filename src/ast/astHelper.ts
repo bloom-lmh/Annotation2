@@ -86,7 +86,6 @@ export class AstHelper {
     methodDeclarations: (MethodDeclaration | MethodSignature)[];
     propertyDeclarations: (PropertyDeclaration | PropertySignature)[];
   } {
-    const classOrInterfaceDeclarations: T[] = [];
     const constructorDeclarations: ConstructorDeclaration[] = [];
     const methodDeclarations: (MethodDeclaration | MethodSignature)[] = [];
     const propertyDeclarations: (PropertyDeclaration | PropertySignature)[] = [];

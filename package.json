@@ -3,7 +3,7 @@
   "publisher": "SWUST-WEBLAB-LMH",
   "displayName": "JSDoc Annotation",
   "description": "A plugin that quickly generates jsdoc comments",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "icon": "./logo.png",
   "engines": {
     "vscode": "^1.95.0"
@@ -51,16 +51,7 @@
         "command": "test",
         "key": "ctrl+shift+alt+\\"
       }
-    ],
-    "configuration": {
-      "type": "object",
-      "title": "Annotation config path settings",
-      "properties": {
-        "annotation.setting": {
-          "configPath": ""
-        }
-      }
-    }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
