@@ -1,11 +1,8 @@
 import { TextDocument } from "vscode"
-import { ClassMember, EnumMember, InterfaceMember, MethodMember, PropertyMember, TypedefMember } from "../member/member"
+import { ClassMember, EnumMember, InterfaceMember, Member, MethodMember, PropertyMember, TypedefMember } from "../parser/member"
 import { MemberHandleStrategy } from "./memberHandleStrategy"
 import { MemberDeclaration } from "../ast/astHelper"
-import { ErrorNotifier, MemberType } from "../error/errorrNotifier"
-import { Member } from "../parser/member"
-import { MethodType } from "./memberType"
-
+import * as vscode from 'vscode';
 /**
  * @name RegExpMemberHandleStrategy
  * @class
@@ -19,96 +16,138 @@ export class RegExpMemberHandleStrategy implements MemberHandleStrategy {
     this.document = document
   }
   handleClass(memberDeclaration: MemberDeclaration): Member | null {
-    // 获取字符串成员文本和成员声明开始行
-    let { textMemberDeclaration, startLineNumber } = this.preHandle(memberDeclaration)
+    this.preHandle(memberDeclaration)
     // 正则表达式，用于匹配类的基本信息：是否是 abstract 类、类名、继承类和实现接口
-    const regex = /(?<_abstract>abstract)?\s*class\s+(?<_name>\w+)\s*(?:extends\s+(?<_extend>\w+))?\s*(?:implements\s+(?<_implements>[A-Za-z, ]+))?/;
+    const regex = /(?<abstract>abstract)?\s*class\s+(?<name>\w+)\s*(?:extends\s+(?<extends>\w+))?\s*(?:implements\s+(?<implements>[A-Za-z, ]+))?/;
+
     // 匹配类声明
-    const match = textMemberDeclaration.match(regex);
-    // 不匹配返回默认成员
-    if (!match || !match.groups) {
-      ErrorNotifier.showMemberParseError(MemberType.CLASS, startLineNumber)
+    const match = this.textMemberDeclaration.match(regex);
+
+    if (match && match.groups) {
+      // 解构获取类的相关信息
+      const { abstract, name, extends: extendClass, implements: implementsRaw } = match.groups;
+
+      // 判断是否为 abstract 类
+      const _abstract = !!abstract;
+      // 获取类名
+      const _name = name || '';
+      // 获取继承的父类名
+      const _extends = extendClass || '';
+      // 解析实现的接口（可能有多个接口）
+      const implementsList = implementsRaw ? implementsRaw.split(',').map(item => item.trim()) : [];
+
+      // 返回封装的 ClassMember 实例
+      return new ClassMember(_name, true, _abstract, _extends, implementsList);
+    } else {
+      let startLineNumber = memberDeclaration?.getStartLineNumber()
+
+      vscode.window.showInformationMessage(`
+        存在类声明解析失败，采用默认类注解，出错位置行号：${startLineNumber} 
+        There is a class declaration parsing failure, using the default class annotation, error location line number：${startLineNumber} 
+        `)
       return new ClassMember()
     }
-    // 解构获取类的相关信息
-    const { _abstract, _name, _extends, _implements } = match.groups;
-
-    // 返回封装的 ClassMember 实例
-    return new ClassMember()
-      .setName(_name)
-      .setAbstract(!!_abstract)
-      .setExtends(_extends)
-      .setImplements(_implements ? _implements.split(',').map(item => item.trim()) : [])
   }
   handleMethod(memberDeclaration: MemberDeclaration): Member | null {
-    let { textMemberDeclaration, startLineNumber } = this.preHandle(memberDeclaration)
+    this.preHandle(memberDeclaration)
     // 改进后的正则表达式
-    const regex = /(?<_access>public|private|protected)?\s*(?<_static>static)?\s*(?<_async>async)?\s*(?<_name>\w+)\s*\((?<_params>.*?)\)\s*(?::\s*(?<_returnType>\w+))?(?:\s*throws\s*(?<_throws>[\w, ]+))?/;
-    // 匹配
-    const match = textMemberDeclaration.match(regex);
-    // 不匹配返回默认成员
-    if (!match || !match.groups) {
-      ErrorNotifier.showMemberParseError(MemberType.METHOD, startLineNumber)
-      return new ClassMember()
-    }
-    const { _access, _static, _async, _name, _params, _returnType, _throws } = match.groups;
+    const regex = /(?<accessModifier>public|private|protected)?\s*(?<static>static)?\s*(?<async>async)?\s*(?<name>\w+)\s*\((?<params>.*?)\)\s*(?::\s*(?<returnType>\w+))?(?:\s*throws\s*(?<throws>[\w, ]+))?/;
 
-    // 返回方法成员 
-    return new MethodMember()
-      .setName(_name)
-      .setAsync(!!_async)
-      .setMethod(_name === "constructor" ? MethodType.CONSTRUCTOR : MethodType.FUNCTION)
-      .setThrows(this.parseThrownErrors(this.textMemberDeclaration))
-      .setParams(this.parseParams(_params || ''))
-      .setReturnType(_returnType)
-      .setStatic(!!_static)
-      .setAccess(_access)
+    // 匹配
+    const match = this.textMemberDeclaration.match(regex);
+
+    if (match && match.groups) {
+      const { accessModifier, static: isStatic, async, name, params, returnType, throws } = match.groups;
+
+      // 确保返回类型、成员名、访问修饰符等都存在
+      const _name = name || '';
+      const _params = this.parseParams(params || '');
+      const _returns = returnType || ''; // 默认返回类型为空
+      const _throws = this.parseThrownErrors(this.textMemberDeclaration); // 默认无异常
+      const _async = async !== undefined;  // 判断是否为异步方法
+      const _access = accessModifier || '';  // 默认访问修饰符为空
+      const _static = !!isStatic; // 判断是否为静态方法
+      let _function = true
+      let _constructor = false
+      if (name === "constructor") {
+        _function = false
+        _constructor = true
+      }
+      // 返回方法成员 
+      return new MethodMember(_name, _async, _function, _constructor, _throws, _params, _returns, _static, _access);
+    } else {
+      let startLineNumber = memberDeclaration?.getStartLineNumber()
+      vscode.window.showInformationMessage(`
+        存在方法声明解析失败，采用默认方法注解，出错位置行号：${startLineNumber} 
+        There is a method declaration parsing failure, using the default method annotation, error location line number：${startLineNumber} 
+        `)
+      return new MethodMember()
+    }
   }
   handleProperty(memberDeclaration: MemberDeclaration): Member | null {
-    let { textMemberDeclaration, startLineNumber } = this.preHandle(memberDeclaration)
+    this.preHandle(memberDeclaration)
     // 正则表达式，用于匹配属性的声明信息（包括默认值）
-    const regex = /(?<_access>public|private|protected)?\s*(?<_static>static)?\s*(?<_name>\w+)\s*:\s*(?<_type>\w+)\s*(?<_defaultValue>=\s*[^;]+)?/;
+    const regex = /(?<accessModifier>public|private|protected)?\s*(?<static>static)?\s*(?<name>\w+)\s*:\s*(?<type>\w+)\s*(?<defaultValue>=\s*[^;]+)?/;
     // 首先尝试解析箭头函数
-    let methodMember = this.parseArrowFunction(textMemberDeclaration)
+    let methodMember = this.parseArrowFunction(this.textMemberDeclaration)
     if (methodMember) return methodMember
     // 匹配属性声明
     const match = this.textMemberDeclaration.match(regex);
-    if (!match || !match.groups) {
-      ErrorNotifier.showMemberParseError(MemberType.METHOD, startLineNumber)
+
+    if (match && match.groups) {
+      // 解构提取属性信息
+      const { accessModifier, static: isStatic, name, type, defaultValue } = match.groups;
+
+      // 获取访问修饰符，如果没有则默认为空字符串
+      const _access = accessModifier || '';
+      // 判断是否为静态属性
+      const _static = !!isStatic;
+      // 获取属性名
+      const _name = name || '';
+      // 获取属性类型
+      const _type = type || '';
+      // 获取属性默认值，如果没有则默认为空字符串
+      const _default = defaultValue ? defaultValue.trim().slice(1).trim() : ''; // 去掉 `=` 号
+      // 返回封装的 PropertyMember 实例
+      return new PropertyMember(_name, true, _type, _static, _default, _access);
+    } else {
+      let startLineNumber = memberDeclaration?.getStartLineNumber()
+      vscode.window.showInformationMessage(`
+        存在属性声明解析失败，采用默认属性注解，出错位置行号：${startLineNumber} 
+        There is a property declaration parsing failure, using the default property annotation, error location line number：${startLineNumber} 
+        `)
       return new PropertyMember()
     }
-    // 解构提取属性信息
-    const { _access, _static, _name, _type, _defaultValue } = match.groups;
-
-    // 返回封装的 PropertyMember 实例
-    return new PropertyMember()
-      .setName(_name)
-      .setType(_type)
-      .setStatic(!!_static)
-      .setDefault(_defaultValue ? _defaultValue.trim().slice(1).trim() : '')
-      .setAccess(_access)
   }
-
   handleInterface(memberDeclaration: MemberDeclaration): Member | null {
-    let { textMemberDeclaration, startLineNumber } = this.preHandle(memberDeclaration)
+    this.preHandle(memberDeclaration)
     // 正则表达式，用于匹配接口声明
     const regex = /interface\s+(?<name>\w+)\s*(?:extends\s+(?<extends>\w+(?:,\s*\w+)*))?/;
 
     // 匹配接口声明
     const match = this.textMemberDeclaration.match(regex);
 
-    // 解构提取接口信息
-    const { name, extends: extendsRaw } = match.groups;
+    if (match && match.groups) {
+      // 解构提取接口信息
+      const { name, extends: extendsRaw } = match.groups;
 
-    // 获取接口名称
-    const _name = name || '';
+      // 获取接口名称
+      const _name = name || '';
 
-    // 解析继承的接口列表（如果有的话）
-    const _extends = extendsRaw ? extendsRaw.split(',').map(item => item.trim()) : [];
+      // 解析继承的接口列表（如果有的话）
+      const _extends = extendsRaw ? extendsRaw.split(',').map(item => item.trim()) : [];
 
-    // 返回封装的 InterfaceMember 实例
-    return new InterfaceMember(_name, true, _extends);
+      // 返回封装的 InterfaceMember 实例
+      return new InterfaceMember(_name, true, _extends);
+    } else {
+      let startLineNumber = memberDeclaration?.getStartLineNumber()
 
+      vscode.window.showInformationMessage(`
+        存在接口声明解析失败，采用默认接口注解，出错位置行号：${startLineNumber} 
+        There is a interface declaration parsing failure, using the default interface annotation, error location line number：${startLineNumber} 
+        `)
+      return new InterfaceMember()
+    }
   }
   handleEnum(memberDeclaration: MemberDeclaration): Member | null {
     this.preHandle(memberDeclaration)
@@ -178,16 +217,16 @@ export class RegExpMemberHandleStrategy implements MemberHandleStrategy {
     }
   }
 
-  private preHandle(memberDeclaration: MemberDeclaration): { textMemberDeclaration: string, startLineNumber: number } {
+  private preHandle(memberDeclaration: MemberDeclaration) {
     let startLineNumber = memberDeclaration?.getStartLineNumber() || 0
     let endLineNumber = memberDeclaration?.getEndLineNumber()
     // 获取源文件的文本
     let text = this.document.getText();
     // 截取成员代码块所在的字符串（从 sn 行到 nn 行）
     let lines = text.split('\n');
-    let textMemberDeclaration = lines.slice(startLineNumber - 1, endLineNumber).join('\n'); // -1 是因为行号从 1 开始，数组从 0 开始
+    let memberText = lines.slice(startLineNumber - 1, endLineNumber).join('\n'); // -1 是因为行号从 1 开始，数组从 0 开始
     // 成员文本
-    return { textMemberDeclaration, startLineNumber }
+    this.textMemberDeclaration = memberText
   }
   /**
      * 解析箭头函数

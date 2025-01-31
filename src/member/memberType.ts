@@ -10,14 +10,17 @@ export interface IClassMember extends IMember {
   extends: string;
   implements: Array<string>;
 }
-
+export enum MethodType {
+  FUNCTION = 0,
+  METHOD,
+  CONSTRUCTOR
+}
 export interface IMethodMember extends IMember {
   async: boolean;
-  function: boolean;
-  _constructor: boolean;
+  method: MethodType;
   throws: Set<string>;
   params: string[][];
-  returns: string;
+  returnType: string;
   static: boolean;
   access: string;
 }
