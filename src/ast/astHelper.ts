@@ -1,5 +1,4 @@
 import { ClassDeclaration, ConstructorDeclaration, EnumDeclaration, FunctionDeclaration, InstanceOf, InterfaceDeclaration, MethodDeclaration, MethodSignature, Project, PropertyDeclaration, PropertySignature, SourceFile, ts, TypeAliasDeclaration } from "ts-morph";
-import * as vscode from 'vscode'
 export type MemberDeclaration =
   | ClassDeclaration
   | FunctionDeclaration
