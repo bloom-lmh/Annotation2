@@ -1,7 +1,7 @@
 import path, { basename, dirname } from "path";
 import { FileWatcher } from "../file/fileWatcher";
 import { WorkspaceUtil } from "../utils/workspaceUtil";
-import { Config } from "./config";
+import { Config } from "./config copy";
 
 /**
  * 配置管理器

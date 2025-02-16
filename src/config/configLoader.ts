@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from "fs"
-import { Config } from "./_config"
+import { Config } from "./config"
 
 export class ConfigLoader {
   public loadConfig(configPath: string) {

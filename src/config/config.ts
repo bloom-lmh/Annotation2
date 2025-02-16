@@ -1,211 +1,786 @@
+import { IClassAnnotationConfig, IEnumAnnotationConfig, IFileAnnotationConfig, IGlobalAnnotationConfig, IInterfaceAnnotationConfig, IMethodAnnotationConfig, IPropertyAnnotationConfig, ISystemConfig, ITranslateConfig, ITypedefAnnotationConfig } from './configType'
 
-/**
- * 基础注解配置
- */
-export class BaseAnnotationConfig {
-  public isAuthorTag: boolean;  // 是否包含作者信息
-  public isAccessTag: boolean;  // 是否包含访问控制
-  public isAliasTag: boolean;  // 是否包含别名
-  public isVersionTag: boolean;  // 是否包含版本
-  public isNameTag: boolean;  // 是否包含名称
-  public isDescriptionTag: boolean;  // 是否包含描述
-  public isLicenseTag: boolean;  // 是否包含许可证
-  public isCopyrightTag: boolean;  // 是否包含版权
-  public isSeeTag: boolean;  // 是否包含 See 参考
-  public isSummaryTag: boolean;  // 是否包含摘要
-  public isExampleTag: boolean;  // 是否包含示例
+// ClassAnnotationConfigClass 类
+export class ClassAnnotationConfig implements IClassAnnotationConfig {
+  isClassTag: boolean;
+  isAbstractTag: boolean;
+  isExtendsTag: boolean;
+  isImplementsTag: boolean;
+  isAuthorTag: boolean;
+  isAliasTag: boolean;
+  isVersionTag: boolean;
+  isNameTag: boolean;
+  isDescriptionTag: boolean;
+  isSeeTag: boolean;
+  isExampleTag: boolean;
+  isTemplateTag: boolean;
 
-  constructor(projectConfig: Partial<BaseAnnotationConfig> = {}) {
-    // 解构项目配置
-    const { isAuthorTag, isAccessTag, isAliasTag, isVersionTag, isNameTag, isDescriptionTag, isLicenseTag, isCopyrightTag, isSeeTag, isSummaryTag, isExampleTag } = projectConfig
-    // 设置属性，有则采用项目配置否则则采用默认值
-    this.isAuthorTag = isAuthorTag ?? false;
-    this.isAccessTag = isAccessTag ?? true;
-    this.isAliasTag = isAliasTag ?? false;
-    this.isVersionTag = isVersionTag ?? false;
-    this.isNameTag = isNameTag ?? true;
-    this.isDescriptionTag = isDescriptionTag ?? true;
-    this.isLicenseTag = isLicenseTag ?? false;
-    this.isCopyrightTag = isCopyrightTag ?? false;
-    this.isSeeTag = isSeeTag ?? false;
-    this.isSummaryTag = isSummaryTag ?? false;
-    this.isExampleTag = isExampleTag ?? false;
+  // 构造器内部解构配置
+  constructor(config: Partial<IClassAnnotationConfig> = {}) {
+    const {
+      isClassTag = true,
+      isAbstractTag = true,
+      isExtendsTag = true,
+      isImplementsTag = true,
+      isAuthorTag = false,
+      isAliasTag = false,
+      isVersionTag = false,
+      isNameTag = true,
+      isDescriptionTag = true,
+      isSeeTag = false,
+      isExampleTag = false,
+      isTemplateTag = true,
+    } = config;
+
+    // 使用解构后的值进行赋值
+    this.isClassTag = isClassTag;
+    this.isAbstractTag = isAbstractTag;
+    this.isExtendsTag = isExtendsTag;
+    this.isImplementsTag = isImplementsTag;
+    this.isAuthorTag = isAuthorTag;
+    this.isAliasTag = isAliasTag;
+    this.isVersionTag = isVersionTag;
+    this.isNameTag = isNameTag;
+    this.isDescriptionTag = isDescriptionTag;
+    this.isSeeTag = isSeeTag;
+    this.isExampleTag = isExampleTag;
+    this.isTemplateTag = isTemplateTag;
+  }
+
+  // 链式编程的 set 方法
+  setClassTag(value: boolean): this {
+    this.isClassTag = value;
+    return this;
+  }
+
+  setAbstractTag(value: boolean): this {
+    this.isAbstractTag = value;
+    return this;
+  }
+
+  setExtendsTag(value: boolean): this {
+    this.isExtendsTag = value;
+    return this;
+  }
+
+  setImplementsTag(value: boolean): this {
+    this.isImplementsTag = value;
+    return this;
+  }
+
+  setAuthorTag(value: boolean): this {
+    this.isAuthorTag = value;
+    return this;
+  }
+
+  setAliasTag(value: boolean): this {
+    this.isAliasTag = value;
+    return this;
+  }
+
+  setVersionTag(value: boolean): this {
+    this.isVersionTag = value;
+    return this;
+  }
+
+  setNameTag(value: boolean): this {
+    this.isNameTag = value;
+    return this;
+  }
+
+  setDescriptionTag(value: boolean): this {
+    this.isDescriptionTag = value;
+    return this;
+  }
+
+  setSeeTag(value: boolean): this {
+    this.isSeeTag = value;
+    return this;
+  }
+
+  setExampleTag(value: boolean): this {
+    this.isExampleTag = value;
+    return this;
+  }
+
+  setTemplateTag(value: boolean): this {
+    this.isTemplateTag = value;
+    return this;
   }
 }
-/**
- * 全局描述信息配置
- */
-export class GlobalAnnotationConfig {
-  public authorInfo: string;
-  public versionInfo: string;
-  public licenseInfo: string;
-  public copyrightInfo: string;
+export class MethodAnnotationConfig implements IMethodAnnotationConfig {
+  isAsyncTag: boolean;
+  isFunctionTag: boolean;
+  isConstructorTag: boolean;
+  isThrowsTag: boolean;
+  isParamsTag: boolean;
+  isReturnsTag: boolean;
+  isStaticTag: boolean;
+  isAccessTag: boolean;
+  isAuthorTag: boolean;
+  isAliasTag: boolean;
+  isVersionTag: boolean;
+  isNameTag: boolean;
+  isDescriptionTag: boolean;
+  isSeeTag: boolean;
+  isExampleTag: boolean;
+  isTemplateTag: boolean;
 
-  constructor(projectConfig: Partial<GlobalAnnotationConfig> = {}) {
-    // 解构项目配置
-    const { authorInfo, versionInfo, licenseInfo, copyrightInfo } = projectConfig;
-    // 设置属性，有则采用项目配置否则则采用默认值
-    this.authorInfo = authorInfo ?? '<作者名字> [<电子邮件地址>]';
-    this.versionInfo = versionInfo ?? '1.0.0';
-    this.licenseInfo = licenseInfo ?? 'MIT';
-    this.copyrightInfo = copyrightInfo ?? '<年份> <版权所有者>';
+  // 构造器使用解构语法
+  constructor(config: Partial<IMethodAnnotationConfig> = {}) {
+    const {
+      isAsyncTag = true,
+      isFunctionTag = true,
+      isConstructorTag = true,
+      isThrowsTag = true,
+      isParamsTag = true,
+      isReturnsTag = true,
+      isStaticTag = true,
+      isAccessTag = true,
+      isAuthorTag = false,
+      isAliasTag = false,
+      isVersionTag = false,
+      isNameTag = true,
+      isDescriptionTag = true,
+      isSeeTag = false,
+      isExampleTag = false,
+      isTemplateTag = true,
+    } = config;
+
+    // 使用解构后的值进行赋值
+    this.isAsyncTag = isAsyncTag;
+    this.isFunctionTag = isFunctionTag;
+    this.isConstructorTag = isConstructorTag;
+    this.isThrowsTag = isThrowsTag;
+    this.isParamsTag = isParamsTag;
+    this.isReturnsTag = isReturnsTag;
+    this.isStaticTag = isStaticTag;
+    this.isAccessTag = isAccessTag;
+    this.isAuthorTag = isAuthorTag;
+    this.isAliasTag = isAliasTag;
+    this.isVersionTag = isVersionTag;
+    this.isNameTag = isNameTag;
+    this.isDescriptionTag = isDescriptionTag;
+    this.isSeeTag = isSeeTag;
+    this.isExampleTag = isExampleTag;
+    this.isTemplateTag = isTemplateTag;
+  }
+
+  // 链式编程的 set 方法
+  setAsyncTag(value: boolean): this {
+    this.isAsyncTag = value;
+    return this;
+  }
+
+  setFunctionTag(value: boolean): this {
+    this.isFunctionTag = value;
+    return this;
+  }
+
+  setConstructorTag(value: boolean): this {
+    this.isConstructorTag = value;
+    return this;
+  }
+
+  setThrowsTag(value: boolean): this {
+    this.isThrowsTag = value;
+    return this;
+  }
+
+  setParamsTag(value: boolean): this {
+    this.isParamsTag = value;
+    return this;
+  }
+
+  setReturnsTag(value: boolean): this {
+    this.isReturnsTag = value;
+    return this;
+  }
+
+  setStaticTag(value: boolean): this {
+    this.isStaticTag = value;
+    return this;
+  }
+
+  setAccessTag(value: boolean): this {
+    this.isAccessTag = value;
+    return this;
+  }
+
+  setAuthorTag(value: boolean): this {
+    this.isAuthorTag = value;
+    return this;
+  }
+
+  setAliasTag(value: boolean): this {
+    this.isAliasTag = value;
+    return this;
+  }
+
+  setVersionTag(value: boolean): this {
+    this.isVersionTag = value;
+    return this;
+  }
+
+  setNameTag(value: boolean): this {
+    this.isNameTag = value;
+    return this;
+  }
+
+  setDescriptionTag(value: boolean): this {
+    this.isDescriptionTag = value;
+    return this;
+  }
+
+  setSeeTag(value: boolean): this {
+    this.isSeeTag = value;
+    return this;
+  }
+
+  setExampleTag(value: boolean): this {
+    this.isExampleTag = value;
+    return this;
+  }
+
+  setTemplateTag(value: boolean): this {
+    this.isTemplateTag = value;
+    return this;
   }
 }
-/**
- * 类注解配置
- */
-export class ClassAnnotationConfig extends BaseAnnotationConfig {
-  public isClassTag: boolean;  // 是否是类
-  public isAbstractTag: boolean;  // 是否是抽象类
-  public isExtendsTag: boolean;  // 是否继承
-  public isImplementsTag: boolean;  // 是否实现接口
 
-  constructor(projectConfig: Partial<ClassAnnotationConfig> = {}) {
-    super(projectConfig);
-    // 解构配置并设置默认值
-    const { isClassTag, isAbstractTag, isExtendsTag, isImplementsTag } = projectConfig;
-    this.isClassTag = isClassTag ?? true;
-    this.isAbstractTag = isAbstractTag ?? true;
-    this.isExtendsTag = isExtendsTag ?? true;
-    this.isImplementsTag = isImplementsTag ?? true;
+
+export class PropertyAnnotationConfig implements IPropertyAnnotationConfig {
+  isPropertyTag: boolean;
+  isStaticTag: boolean;
+  isTypeTag: boolean;
+  isDefaultTag: boolean;
+  isAliasTag: boolean;
+  isNameTag: boolean;
+  isDescriptionTag: boolean;
+  isSeeTag: boolean;
+  isExampleTag: boolean;
+  isTemplateTag: boolean;
+
+  // 构造器使用解构语法
+  constructor(config: Partial<IPropertyAnnotationConfig> = {}) {
+    const {
+      isPropertyTag = true,
+      isStaticTag = true,
+      isTypeTag = true,
+      isDefaultTag = true,
+      isAliasTag = true,
+      isNameTag = true,
+      isDescriptionTag = true,
+      isSeeTag = false,
+      isExampleTag = false,
+      isTemplateTag = true,
+    } = config;
+
+    // 使用解构后的值进行赋值
+    this.isPropertyTag = isPropertyTag;
+    this.isStaticTag = isStaticTag;
+    this.isTypeTag = isTypeTag;
+    this.isDefaultTag = isDefaultTag;
+    this.isAliasTag = isAliasTag;
+    this.isNameTag = isNameTag;
+    this.isDescriptionTag = isDescriptionTag;
+    this.isSeeTag = isSeeTag;
+    this.isExampleTag = isExampleTag;
+    this.isTemplateTag = isTemplateTag;
+  }
+
+  // 链式编程的 set 方法
+  setPropertyTag(value: boolean): this {
+    this.isPropertyTag = value;
+    return this;
+  }
+
+  setStaticTag(value: boolean): this {
+    this.isStaticTag = value;
+    return this;
+  }
+
+  setTypeTag(value: boolean): this {
+    this.isTypeTag = value;
+    return this;
+  }
+
+  setDefaultTag(value: boolean): this {
+    this.isDefaultTag = value;
+    return this;
+  }
+
+  setAliasTag(value: boolean): this {
+    this.isAliasTag = value;
+    return this;
+  }
+
+  setNameTag(value: boolean): this {
+    this.isNameTag = value;
+    return this;
+  }
+
+  setDescriptionTag(value: boolean): this {
+    this.isDescriptionTag = value;
+    return this;
+  }
+
+  setSeeTag(value: boolean): this {
+    this.isSeeTag = value;
+    return this;
+  }
+
+  setExampleTag(value: boolean): this {
+    this.isExampleTag = value;
+    return this;
+  }
+
+  setTemplateTag(value: boolean): this {
+    this.isTemplateTag = value;
+    return this;
   }
 }
 
-/**
- * 方法注解配置
- */
-export class MethodAnnotationConfig extends BaseAnnotationConfig {
-  public isAsyncTag: boolean;  // 是否异步
-  public isFunctionTag: boolean;  // 是否是函数
-  public isConstructorTag: boolean;  // 是否是构造函数
-  public isThrowsTag: boolean;  // 是否包含抛出异常
-  public isParamsTag: boolean;  // 是否包含参数
-  public isReturnsTag: boolean;  // 是否包含返回值
-  public isStaticTag: boolean;  // 是否是静态方法
+export class EnumAnnotationConfig implements IEnumAnnotationConfig {
+  isEnumTag: boolean;
+  isAliasTag: boolean;
+  isNameTag: boolean;
+  isDescriptionTag: boolean;
+  isSeeTag: boolean;
+  isExampleTag: boolean;
 
-  constructor(projectConfig: Partial<MethodAnnotationConfig> = {}) {
-    super(projectConfig);
-    // 解构配置并设置默认值
-    const { isAsyncTag, isFunctionTag, isThrowsTag, isParamsTag, isReturnsTag, isStaticTag, isConstructorTag } = projectConfig;
-    this.isAsyncTag = isAsyncTag ?? true;
-    this.isFunctionTag = isFunctionTag ?? true;
-    this.isConstructorTag = isConstructorTag ?? true;
-    this.isThrowsTag = isThrowsTag ?? true;
-    this.isParamsTag = isParamsTag ?? true;
-    this.isReturnsTag = isReturnsTag ?? true;
-    this.isStaticTag = isStaticTag ?? true;
+  // 构造器使用解构语法
+  constructor(config: Partial<IEnumAnnotationConfig> = {}) {
+    const {
+      isEnumTag = true,
+      isAliasTag = false,
+      isNameTag = true,
+      isDescriptionTag = true,
+      isSeeTag = false,
+      isExampleTag = false,
+    } = config;
+
+    // 使用解构后的值进行赋值
+    this.isEnumTag = isEnumTag;
+    this.isAliasTag = isAliasTag;
+    this.isNameTag = isNameTag;
+    this.isDescriptionTag = isDescriptionTag;
+    this.isSeeTag = isSeeTag;
+    this.isExampleTag = isExampleTag;
+  }
+
+  // 链式编程的 set 方法
+  setEnumTag(value: boolean): this {
+    this.isEnumTag = value;
+    return this;
+  }
+
+  setAliasTag(value: boolean): this {
+    this.isAliasTag = value;
+    return this;
+  }
+
+  setNameTag(value: boolean): this {
+    this.isNameTag = value;
+    return this;
+  }
+
+  setDescriptionTag(value: boolean): this {
+    this.isDescriptionTag = value;
+    return this;
+  }
+
+  setSeeTag(value: boolean): this {
+    this.isSeeTag = value;
+    return this;
+  }
+
+  setExampleTag(value: boolean): this {
+    this.isExampleTag = value;
+    return this;
+  }
+
+
+}
+
+export class TypedefAnnotationConfig implements ITypedefAnnotationConfig {
+  isTypedefTag: boolean;
+  isTypeTag: boolean;
+  isAliasTag: boolean;
+  isNameTag: boolean;
+  isDescriptionTag: boolean;
+  isSeeTag: boolean;
+  isExampleTag: boolean;
+
+  // 构造器使用解构语法
+  constructor(config: Partial<ITypedefAnnotationConfig> = {}) {
+    const {
+      isTypedefTag = true,
+      isTypeTag = true,
+      isAliasTag = true,
+      isNameTag = true,
+      isDescriptionTag = true,
+      isSeeTag = true,
+      isExampleTag = true,
+    } = config;
+
+    // 使用解构后的值进行赋值
+    this.isTypedefTag = isTypedefTag;
+    this.isTypeTag = isTypeTag;
+    this.isAliasTag = isAliasTag;
+    this.isNameTag = isNameTag;
+    this.isDescriptionTag = isDescriptionTag;
+    this.isSeeTag = isSeeTag;
+    this.isExampleTag = isExampleTag;
+  }
+
+  // 链式编程的 set 方法
+  setTypedefTag(value: boolean): this {
+    this.isTypedefTag = value;
+    return this;
+  }
+
+  setTypeTag(value: boolean): this {
+    this.isTypeTag = value;
+    return this;
+  }
+
+  setAliasTag(value: boolean): this {
+    this.isAliasTag = value;
+    return this;
+  }
+
+  setNameTag(value: boolean): this {
+    this.isNameTag = value;
+    return this;
+  }
+
+  setDescriptionTag(value: boolean): this {
+    this.isDescriptionTag = value;
+    return this;
+  }
+
+  setSeeTag(value: boolean): this {
+    this.isSeeTag = value;
+    return this;
+  }
+
+  setExampleTag(value: boolean): this {
+    this.isExampleTag = value;
+    return this;
   }
 }
-/**
- * 属性注解配置
- */
-export class PropertyAnnotationConfig extends BaseAnnotationConfig {
-  public isPropertyTag: boolean;  // 是否是属性
-  public isStaticTag: boolean;  // 是否是静态属性
-  public isTypeTag: boolean;  // 是否包含类型
-  public isDefaultTag: boolean;  // 是否包含默认值
+export class InterfaceAnnotationConfig implements IInterfaceAnnotationConfig {
+  isInterfaceTag: boolean;
+  isExtendsTag: boolean;
+  isAuthorTag: boolean;
+  isVersionTag: boolean;
+  isTemplateTag: boolean;
+  isAliasTag: boolean;
+  isNameTag: boolean;
+  isDescriptionTag: boolean;
+  isSeeTag: boolean;
+  isExampleTag: boolean;
 
-  constructor(projectConfig: Partial<PropertyAnnotationConfig> = {}) {
-    super(projectConfig);
-    // 解构配置并设置默认值
-    const { isPropertyTag, isStaticTag, isTypeTag, isDefaultTag } = projectConfig;
-    this.isPropertyTag = isPropertyTag ?? true;
-    this.isStaticTag = isStaticTag ?? true;
-    this.isTypeTag = isTypeTag ?? true;
-    this.isDefaultTag = isDefaultTag ?? true;
+  // 构造器使用解构语法
+  constructor(config: Partial<IInterfaceAnnotationConfig> = {}) {
+    const {
+      isInterfaceTag = true,
+      isExtendsTag = true,
+      isAuthorTag = false,
+      isVersionTag = false,
+      isTemplateTag = true,
+      isAliasTag = false,
+      isNameTag = true,
+      isDescriptionTag = true,
+      isSeeTag = false,
+      isExampleTag = false,
+    } = config;
+
+    // 使用解构后的值进行赋值
+    this.isInterfaceTag = isInterfaceTag;
+    this.isExtendsTag = isExtendsTag;
+    this.isAuthorTag = isAuthorTag;
+    this.isVersionTag = isVersionTag;
+    this.isTemplateTag = isTemplateTag;
+    this.isAliasTag = isAliasTag;
+    this.isNameTag = isNameTag;
+    this.isDescriptionTag = isDescriptionTag;
+    this.isSeeTag = isSeeTag;
+    this.isExampleTag = isExampleTag;
+  }
+
+  // 链式编程的 set 方法
+  setInterfaceTag(value: boolean): this {
+    this.isInterfaceTag = value;
+    return this;
+  }
+
+  setExtendsTag(value: boolean): this {
+    this.isExtendsTag = value;
+    return this;
+  }
+
+  setAuthorTag(value: boolean): this {
+    this.isAuthorTag = value;
+    return this;
+  }
+
+  setVersionTag(value: boolean): this {
+    this.isVersionTag = value;
+    return this;
+  }
+
+  setTemplateTag(value: boolean): this {
+    this.isTemplateTag = value;
+    return this;
+  }
+
+  setAliasTag(value: boolean): this {
+    this.isAliasTag = value;
+    return this;
+  }
+
+  setNameTag(value: boolean): this {
+    this.isNameTag = value;
+    return this;
+  }
+
+  setDescriptionTag(value: boolean): this {
+    this.isDescriptionTag = value;
+    return this;
+  }
+
+  setSeeTag(value: boolean): this {
+    this.isSeeTag = value;
+    return this;
+  }
+
+  setExampleTag(value: boolean): this {
+    this.isExampleTag = value;
+    return this;
   }
 }
-/**
- * 接口类型配置
- */
-export class InterfaceAnnotationConfig extends BaseAnnotationConfig {
-  public isInterfaceTag: boolean;  // 是否是接口
-  public isExtendsTag: boolean;  // 是否继承
 
-  constructor(projectConfig: Partial<InterfaceAnnotationConfig> = {}) {
-    super(projectConfig);
-    // 解构项目配置
-    const { isInterfaceTag, isExtendsTag } = projectConfig
-    // 设置属性，有则采用项目配置否则则采用默认值
-    this.isInterfaceTag = isInterfaceTag ?? true;
-    this.isExtendsTag = isExtendsTag ?? true;
+
+export class FileAnnotationConfig implements IFileAnnotationConfig {
+  isNamespaceTag: boolean;
+  isModuleTag: boolean;
+  isRequireTag: boolean;
+  isFileoverview: boolean;
+  isLicenseTag: boolean;
+  isCopyrightTag: boolean;
+  isAuthorTag: boolean;
+  isDescriptionTag: boolean;
+  isSeeTag: boolean;
+
+  // 构造器使用解构语法
+  constructor(config: Partial<IFileAnnotationConfig> = {}) {
+    const {
+      isNamespaceTag = false,
+      isModuleTag = true,
+      isRequireTag = false,
+      isFileoverview = true,
+      isLicenseTag = true,
+      isCopyrightTag = true,
+      isAuthorTag = true,
+      isDescriptionTag = true,
+      isSeeTag = false,
+    } = config;
+
+    // 使用解构后的值进行赋值
+    this.isNamespaceTag = isNamespaceTag;
+    this.isModuleTag = isModuleTag;
+    this.isRequireTag = isRequireTag;
+    this.isFileoverview = isFileoverview;
+    this.isLicenseTag = isLicenseTag;
+    this.isCopyrightTag = isCopyrightTag;
+    this.isAuthorTag = isAuthorTag;
+    this.isDescriptionTag = isDescriptionTag;
+    this.isSeeTag = isSeeTag;
+  }
+
+  // 链式编程的 set 方法
+  setNamespaceTag(value: boolean): this {
+    this.isNamespaceTag = value;
+    return this;
+  }
+
+  setModuleTag(value: boolean): this {
+    this.isModuleTag = value;
+    return this;
+  }
+
+  setRequireTag(value: boolean): this {
+    this.isRequireTag = value;
+    return this;
+  }
+
+  setFileoverview(value: boolean): this {
+    this.isFileoverview = value;
+    return this;
+  }
+
+  setLicenseTag(value: boolean): this {
+    this.isLicenseTag = value;
+    return this;
+  }
+
+  setCopyrightTag(value: boolean): this {
+    this.isCopyrightTag = value;
+    return this;
+  }
+
+  setAuthorTag(value: boolean): this {
+    this.isAuthorTag = value;
+    return this;
+  }
+
+  setDescriptionTag(value: boolean): this {
+    this.isDescriptionTag = value;
+    return this;
+  }
+
+  setSeeTag(value: boolean): this {
+    this.isSeeTag = value;
+    return this;
   }
 }
-/**
- * 枚举类型配置
- */
-export class EnumAnnotationConfig extends BaseAnnotationConfig {
-  public isEnumTag: boolean;  // 是否是枚举类型
 
-  constructor(projectConfig: Partial<EnumAnnotationConfig> = {}) {
-    super(projectConfig);
-    // 解构配置并设置默认值
-    const { isEnumTag } = projectConfig;
-    // 设置属性，有则采用项目配置否则则采用默认值
-    this.isEnumTag = isEnumTag ?? true;  // 默认为 true
+
+export class TranslateConfig implements ITranslateConfig {
+  isOpen: boolean;
+  api: string | string[] | Map<string, string[]>;
+  wordMap: { [key: string]: string };
+  isMemoryEnabled: boolean;
+
+  // 构造器使用解构语法
+  constructor(config: Partial<ITranslateConfig> = {}) {
+    const {
+      isOpen = true,
+      api = 'http://www.trans-home.com/api/index/translateLogs?token=0zbtxTxstrLwQ9uK2PuR',
+      wordMap = {},
+      isMemoryEnabled = true,
+    } = config;
+
+    // 使用解构后的值进行赋值
+    this.isOpen = isOpen;
+    this.api = api;
+    this.wordMap = wordMap;
+    this.isMemoryEnabled = isMemoryEnabled;
+  }
+
+  // 链式编程的 set 方法
+  setOpen(value: boolean): this {
+    this.isOpen = value;
+    return this;
+  }
+
+  setApi(value: string | string[] | Map<string, string[]>): this {
+    this.api = value;
+    return this;
+  }
+
+  setWordMap(value: { [key: string]: string }): this {
+    this.wordMap = value;
+    return this;
+  }
+
+  setMemoryEnabled(value: boolean): this {
+    this.isMemoryEnabled = value;
+    return this;
   }
 }
-/**
- * 自定义类型配置
- */
-export class TypedefAnnotationConfig extends BaseAnnotationConfig {
-  public isTypedefTag: boolean;  // 是否是自定义类型
-  public isTypeTag: boolean;  // 是否是类型
+enum CreateStrategy {
+  REGEXP_STRATEGY = 0,
+  AST_STRATEGY,
+  MIX_STRATEGY
+}
+enum CreateMode {
+  ADD_MODE = 0,
+  DELETE_MODE,
+  UPDATE_MODE
+}
+export class SystemConfig implements ISystemConfig {
+  annotationCreateStrategy: number;
+  annotationCreateMode: number;
+  configCache: boolean;
 
-  constructor(projectConfig: Partial<TypedefAnnotationConfig> = {}) {
-    super(projectConfig);
-    // 解构项目配置
-    const { isTypedefTag, isTypeTag } = projectConfig
-    // 设置属性，有则采用项目配置否则则采用默认值
-    this.isTypedefTag = isTypedefTag ?? true;
-    this.isTypeTag = isTypeTag ?? true;
+  // 构造器使用解构语法
+  constructor(config: Partial<ISystemConfig> = {}) {
+    const {
+      annotationCreateStrategy = CreateStrategy.REGEXP_STRATEGY,
+      annotationCreateMode = CreateMode.ADD_MODE,
+      configCache = true,
+    } = config;
+
+    // 使用解构后的值进行赋值
+    this.annotationCreateStrategy = annotationCreateStrategy;
+    this.annotationCreateMode = annotationCreateMode;
+    this.configCache = configCache;
+  }
+
+  // 链式编程的 set 方法
+  setAnnotationCreateStrategy(value: number): this {
+    this.annotationCreateStrategy = value;
+    return this;
+  }
+
+  setAnnotationCreateMode(value: number): this {
+    this.annotationCreateMode = value;
+    return this;
+  }
+
+  setConfigCache(value: boolean): this {
+    this.configCache = value;
+    return this;
   }
 }
-/**
- * 文件注释类
- */
-export class FileAnnotationConfig extends BaseAnnotationConfig {
-  public isFileTag: boolean;  // 是否是文件
-  public isModuleTag: boolean;  // 是否是模块
 
-  constructor(projectConfig: Partial<FileAnnotationConfig> = {}) {
-    super(projectConfig);
-    // 解构配置并设置默认值
-    const { isFileTag, isModuleTag } = projectConfig;
-    this.isFileTag = isFileTag ?? false;
-    this.isModuleTag = isModuleTag ?? false;
+export class GlobalAnnotationConfig implements IGlobalAnnotationConfig {
+  authorInfo: string;
+  versionInfo: string;
+  licenseInfo: string;
+  copyrightInfo: string;
+
+  // 构造器使用解构语法
+  constructor(config: Partial<IGlobalAnnotationConfig> = {}) {
+    const {
+      authorInfo = '',
+      versionInfo = '',
+      licenseInfo = '',
+      copyrightInfo = '',
+    } = config;
+
+    // 使用解构后的值进行赋值
+    this.authorInfo = authorInfo;
+    this.versionInfo = versionInfo;
+    this.licenseInfo = licenseInfo;
+    this.copyrightInfo = copyrightInfo;
+  }
+
+  // 链式编程的 set 方法
+  setAuthorInfo(value: string): this {
+    this.authorInfo = value;
+    return this;
+  }
+
+  setVersionInfo(value: string): this {
+    this.versionInfo = value;
+    return this;
+  }
+
+  setLicenseInfo(value: string): this {
+    this.licenseInfo = value;
+    return this;
+  }
+
+  setCopyrightInfo(value: string): this {
+    this.copyrightInfo = value;
+    return this;
   }
 }
-/**
- * 翻译配置
- */
-export class TranslateConfig {
-  public isOpen: boolean;
-  public api: Array<string> | string;
-  public wordMap: { [key: string]: string };
-  public isMemoryEnabled: boolean;
 
-  constructor(translateConfig: Partial<TranslateConfig> = {}) {
-    // 解构翻译配置
-    const { isOpen, api, wordMap, isMemoryEnabled } = translateConfig
-    // 设置属性，没有则采用默认值
-    this.isOpen = isOpen ?? false;
-    this.api = api ?? "";
-    this.wordMap = wordMap ?? {};
-    this.isMemoryEnabled = isMemoryEnabled ?? false;
-  }
-}
-/**
- * 系统配置
- */
-export class SystemConfig {
-  // 
-  constructor(projectConfig: Partial<SystemConfig> = {}) { }
-}
-
-/**
- * 主配置类
- */
 export class Config {
   public interfaceAnnotationConfig?: InterfaceAnnotationConfig;
   public typedefAnnotationConfig?: TypedefAnnotationConfig;

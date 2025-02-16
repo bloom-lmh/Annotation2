@@ -1,7 +1,7 @@
 import { ExtensionContext } from 'vscode';
 import * as vscode from 'vscode';
 import path from 'path';
-import { Config } from './config/config';
+import { Config } from './config/config copy';
 import { WorkspaceUtil } from './utils/workspaceUtil';
 import { PanelFactory } from './panel/panelFactory';
 import { ConfigManager } from './config/configManager';

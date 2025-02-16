@@ -1,7 +1,7 @@
 import { AnnotationFactory } from "../annotation/annotationFactory";
 import { AstHelper } from "../ast/astHelper";
 import { AstParser } from "../ast/astParser";
-import { Config } from "../config/config";
+import { Config } from "../config/config copy";
 import { ConfigManager } from "../config/configManager";
 import { MemberHandlerChain } from "../member/menberHandlerChain";
 import { RegExpMemberHandleStrategy } from "../member/regExpMemberHandleStrategy";
@@ -37,7 +37,6 @@ export class AddAnnotationCommandExecutor implements CommandExecutor {
     }
     let memberHandlerChain = new MemberHandlerChain()
     let member = await memberHandlerChain.handle(memberDeclaration, new RegExpMemberHandleStrategy(document))
-
 
     // 成员获取失败
     if (!member) {

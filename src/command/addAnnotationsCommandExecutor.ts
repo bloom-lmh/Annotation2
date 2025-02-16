@@ -2,7 +2,7 @@ import { CommandExecutor } from "./commandExecutor";
 import { AnnotationFactory } from "../annotation/annotationFactory";
 import { AstHelper } from "../ast/astHelper";
 import { AstParser } from "../ast/astParser";
-import { Config } from "../config/config";
+import { Config } from "../config/config copy";
 import { ConfigManager } from "../config/configManager";
 import { MemberHandlerChain } from "../member/menberHandlerChain";
 import { RegExpMemberHandleStrategy } from "../member/regExpMemberHandleStrategy";

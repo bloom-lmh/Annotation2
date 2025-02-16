@@ -1,15 +1,9 @@
 import { readFileSync } from 'fs';
 import * as vscode from 'vscode';
-import { WorkspaceUtil } from '../utils/workspaceUtil';
 import { ConfigManager } from '../config/configManager';
-import { Config } from '../config/config';
+import { Config } from '../config/config copy';
 /**
  * 面板工厂
- */
-/**
- * @name PanelFactory
- * @class
- * @description
  */
 export class PanelFactory {
   private static panel: vscode.WebviewPanel | null
