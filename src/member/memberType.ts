@@ -1,7 +1,8 @@
-interface IMember {
-  name: string,
-  startLineNumber: number
-  template: Array<string>
+export interface IMember {
+  name: string;
+  startLineNumber: number;
+  template: Array<string>;
+  setStartLineNumber(num: number): void;
 }
 
 export interface IClassMember extends IMember {
@@ -13,7 +14,12 @@ export interface IClassMember extends IMember {
 export enum MethodType {
   FUNCTION = 0,
   METHOD,
-  CONSTRUCTOR
+  CONSTRUCTOR,
+}
+export enum AccessType {
+  PUBLIC = 0,
+  PRIVATE,
+  PROTECTED,
 }
 export interface IMethodMember extends IMember {
   async: boolean;
@@ -22,24 +28,23 @@ export interface IMethodMember extends IMember {
   params: string[][];
   returnType: string;
   static: boolean;
-  access: string;
+  access: AccessType;
 }
 export interface IPropertyMember extends IMember {
   property: boolean;
   type: string;
   static: boolean;
   default: string;
-  access: string
+  access: string;
 }
 export interface IInterfaceMember extends IMember {
   interface: boolean;
-  extends: Array<string>
+  extends: Array<string>;
 }
 export interface IEnumMember extends Omit<IMember, 'template'> {
   enum: boolean;
-  enumMembers: { name: string; value: string | undefined; }[]
+  enumMembers: { name: string; value: string | undefined }[];
 }
 export interface ITypedefMember extends Omit<IMember, 'template'> {
-  typedef: boolean;
-  type: string;
+  typedef: string;
 }
