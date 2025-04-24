@@ -1,6 +1,6 @@
 import { GlobalAnnotationConfig } from '../config/globalAnnotationConfig';
 import { InterfaceAnnotationConfig } from '../config/interfaceAnnotationConfig';
-import { JSDocGenerator } from '../generator/jsDocGenerator';
+import { JSDocGenerator } from '../jsDoc/jsDocGenerator';
 import { InterfaceMember } from '../member/interfaceMember';
 import { IInterfaceAnnotation } from './annotationType';
 
@@ -15,14 +15,20 @@ export class InterfaceAnnotation implements IInterfaceAnnotation {
   seeTag: boolean;
   exampleTag: boolean;
   templateTag: string[];
-
+  startLineNumber: number;
   constructor(
     globalAnnotationConfig: GlobalAnnotationConfig,
     concreteAnnotationConfig: InterfaceAnnotationConfig,
     member: InterfaceMember,
   ) {
     // 解构成员参数
-    const { name: _name, extends: _extends, template: _template, interface: _interface } = member;
+    const {
+      name: _name,
+      extends: _extends,
+      template: _template,
+      interface: _interface,
+      startLineNumber: _startLineNumber,
+    } = member;
 
     // 解构配置参数
     const {
@@ -51,6 +57,7 @@ export class InterfaceAnnotation implements IInterfaceAnnotation {
     this.seeTag = isSeeTag;
     this.exampleTag = isExampleTag;
     this.templateTag = isTemplateTag ? _template : [];
+    this.startLineNumber = _startLineNumber;
   }
 
   public buildJSDoc(): string {

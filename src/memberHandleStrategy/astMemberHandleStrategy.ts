@@ -17,7 +17,7 @@ import { ClassMember } from '../member/classMember';
 import { MethodMember } from '../member/methodMember';
 import { PropertyMember } from '../member/propertyMember';
 
-export class AstMemberHandleStrategy implements MemberHandleStrategy {
+/* export class AstMemberHandleStrategy implements MemberHandleStrategy {
   handleClass(memberDeclaration: MemberDeclaration): IMember | null {
     memberDeclaration = memberDeclaration as ClassDeclaration;
     // 成员名
@@ -90,4 +90,4 @@ export class AstMemberHandleStrategy implements MemberHandleStrategy {
     // 返回接口成员
     return new TypedefMember(_name, true, _type);
   }
-}
+} */

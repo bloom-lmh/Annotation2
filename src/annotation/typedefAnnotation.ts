@@ -1,6 +1,6 @@
 import { GlobalAnnotationConfig } from '../config/globalAnnotationConfig';
 import { TypedefAnnotationConfig } from '../config/typedefAnnotationConfig';
-import { JSDocGenerator } from '../generator/jsDocGenerator';
+import { JSDocGenerator } from '../jsDoc/jsDocGenerator';
 import { TypedefMember } from '../member/typedefMember';
 import { ITypedefAnnotation } from './annotationType';
 
@@ -11,14 +11,14 @@ export class TypedefAnnotation implements ITypedefAnnotation {
   descriptionTag: boolean;
   seeTag: boolean;
   exampleTag: boolean;
-
+  startLineNumber: number;
   constructor(
     globalAnnotationConfig: GlobalAnnotationConfig,
     concreteAnnotationConfig: TypedefAnnotationConfig,
     member: TypedefMember,
   ) {
     // 解构成员参数
-    const { name: _name, typedef: _typedef } = member;
+    const { name: _name, typedef: _typedef, startLineNumber: _startLineNumber } = member;
 
     // 解构配置参数
     const {
@@ -38,6 +38,7 @@ export class TypedefAnnotation implements ITypedefAnnotation {
     this.descriptionTag = isDescriptionTag;
     this.seeTag = isSeeTag;
     this.exampleTag = isExampleTag;
+    this.startLineNumber = _startLineNumber;
   }
 
   public buildJSDoc(): string {

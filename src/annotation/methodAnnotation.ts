@@ -1,6 +1,6 @@
 import { GlobalAnnotationConfig } from '../config/globalAnnotationConfig';
 import { MethodAnnotationConfig } from '../config/methodAnnotationConfig';
-import { JSDocGenerator } from '../generator/jsDocGenerator';
+import { JSDocGenerator } from '../jsDoc/jsDocGenerator';
 import { AccessType, MethodType } from '../member/memberType';
 import { MethodMember } from '../member/methodMember';
 import { IMethodAnnotation } from './annotationType';
@@ -21,7 +21,7 @@ export class MethodAnnotation implements IMethodAnnotation {
   seeTag: boolean;
   exampleTag: boolean;
   templateTag: string[];
-
+  startLineNumber: number;
   constructor(
     globalAnnotationConfig: GlobalAnnotationConfig,
     concreteAnnotationConfig: MethodAnnotationConfig,
@@ -72,6 +72,7 @@ export class MethodAnnotation implements IMethodAnnotation {
     this.seeTag = isSeeTag;
     this.exampleTag = isExampleTag;
     this.templateTag = isTemplateTag ? _template : [];
+    this.startLineNumber = _startLineNumber;
   }
 
   public buildJSDoc(): string {

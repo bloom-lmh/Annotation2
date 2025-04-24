@@ -1,6 +1,6 @@
 import { ClassAnnotationConfig } from '../config/classAnnotationConfig';
 import { GlobalAnnotationConfig } from '../config/globalAnnotationConfig';
-import { JSDocGenerator } from '../generator/jsDocGenerator';
+import { JSDocGenerator } from '../jsDoc/jsDocGenerator';
 import { IClassMember } from '../member/memberType';
 import { IClassAnnotation } from './annotationType';
 export class ClassAnnotation implements IClassAnnotation {
@@ -16,6 +16,8 @@ export class ClassAnnotation implements IClassAnnotation {
   seeTag: boolean;
   exampleTag: boolean;
   templateTag: string[];
+  startLineNumber: number;
+  private authorInfo: string = '';
   constructor(
     globalAnnotationConfig: GlobalAnnotationConfig,
     concreteAnnotationConfig: ClassAnnotationConfig,
@@ -51,16 +53,18 @@ export class ClassAnnotation implements IClassAnnotation {
     this.abstractTag = isAbstractTag && _abstract;
     this.extendsTag = isExtendsTag ? _extends : '';
     this.implementsTag = isImplementsTag ? _implements : [];
-    this.authorTag = isAuthorTag ? authorInfo : '<authorName>';
+    this.authorTag = isAuthorTag ? authorInfo : '';
     this.aliasTag = isAliasTag;
-    this.versionTag = isVersionTag ? versionInfo : '<1.0.0>';
+    this.versionTag = isVersionTag ? versionInfo : '';
     this.nameTag = isNameTag ? _name : '';
     this.descriptionTag = isDescriptionTag;
     this.seeTag = isSeeTag;
     this.exampleTag = isExampleTag;
     this.templateTag = isTemplateTag ? _template : [];
+    this.startLineNumber = _startLineNumber;
   }
-  buildJsDoc() {
+
+  buildJSDoc() {
     // todo 设置template tag
     let jsdoc = new JSDocGenerator()
       .setClassTag(this.classTag)

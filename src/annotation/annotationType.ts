@@ -17,6 +17,8 @@ export interface IBaseAnnotation {
   moduleTag: boolean; // 声明模块名称和命名空间，组织代码结构。
   requireTag: boolean; // 指明文件的依赖模块。
   fileoverviewTag: boolean;
+  startLineNumber: number;
+  buildJSDoc(): string;
 }
 // 文件级别的标签
 type onlyFile =

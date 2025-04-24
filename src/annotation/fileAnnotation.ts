@@ -1,6 +1,6 @@
 import { GlobalAnnotationConfig } from '../config/globalAnnotationConfig';
 import { FileAnnotationConfig } from '../config/fileAnnotationConfig';
-import { JSDocGenerator } from '../generator/jsDocGenerator';
+import { JSDocGenerator } from '../jsDoc/jsDocGenerator';
 import { IFileAnnotation } from './annotationType';
 
 export class FileAnnotation implements IFileAnnotation {
@@ -13,6 +13,7 @@ export class FileAnnotation implements IFileAnnotation {
   moduleTag: boolean;
   requireTag: boolean;
   fileoverviewTag: boolean;
+  startLineNumber: number = 0;
   constructor(
     globalAnnotationConfig: GlobalAnnotationConfig,
     concreteAnnotationConfig: FileAnnotationConfig,

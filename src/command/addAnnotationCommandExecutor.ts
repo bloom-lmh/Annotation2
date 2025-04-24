@@ -1,11 +1,13 @@
+import { ConfigLoader } from './../config/configLoader';
 import { AnnotationFactory } from '../annotation/annotationFactory';
 import { AstHelper } from '../ast/astHelper';
 import { AstParser } from '../ast/astParser';
 import { MemberHandlerChain } from '../memberHandler/menberHandlerChain';
 import { RegExpMemberHandleStrategy } from '../memberHandleStrategy/regExpMemberHandleStrategy';
-import { ContextPicker } from '../picker/contextPicker';
+import { ContextPicker } from '../utils/contextPicker';
 import { CommandExecutor } from './commandExecutor';
 import * as vscode from 'vscode';
+import { Config } from '../config/config';
 export class AddAnnotationCommandExecutor implements CommandExecutor {
   async executeCommand(): Promise<void> {
     // 获取编辑器
@@ -30,7 +32,6 @@ export class AddAnnotationCommandExecutor implements CommandExecutor {
       wordText,
       lineNumber,
     );
-    //let memberDeclaration = await new AstHelper().getOneMemberDeclaration(sourceFile, wordText, lineNumber)
 
     // 成员信息获取失败
     if (!memberDeclaration) {
@@ -42,7 +43,6 @@ export class AddAnnotationCommandExecutor implements CommandExecutor {
       memberDeclaration,
       new RegExpMemberHandleStrategy(document),
     );
-
     // 成员获取失败
     if (!member) {
       vscode.window.showErrorMessage('获取成员信息失败!');
@@ -51,12 +51,12 @@ export class AddAnnotationCommandExecutor implements CommandExecutor {
     // 获取文件所属项目路径
     const projectPath = vscode.workspace.getWorkspaceFolder(editor.document.uri)?.uri.fsPath;
     // 获取项目路径失败
-    /*  if (!projectPath) {
-       vscode.window.showInformationMessage("获取项目路径失败!")
-       return
-     } */
+    if (!projectPath) {
+      vscode.window.showInformationMessage('获取项目路径失败!');
+      return;
+    }
     // 加载用户配置
-    let config: Config = ConfigManager.getConfig(projectPath);
+    let config: Config = ConfigLoader.loadConfig(projectPath);
 
     // 调用注解工厂创建注解
     let annotation = AnnotationFactory.getAnnotation(member, config);
@@ -68,8 +68,8 @@ export class AddAnnotationCommandExecutor implements CommandExecutor {
     const position = new vscode.Position(
       memberDeclaration.getStartLineNumber() - 1 || lineNumber - 1,
       0,
-    ); // 在当前行的开始插入
-    // 执行编辑
+    );
+    // 在当前行的开始插入
     await editor.edit(editBuilder => {
       editBuilder.insert(position, `${jsdoc}\n`);
     });

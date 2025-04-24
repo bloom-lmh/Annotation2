@@ -3,9 +3,11 @@ import { AnnotationFactory } from '../annotation/annotationFactory';
 import { AstHelper } from '../ast/astHelper';
 import { AstParser } from '../ast/astParser';
 import { MemberHandlerChain } from '../memberHandler/menberHandlerChain';
-import { ContextPicker } from '../picker/contextPicker';
 import * as vscode from 'vscode';
 import { RegExpMemberHandleStrategy } from '../memberHandleStrategy/regExpMemberHandleStrategy';
+import { ContextPicker } from '../utils/contextPicker';
+import { ConfigLoader } from '../config/configLoader';
+import { Config } from '../config/config';
 export class AddAnnotationsCommandExecutor implements CommandExecutor {
   async executeCommand(): Promise<void> {
     const editor = vscode.window.activeTextEditor;
@@ -32,8 +34,12 @@ export class AddAnnotationsCommandExecutor implements CommandExecutor {
     );
     // 获取文件所属项目路径
     const projectPath = vscode.workspace.getWorkspaceFolder(editor.document.uri)?.uri.fsPath;
+    if (!projectPath) {
+      vscode.window.showInformationMessage('获取项目路径失败!');
+      return;
+    }
     // 加载用户配置
-    let config: Config = ConfigManager.getConfig(projectPath);
+    let config: Config = ConfigLoader.loadConfig(projectPath);
     // 调用注解工厂创建注解将全部的成员对象转换为对应的注解对象
     let annotations = AnnotationFactory.getAnnotations(members, config);
 
@@ -45,7 +51,7 @@ export class AddAnnotationsCommandExecutor implements CommandExecutor {
         let jsdoc = annotation?.buildJSDoc() || '';
 
         // 调用注入器注入注解
-        const position = new vscode.Position(annotation?.getStartLineNumber() || lineNumber - 1, 0); // 在当前行的开始插入
+        const position = new vscode.Position(annotation?.startLineNumber || lineNumber - 1, 0); // 在当前行的开始插入
         editBuilder.insert(position, `${jsdoc}\n`);
       });
     });

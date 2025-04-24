@@ -17,6 +17,7 @@ export class ClassAnnotationConfig implements IClassAnnotationConfig {
   // 构造器内部解构配置
   constructor(config: Partial<IClassAnnotationConfig> = {}) {
     const {
+      isNameTag = true,
       isClassTag = true,
       isAbstractTag = true,
       isExtendsTag = true,
@@ -24,7 +25,6 @@ export class ClassAnnotationConfig implements IClassAnnotationConfig {
       isAuthorTag = false,
       isAliasTag = false,
       isVersionTag = false,
-      isNameTag = true,
       isDescriptionTag = true,
       isSeeTag = false,
       isExampleTag = false,

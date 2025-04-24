@@ -1,6 +1,6 @@
 import { GlobalAnnotationConfig } from '../config/globalAnnotationConfig';
 import { PropertyAnnotationConfig } from '../config/propertyAnnotationConfig';
-import { JSDocGenerator } from '../generator/jsDocGenerator';
+import { JSDocGenerator } from '../jsDoc/jsDocGenerator';
 import { PropertyMember } from '../member/propertyMember';
 import { IPropertyAnnotation } from './annotationType';
 
@@ -15,6 +15,7 @@ export class PropertyAnnotation implements IPropertyAnnotation {
   seeTag: boolean;
   exampleTag: boolean;
   templateTag: string[];
+  startLineNumber: number;
   constructor(
     globalAnnotationConfig: GlobalAnnotationConfig,
     concreteAnnotationConfig: PropertyAnnotationConfig,
@@ -29,6 +30,7 @@ export class PropertyAnnotation implements IPropertyAnnotation {
       access: _access,
       name: _name,
       template: _template,
+      startLineNumber: _startLineNumber,
     } = member;
     // 解构配置参数
     const {
@@ -55,6 +57,7 @@ export class PropertyAnnotation implements IPropertyAnnotation {
     this.seeTag = isSeeTag;
     this.exampleTag = isExampleTag;
     this.templateTag = isTemplateTag ? _template : [];
+    this.startLineNumber = _startLineNumber;
   }
 
   public buildJSDoc(): string {

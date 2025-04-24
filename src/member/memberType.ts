@@ -1,7 +1,7 @@
 export interface IMember {
   name: string;
   startLineNumber: number;
-  template: Array<string>;
+
   setStartLineNumber(num: number): void;
 }
 
@@ -10,6 +10,7 @@ export interface IClassMember extends IMember {
   abstract: boolean;
   extends: string;
   implements: Array<string>;
+  template: Array<string>;
 }
 export enum MethodType {
   FUNCTION = 0,
@@ -29,6 +30,7 @@ export interface IMethodMember extends IMember {
   returnType: string;
   static: boolean;
   access: AccessType;
+  template: Array<string>;
 }
 export interface IPropertyMember extends IMember {
   property: boolean;
@@ -36,10 +38,12 @@ export interface IPropertyMember extends IMember {
   static: boolean;
   default: string;
   access: string;
+  template: Array<string>;
 }
 export interface IInterfaceMember extends IMember {
   interface: boolean;
   extends: Array<string>;
+  template: Array<string>;
 }
 export interface IEnumMember extends Omit<IMember, 'template'> {
   enum: boolean;
