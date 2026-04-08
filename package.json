@@ -4,6 +4,10 @@
   "displayName": "JSDoc Annotation",
   "description": "Generate configurable JSDoc and TSDoc comments for JavaScript and TypeScript with AST-first parsing",
   "version": "1.0.7",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bloom-lmh/Annotation2.git"
+  },
   "icon": "./logo.png",
   "engines": {
     "vscode": "^1.95.0"
