@@ -1,49 +1,75 @@
-# 更新日志 / Change Log
+# Changelog
 
-## [1.0.3] - 2024-12-26
-### 添加/add
-- 添加了基于抽象语法树的解析机制，提高了成员识别能力，但基于抽象语法树的生成性能较差。
-- Introduced an abstract syntax tree-based parsing mechanism, improving member recognition ability, although the performance of AST generation is not optimal.
+## 1.0.7 - April 8, 2026
 
-### 更改/update
-- 优化了正则表达式，使其能够正确匹配多行方法体并提取其中的异常类型。
-- Optimized the regular expression to correctly match multi-line method bodies and extract the exception types within them.
+### Added
 
-### 修复/fix
-- 修复了 `parseMethod` 正则无法匹配方法体中 `throw` 异常的问题。
-- Fixed the issue where the `parseMethod` regular expression could not match `throw` exceptions in method bodies.
+- Added AST-first support for a broader set of declaration kinds, including classes, constructors, functions, class methods, interface method signatures, properties, interface property signatures, enums, interfaces, and type aliases.
+- Added project-level configuration loading through `annotation.config.json`, `.annotationrc.json`, and `.vscode/annotation.json`.
+- Added `insert`, `replace`, and `skip` edit modes for generated docblocks.
+- Added extension regression tests, core parser and builder tests, and AST parser cache tests.
+- Added focused documentation pages:
+  - `docs/CONFIG_REFERENCE.md`
+  - `docs/PERFORMANCE_NOTES.md`
+  - `docs/SIMPLIFIED_ARCHITECTURE.md`
+  - `docs/TROUBLESHOOTING.md`
 
-## [1.0.4] - 2024-12-27
-### 更改/update
-- 更新了 Markdown 中英文文档的链接。
-- Updated the English documentation links in the Markdown files.
+### Changed
 
+- Replaced the old regex-first hot path with an AST-only main path.
+- Simplified the runtime architecture to a smaller core pipeline:
+  - settings
+  - target parser
+  - doc builder
+  - edit apply
+- Reworked command feedback so commands now distinguish between:
+  - no supported declaration found
+  - skipped because of `skip` mode
+  - edits applied successfully
+- Reused `ts-morph` parser state and added document-level target caching to reduce repeated parsing work.
+- Reorganized README content and split detailed configuration and troubleshooting guidance into dedicated docs.
 
-## [1.0.5] - 2024-1-09
-### 修复/fix
-- 修复了没有项目路径的文件不可生成注释的问题。
+### Removed
+
+- Removed the legacy member handler chain, annotation factory path, old config classes, and other no-longer-used architecture layers from the active code path.
+- Removed regex strategy switching as a documented runtime feature. Legacy `strategy` values are now ignored for backward compatibility.
+
+## 1.0.6 - January 15, 2025
+
+### Fixed
+
+- Improved fallback handling for unknown or more complex code structures by filling with default annotations when precise generation was not possible.
+
+### Changed
+
+- Optimized full-file annotation generation so batch generation was faster than in the previous version.
+
+## 1.0.5 - January 9, 2025
+
+### Fixed
+
 - Fixed an issue where files without project paths could not generate comments.
 
-### 更改/update
-- 优化代码结构，引入职责链模式处理注释成员生成。
-- Optimize code structure and introduce chain of responsibility mode to handle comment member generation.
+### Changed
 
-## [1.0.6] - 2024-1-15 
-### 修复/fix
-- 采用默认注解进行填充的方法修复了对未知复杂代码结构不可生成注解的问题，提高了代码的健壮性，但这只是一种简单处理的方式，后续会尽量包括更多的代码结构支持。
-- Filling with default annotations fixes the problem of not generating annotations for unknown complex code structures and improves the robustness of the code, but this is only a simple way to deal with it and will include more code structure support in the future.
-### 更改/update
-- 对全文件注解代码进行优化，全文件注解生成速度较上一版本有所提升。
-- The full-file annotation code is optimized, and the generation speed of full-file annotation is improved compared with the previous version.
+- Refined the code structure and introduced a chain-of-responsibility style member generation flow.
 
+## 1.0.4 - December 27, 2024
 
-后续开发计划
-- 调整成员对象
-- 调整正则策略 添加对泛型的支持，消除Interface extends bug，解决第一个注释不生成的问题
-- 配置方式多元化以及配置项目的确定 vscode配置（使用文件的方式链接到文件，插件激活生成默认配置文件） < json配置 (json配置生成器来生成、也允许用户手动去添加，配置生成器覆盖配置)
-- 提高弹性和健壮性允许错误的发生而不影响大部分行为的执行（只是简单的处理了，应该实际加入更多类型的支持）
-- *优化多个注释生成代码
-- 解决生成注释的格式问题
-- 加入翻译功能以及单词映射
-- 加入get set 方法
-- 加入文件注释，包括代码行数统计
+### Changed
+
+- Updated English documentation links in the Markdown files.
+
+## 1.0.3 - December 26, 2024
+
+### Added
+
+- Added an abstract syntax tree based parsing mechanism to improve member recognition coverage.
+
+### Changed
+
+- Optimized regular expressions to better match multi-line method bodies and extract thrown exception types.
+
+### Fixed
+
+- Fixed an issue where the `parseMethod` regular expression could not match `throw` exceptions inside method bodies.

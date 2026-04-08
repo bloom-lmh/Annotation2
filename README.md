@@ -1,201 +1,195 @@
-# 简介
-- [Github地址](https://github.com/bloom-lmh/Annotation2)
-- [Gitee地址](https://gitee.com/bloom_lmh/annotation2)
-- [English document link](https://github.com/bloom-lmh/Annotation2/blob/master/README_EN.md)
-- [官方网站/Official website](https://bloom-lmh.github.io/swust-weblab-site/)
+# JSDoc Annotation
 
-## 什么是 JSDoc Annotation？
+- [GitHub](https://github.com/bloom-lmh/Annotation2)
+- [Gitee](https://gitee.com/bloom_lmh/annotation2)
+- [English README](https://github.com/bloom-lmh/Annotation2/blob/master/README_EN.md)
+- [Change Log](./CHANGELOG.md)
 
-JSDoc Annotation 是一款轻量级、可高度定制的注释生成插件，旨在为您的 TypeScript 或 JavaScript 文件中的类、方法、属性等成员，快速生成符合 [JSDoc](https://jsdoc.bootcss.com/) 风格的注释。通过简便的命令操作，它让开发过程更加高效、流畅，极大提升代码注释的生成效率，带来未来感十足的开发体验。
+## 简介
 
-## 特色功能
+JSDoc Annotation 是一个 VS Code 插件，用来为 TypeScript 和 JavaScript 声明生成 JSDoc / TSDoc 风格的注释块。
 
-JSDoc Annotation参考了市面上热门的注释生成插件，如IEAD中Easy Javadoc的和VSCODE中的koroFileHeader插件，并结合了他们的优点而诞生。无论你是后端程序员还是前端程序员，都能让你在开发中有熟悉的感觉。其功能包括:
+当前版本已经切到 AST-only 主路径，重点不再是“尽量快地正则匹配”，而是：
 
-1.快捷生成单个成员注释：类、方法、属性、枚举、接口、自定义属性的JSDoc注释
-2.快捷生成全文件类、方法、属性、枚举、接口、自定义属性的JSDoc注释
-3.进行个性化配置
-  - 对类、方法、属性、枚举、接口、自定义属性注释标签进行配置
-  - 全局标签设置
-  - 自定义翻译接口（维护中）
-  - 系统配置（维护中）
-- 支持配置的迁移和复用，让你无论在什么设备上都可以使用自己习惯的注释生成方式（维护中）
+- 覆盖更全
+- 输出更稳定
+- 配置更清晰
+- 更容易维护和扩展
 
-## 兼容性
-JSDoc Annotation目前只能支持最新的VSCODE版本，对低版本的VSCODE的兼容处理还在进行中。当然也希望用户更新最新的VSCODE来使用，这样或许有更好的体验，[VSCODE官网](https://code.visualstudio.com/)。
+## 当前支持的声明类型
 
-## 性能
-JSDoc Annotation采用了抽象语法树结合正则的方式来进行类、方法等成员的解析和注释生成。即保证了准确性又保证了优越的性能。经过统计：
-- 生成单个注释(1500行代码)大约需要10-50ms
-- 生成全文档注释(1500行代码)大约需要50-200ms
+- 类
+- 构造器
+- 普通函数
+- 类方法
+- 接口方法签名
+- 属性
+- 接口属性签名
+- 枚举
+- 接口
+- 类型别名
+- 泛型声明
+- 可从 AST 推断出的 `async` 和 `throws`
 
-## 命令清单
-JSDoc Annotation目前支持的命令如下：
-| 命令          | 功能                                                         |
-| ------------- | ------------------------------------------------------------ |
-| `alt+\`       | 对类、方法、属性、枚举、接口、自定义类型生成块级JSDOC注释    |
-| `ctrl+alt+\` | 对全文件的类、方法、属性、枚举、接口、自定义类型生成块级JSDOC注释 |
-| `ctrl+shift+\`| 打开配置面板|
+## 命令与快捷键
 
-# 基本使用
+| 命令 | 快捷键 | 说明 |
+| --- | --- | --- |
+| `addAnnotation` | `Alt+\` | 为光标所在声明生成注释 |
+| `addAnnotations` | `Ctrl+Alt+\` | 为当前文件内所有支持的声明批量生成注释 |
+| `openConfigConsole` | `Alt+Shift+\` | 打开插件设置 |
 
-## 单个成员生成注释
-对于单个成员生成注释十分简单，只需要将光标对准类、方法、属性然后按下`alt+\`即可生成块级注释
+## 配置方式
 
-### **生成类注释**
-<img src="https://s3.bmp.ovh/imgs/2024/12/24/e0ad6a4974683468.gif" alt="生成类注释演示" style="zoom:150%;" />
+当前最重要的行为配置是 `annotation.behavior.mode`：
 
-```JavaScript
-class SuperMan { }
-interface Fly { }
-interface Attack { }
-/**
- * @name Man
- * @abstract
- * @class
- * @implements {Fly}
- * @implements {Attack}
- * @extends SuperMan
- * @description
- */
-abstract class Man extends SuperMan implements Fly, Attack {}
+- `insert`
+  始终插入新的注释块
+- `replace`
+  如果声明上方已有 JSDoc，则替换
+- `skip`
+  如果声明上方已有 JSDoc，则跳过
+
+你可以在 VS Code 设置里配置，也可以在项目中放以下任一文件：
+
+- `annotation.config.json`
+- `.annotationrc.json`
+- `.vscode/annotation.json`
+
+示例：
+
+```json
+{
+  "behavior": {
+    "mode": "replace"
+  },
+  "global": {
+    "authorInfo": "your-name",
+    "versionInfo": "1.0.0"
+  },
+  "method": {
+    "tags": {
+      "paramsTag": true,
+      "returnsTag": true,
+      "throwsTag": true,
+      "templateTag": true,
+      "descriptionTag": false
+    }
+  }
+}
 ```
 
-### **生成方法注释**
+## 默认标签开关
 
-<img src="https://s3.bmp.ovh/imgs/2024/12/24/4c3780bb47e68c0e.gif" alt="生成方法注释演示" style="zoom:150%;" />
+下面是当前默认开启的主要标签，和 `package.json` 中的扩展配置保持一致：
 
-```javascript
+- `class.tags`
+  `classTag` `abstractTag` `extendsTag` `implementsTag` `nameTag` `descriptionTag` `templateTag`
+- `method.tags`
+  `asyncTag` `functionTag` `constructorTag` `throwsTag` `paramsTag` `returnsTag` `staticTag` `accessTag` `nameTag` `descriptionTag` `templateTag`
+- `property.tags`
+  `propertyTag` `typeTag` `staticTag` `defaultTag` `aliasTag` `nameTag` `descriptionTag` `templateTag`
+- `interface.tags`
+  `interfaceTag` `extendsTag` `templateTag` `nameTag` `descriptionTag`
+- `enum.tags`
+  `enumTag` `nameTag` `descriptionTag`
+- `typedef.tags`
+  `typedefTag` `typeTag` `templateTag` `aliasTag` `nameTag` `descriptionTag` `seeTag` `exampleTag`
+
+默认关闭的作者、版本、示例、别名等标签可以按需打开；全局值通过 `annotation.global` 提供。
+
+更完整的字段说明、默认值表和配置示例见：
+
+- [docs/CONFIG_REFERENCE.md](docs/CONFIG_REFERENCE.md)
+- [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+
+## 输出示例
+
+### 方法
+
+```ts
 /**
- * @name fetchData
- * @function
- * @access public
+ * @name load
+ * @method
+ * @access protected
  * @static
  * @async
- * @param {string} name
- * @param {number} age
- * @returns {Promise}
+ * @param {string} source
+ * @returns {Promise<Result<T>>}
+ * @throws {Error}
+ * @template T
  * @description
  */
-public static async fetchData(name: string, age: number): Promise<string> {
-  let a = 1
-  try {
-    console.log("a");
-  } catch (error) {
-    throw new Error("test error")
-  }
-  if (a === 1) {
-    throw new Error("asd")
-  }
-  return "aa"
-}
 ```
 
-### **生成属性注释**
+### 类
 
-<img src="https://s3.bmp.ovh/imgs/2024/12/24/f291ba8b5de0f2a2.gif" alt="生成属性注释演示" style="zoom:150%;" />
-
-```javascript
+```ts
 /**
- * @name name
- * @type {string}
- * @access private
+ * @name Repository
+ * @class
+ * @abstract
+ * @extends BaseRepository<T>
+ * @implements {Disposable}
+ * @implements {Cacheable<T>}
+ * @template T
+ * @description
+ */
+```
+
+### 属性
+
+```ts
+/**
+ * @name count
+ * @property
+ * @type {number}
  * @static
- * @default "小芳"
+ * @default 0
  * @description
  */
-private static name: string = "小芳"
 ```
 
-### **生成枚举注释**
+## 命令反馈
 
-<img src="https://s3.bmp.ovh/imgs/2024/12/24/abd1aaf96d6d2213.gif" alt="生成枚举注释演示" style="zoom:150%;" />
+命令执行时，插件会尽量明确告诉你发生了什么：
 
-```javascript
-/**
- * @name Color
- * @enum
- * @description
- */
-enum Color {
+- 当前行没有可解析声明时，会提示未找到可生成目标
+- `skip` 模式遇到已有注释时，会提示已跳过
+- 批量生成完成时，会提示实际应用数量，以及跳过的已有注释数量
+- 编辑应用失败时，会给出错误提示，而不是静默失败
 
-}
-```
-### **生成接口注释**
+## 示例文件
 
-<img src="https://s3.bmp.ovh/imgs/2024/12/24/4931b813631514b5.gif" alt="生成接口注释演示" style="zoom:150%;" />
+可以直接参考 [examples/feature-coverage.ts](examples/feature-coverage.ts)，这个文件覆盖了当前 AST 解析器的主要场景。
 
-```javascript
-interface A { }
-interface B { }
-/**
- * @name C
- * @interface
- * @extends A
- * @extends B
- * @description
- */
-interface C extends A, B { }
-```
-### **生成自定义类型注释**
+## 架构说明
 
-<img src="https://s3.bmp.ovh/imgs/2024/12/24/5b8e309514ba0221.gif" alt="生成自定义类型注释演示" style="zoom:150%;" />
+当前运行链路已经收成四步：
 
-```javascript
-/**
- * @name myname
- * @typedef {string | number} myname
- * @description
- */
-type myname = string | number;
-```
-###
+1. 读取并合并设置
+2. AST 解析为统一的 `DocTarget`
+3. 构建注释文本
+4. 插入、替换或跳过已有注释
 
-## 全文档成员生成注释
-JSDoc Annotation不仅支持生成单个成员的注释，还可以一键对全文件所有成员添加注释，使用命令`ctrl+alt+\`即可为全文件的的方法、类、属性等成员生成注释
-<img src="https://s3.bmp.ovh/imgs/2024/12/24/5124b70c283d00ba.gif" alt="全文档成员生成注释演示" style="zoom:150%;" />
+详细说明见：
 
----
-# 配置
+- [docs/CONFIG_REFERENCE.md](docs/CONFIG_REFERENCE.md)
+- [docs/SIMPLIFIED_ARCHITECTURE.md](docs/SIMPLIFIED_ARCHITECTURE.md)
+- [docs/PERFORMANCE_NOTES.md](docs/PERFORMANCE_NOTES.md)
+- [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
 
-## 默认配置
+## 性能结论
 
-JSDoc Annotation支持用户个性化的配置，但是为了开箱即用，JSDoc Annotation对常用的选项进行了默认设置，即约定大于配置。用户不必进行过多的配置或者可以不需要进行配置就能享受到目前市面上最流行的注释方式。
-默认配置的标签如下所示：
-```javascript
-/* 类注释默认支持的标签 */
-@name;@class;@abstract;@extends;@implements
-/* 方法注释默认支持的标签 */
-@name；@params；@async；@function；@constructor；
-@throwsTag；@paramsTag；@returnsTag； @staticTag
-/* 属性注释默认支持的标签 */
-@name;@propertyTag；@typeTag；@staticTag；@defaultTag
-/* 枚举注释默认支持的标签 */
-@name;@enum;
-/* 自定义类型注释默认支持的标签 */
-@name;@type
-/* 接口类型注释默认支持的标签 */
-@name;@interface;@extends
-```
+当前实现已经是 AST-only 主路径，并且做了两层优化：
 
-## 进阶配置
-当然如果你想进行配置，JSDoc Annotation也支持个性化的配置方案，使用命令`shift+alt+\`即可打开配置面板。
-<img src="https://s3.bmp.ovh/imgs/2024/12/24/4e83b3e8c0a2cfab.jpg" alt="配置面版界面" style="zoom:150%;" />
+- 复用 `AstParser` 的 `ts-morph` 项目实例
+- 按文档 `URI + version` 缓存解析后的目标列表
 
+本仓库本地热启动测试结果大致是：
 
-## 配置案例
-比如，如果你希望当前项目在生成类注释时加上作者标签，你可以这样进行配置
-1. 从项目选择下拉框中选择当前项目
-2. 然后在类注释配置中选择打开作者标签
-3. 在全局配置中写上你想要的作者名
+- 约 49 行：平均 `7.11ms`
+- 约 490 行：平均 `15.13ms`
+- 约 2450 行：平均 `79.78ms`
 
-<img src="https://s3.bmp.ovh/imgs/2024/12/24/f96b0b278637fb29.gif" alt="配置案例演示" style="zoom:150%;" />
-
-# 维护与支持
-
-目前JSDoc Annotation版本为1.0.6，还有一些BUG还没有暴露，所以后续我会对插件进行更充分的测试，并对出现的BUG进行维护。
-项目源码已经放到github上，希望大家可以为我提出一些建议，我会根据建议进行改进。
-如果喜欢的朋友也可以为我点点赞，这也是我前进的动力。
-
-
-
+所以对这个插件场景来说，AST 是可接受的，主要优化点不在“退回正则”，而在“减少重复解析和重复建模”。

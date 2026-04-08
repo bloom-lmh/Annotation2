@@ -1,18 +1,25 @@
-import { ExtensionContext } from 'vscode';
 import * as vscode from 'vscode';
+import { ExtensionContext } from 'vscode';
 import { AddAnnotationCommandExecutor } from './command/addAnnotationCommandExecutor';
 import { AddAnnotationsCommandExecutor } from './command/addAnnotationsCommandExecutor';
 
-// 插件激活
 export function activate(context: ExtensionContext) {
-  const disposable1 = vscode.commands.registerCommand('addAnnotation', async () => {
-    new AddAnnotationCommandExecutor().executeCommand();
-  });
-  const disposable2 = vscode.commands.registerCommand('addAnnotations', async () => {
-    new AddAnnotationsCommandExecutor().executeCommand();
+  const addAnnotationDisposable = vscode.commands.registerCommand('addAnnotation', async () => {
+    await new AddAnnotationCommandExecutor().executeCommand();
   });
 
-  context.subscriptions.push(disposable1);
-  context.subscriptions.push(disposable2);
+  const addAnnotationsDisposable = vscode.commands.registerCommand('addAnnotations', async () => {
+    await new AddAnnotationsCommandExecutor().executeCommand();
+  });
+
+  const openConfigDisposable = vscode.commands.registerCommand('openConfigConsole', async () => {
+    await vscode.commands.executeCommand(
+      'workbench.action.openSettings',
+      '@ext:SWUST-WEBLAB-LMH.annotation annotation',
+    );
+  });
+
+  context.subscriptions.push(addAnnotationDisposable, addAnnotationsDisposable, openConfigDisposable);
 }
+
 export function deactivate() {}

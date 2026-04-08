@@ -1,60 +1,44 @@
-import { CommandExecutor } from './commandExecutor';
-import { AnnotationFactory } from '../annotation/annotationFactory';
-import { AstHelper } from '../ast/astHelper';
-import { AstParser } from '../ast/astParser';
-import { MemberHandlerChain } from '../memberHandler/menberHandlerChain';
 import * as vscode from 'vscode';
-import { RegExpMemberHandleStrategy } from '../memberHandleStrategy/regExpMemberHandleStrategy';
+import { DocGenerationService } from '../core/docGenerationService';
 import { ContextPicker } from '../utils/contextPicker';
-import { ConfigLoader } from '../config/configLoader';
-import { Config } from '../config/config';
+import { CommentEditHelper } from './commentEditHelper';
+import { commandMessages } from './commandMessages';
+import { CommandExecutor } from './commandExecutor';
+
 export class AddAnnotationsCommandExecutor implements CommandExecutor {
   async executeCommand(): Promise<void> {
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
-      vscode.window.showErrorMessage('编辑器获取失败!');
+      vscode.window.showErrorMessage(commandMessages.editorUnavailable);
       return;
     }
 
-    // 创建拾取器对象拾取上下文信息
-    let { lineNumber, wordText, document } = new ContextPicker(editor).pick();
-    const sourceFile = new AstParser().parseByText(document.getText());
-    if (!sourceFile) {
-      vscode.window.showErrorMessage('抽象语法树解析失败!');
-      return;
-    }
-    // 获取全部的Declaration
-    const allDeclarations = new AstHelper().getAllMemberDeclaration(sourceFile);
-    // 创建成员处理器链
-    const memberHandlerChain = new MemberHandlerChain();
-    // 采用正则策略 对象映射为成员对象
-    const members = await memberHandlerChain.batchHandleAll(
-      allDeclarations,
-      new RegExpMemberHandleStrategy(document),
-    );
-    // 获取文件所属项目路径
-    const projectPath = vscode.workspace.getWorkspaceFolder(editor.document.uri)?.uri.fsPath;
+    const { document } = new ContextPicker(editor).pick();
+    const projectPath = vscode.workspace.getWorkspaceFolder(document.uri)?.uri.fsPath;
     if (!projectPath) {
-      vscode.window.showInformationMessage('获取项目路径失败!');
+      vscode.window.showInformationMessage(commandMessages.workspaceUnavailable);
       return;
     }
-    // 加载用户配置
-    let config: Config = ConfigLoader.loadConfig(projectPath);
-    // 调用注解工厂创建注解将全部的成员对象转换为对应的注解对象
-    let annotations = AnnotationFactory.getAnnotations(members, config);
 
-    // 执行编辑
-    editor.edit(editBuilder => {
-      // 创建注解并生成
-      annotations.forEach(annotation => {
-        // 构建jsdoc
-        let jsdoc = annotation?.buildJSDoc() || '';
+    const result = new DocGenerationService(document, projectPath).createAllResult();
+    if (result.status === 'no-target') {
+      vscode.window.showInformationMessage(commandMessages.noDeclarationFound);
+      return;
+    }
 
-        // 调用注入器注入注解
-        const position = new vscode.Position(annotation?.startLineNumber || lineNumber - 1, 0); // 在当前行的开始插入
-        editBuilder.insert(position, `${jsdoc}\n`);
-      });
-    });
-    vscode.window.showInformationMessage('注释已成功添加到所有成员!');
+    if (result.status === 'skipped-existing') {
+      vscode.window.showInformationMessage(commandMessages.batchSkippedExisting(result.targetCount));
+      return;
+    }
+
+    const applied = await CommentEditHelper.applyOperations(editor, result.operations);
+    if (!applied) {
+      vscode.window.showErrorMessage(commandMessages.editFailed);
+      return;
+    }
+
+    vscode.window.showInformationMessage(
+      commandMessages.batchCompleted(result.readyCount, result.skippedExistingCount),
+    );
   }
 }

@@ -2,8 +2,8 @@
   "name": "annotation",
   "publisher": "SWUST-WEBLAB-LMH",
   "displayName": "JSDoc Annotation",
-  "description": "A plugin that quickly generates jsdoc comments",
-  "version": "1.0.6",
+  "description": "Generate configurable JSDoc and TSDoc comments for JavaScript and TypeScript with AST-first parsing",
+  "version": "1.0.7",
   "icon": "./logo.png",
   "engines": {
     "vscode": "^1.95.0"
@@ -12,26 +12,28 @@
     "Other"
   ],
   "activationEvents": [
-    "onLanguage:plaintext"
+    "onCommand:addAnnotation",
+    "onCommand:addAnnotations",
+    "onCommand:openConfigConsole",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "addAnnotation",
-        "title": "ADD ANNOTATION"
+        "title": "Annotation: Add Annotation"
       },
       {
         "command": "openConfigConsole",
-        "title": "OPEN CONFIG CONSOLE"
+        "title": "Annotation: Open Settings"
       },
       {
         "command": "addAnnotations",
-        "title": "ADD ANNOTATIONS"
-      },
-      {
-        "command": "test",
-        "title": "TEST"
+        "title": "Annotation: Add Annotations"
       }
     ],
     "keybindings": [
@@ -46,12 +48,128 @@
       {
         "command": "addAnnotations",
         "key": "ctrl+alt+\\"
-      },
-      {
-        "command": "test",
-        "key": "ctrl+shift+alt+\\"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Annotation",
+      "properties": {
+        "annotation.behavior": {
+          "type": "object",
+          "default": {
+            "mode": "insert"
+          },
+          "description": "Generation behavior. mode: insert | replace | skip."
+        },
+        "annotation.global": {
+          "type": "object",
+          "default": {
+            "authorInfo": "",
+            "versionInfo": "",
+            "licenseInfo": "",
+            "copyrightInfo": ""
+          },
+          "description": "Global values shared by generated annotations."
+        },
+        "annotation.class.tags": {
+          "type": "object",
+          "default": {
+            "classTag": true,
+            "abstractTag": true,
+            "extendsTag": true,
+            "implementsTag": true,
+            "authorTag": false,
+            "aliasTag": false,
+            "versionTag": false,
+            "nameTag": true,
+            "descriptionTag": true,
+            "seeTag": false,
+            "exampleTag": false,
+            "templateTag": true
+          },
+          "description": "Class annotation tag switches."
+        },
+        "annotation.method.tags": {
+          "type": "object",
+          "default": {
+            "asyncTag": true,
+            "functionTag": true,
+            "constructorTag": true,
+            "throwsTag": true,
+            "paramsTag": true,
+            "returnsTag": true,
+            "staticTag": true,
+            "accessTag": true,
+            "authorTag": false,
+            "aliasTag": false,
+            "versionTag": false,
+            "nameTag": true,
+            "descriptionTag": true,
+            "seeTag": false,
+            "exampleTag": false,
+            "templateTag": true
+          },
+          "description": "Method and function annotation tag switches."
+        },
+        "annotation.property.tags": {
+          "type": "object",
+          "default": {
+            "propertyTag": true,
+            "typeTag": true,
+            "staticTag": true,
+            "defaultTag": true,
+            "aliasTag": true,
+            "nameTag": true,
+            "descriptionTag": true,
+            "seeTag": false,
+            "exampleTag": false,
+            "templateTag": true
+          },
+          "description": "Property annotation tag switches."
+        },
+        "annotation.interface.tags": {
+          "type": "object",
+          "default": {
+            "interfaceTag": true,
+            "extendsTag": true,
+            "authorTag": false,
+            "versionTag": false,
+            "templateTag": true,
+            "aliasTag": false,
+            "nameTag": true,
+            "descriptionTag": true,
+            "seeTag": false,
+            "exampleTag": false
+          },
+          "description": "Interface annotation tag switches."
+        },
+        "annotation.enum.tags": {
+          "type": "object",
+          "default": {
+            "enumTag": true,
+            "aliasTag": false,
+            "nameTag": true,
+            "descriptionTag": true,
+            "seeTag": false,
+            "exampleTag": false
+          },
+          "description": "Enum annotation tag switches."
+        },
+        "annotation.typedef.tags": {
+          "type": "object",
+          "default": {
+            "typedefTag": true,
+            "typeTag": true,
+            "templateTag": true,
+            "aliasTag": true,
+            "nameTag": true,
+            "descriptionTag": true,
+            "seeTag": true,
+            "exampleTag": true
+          },
+          "description": "Type alias annotation tag switches."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
